@@ -1,0 +1,15 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fdf8f5;
+  color: #3a1a1a;
+}
+
+button {
+  cursor: pointer;
+}
