@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+# Se copia el resto del código (aunque en dev se sobreescribe con el volumen, 
+# es buena práctica por si acaso)
+COPY . .
+
+EXPOSE 5173
+
+# En Vite es importante usar --host para que se pueda acceder desde fuera del contenedor
+CMD ["npm", "run", "dev:frontend", "--", "--host"]

@@ -1,0 +1,55 @@
+<svg width="220" height="195" viewBox="90 10 220 195" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Logo Pastelerías Unidas</title>
+<desc>Logo con ilustración de torta de chocolate y texto Pastelerías Unidas</desc>
+
+<style>
+  .brand-title { font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 700; fill: #6B2737; letter-spacing: 6px; }
+  .brand-sub { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-weight: 400; fill: #6B2737; letter-spacing: 5px; }
+</style>
+
+
+
+<ellipse cx="200" cy="188" rx="105" ry="14" fill="#E8E0D8"/>
+<ellipse cx="200" cy="185" rx="100" ry="10" fill="#F5F0EC" stroke="#DDD5CC" stroke-width="1"/>
+
+<rect x="108" y="121" width="184" height="58" rx="10" fill="#C8935A"/>
+<rect x="108" y="142" width="184" height="18" rx="0" fill="#F2D9B5"/>
+<rect x="108" y="121" width="184" height="24" rx="10" fill="#5C3018"/>
+<ellipse cx="200" cy="121" rx="92" ry="7" fill="#3D1F0D"/>
+
+<rect x="116" y="63" width="168" height="62" rx="8" fill="#C8935A"/>
+<rect x="116" y="86" width="168" height="16" rx="0" fill="#F2D9B5"/>
+<rect x="116" y="63" width="168" height="26" rx="8" fill="#5C3018"/>
+
+<path d="M145 63 Q143 78 141 88 Q139 93 141 95 Q143 91 145 88 Q147 78 149 63Z" fill="#3D1F0D"/>
+<path d="M168 63 Q166 81 164 91 Q162 97 165 99 Q167 95 169 91 Q171 81 172 63Z" fill="#3D1F0D"/>
+<path d="M195 63 Q193 83 191 94 Q189 101 192 102 Q194 98 196 94 Q198 83 199 63Z" fill="#3D1F0D"/>
+<path d="M222 63 Q221 80 220 90 Q218 96 221 98 Q223 94 224 90 Q225 80 226 63Z" fill="#3D1F0D"/>
+<path d="M248 63 Q247 76 246 85 Q244 90 247 92 Q249 88 250 85 Q251 76 252 63Z" fill="#3D1F0D"/>
+
+<ellipse cx="200" cy="63" rx="84" ry="12" fill="#FAF3EC"/>
+<ellipse cx="168" cy="57" rx="18" ry="22" fill="#FAF3EC"/>
+<ellipse cx="200" cy="54" rx="20" ry="25" fill="#FAF3EC"/>
+<ellipse cx="232" cy="57" rx="18" ry="22" fill="#FAF3EC"/>
+<ellipse cx="168" cy="53" rx="8" ry="12" fill="#FFFAF6"/>
+<ellipse cx="200" cy="50" rx="9" ry="13" fill="#FFFAF6"/>
+<ellipse cx="232" cy="53" rx="8" ry="12" fill="#FFFAF6"/>
+
+<ellipse cx="214" cy="38" rx="12" ry="14" fill="#E8352A"/>
+<path d="M209 36 Q214 28 219 36" fill="#E8352A"/>
+<ellipse cx="211" cy="36" rx="1.5" ry="1" fill="#C01A10" transform="rotate(-10,211,36)"/>
+<ellipse cx="215" cy="33" rx="1.5" ry="1" fill="#C01A10"/>
+<ellipse cx="218" cy="38" rx="1.5" ry="1" fill="#C01A10" transform="rotate(10,218,38)"/>
+<path d="M210 31 Q212 21 214 28 Q216 21 218 31" fill="#3A8C2A" stroke="#2A6B1E" stroke-width="0.5"/>
+
+<circle cx="190" cy="35" r="9" fill="#C0152A"/>
+<circle cx="190" cy="33" r="4" fill="#E0354A" opacity="0.5"/>
+<path d="M190 26 Q192 14 196 12" fill="none" stroke="#5C8A1A" stroke-width="2" stroke-linecap="round"/>
+
+<circle cx="204" cy="51" r="7" fill="#3A2D7A"/>
+<circle cx="204" cy="50" r="3" fill="#5A4DAA" opacity="0.5"/>
+<circle cx="216" cy="53" r="6" fill="#3A2D7A"/>
+<circle cx="216" cy="52" r="2.5" fill="#5A4DAA" opacity="0.5"/>
+<circle cx="196" cy="54" r="5.5" fill="#3A2D7A"/>
+
+</svg>
