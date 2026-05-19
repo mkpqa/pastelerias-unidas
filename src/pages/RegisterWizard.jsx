@@ -1,96 +1,100 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import useAuthStore from '../context/useAuthStore'
-import { MiniMinimalista, MiniModernoGrid, MiniGaleria, PreviewGrande } from '../components/TemplatePreview'
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import '../css/RegistroPage.css';
+import NavBar from '../components/NavBar';
+import Footer from '../components/Footer';
+import { User, Lock, Mail, Upload } from 'lucide-react';
+import useAuthStore from '../context/useAuthStore';
+import { PreviewGrande } from '../components/TemplatePreview';
 
-const steps = ['Cuenta', 'Negocio', 'Diseño', 'Pagos']
-const coloresDisponibles = ['#d4687a', '#e8a87c', '#7eb5d6', '#8bc48a', '#b57ecf', '#e8c87c']
-const plantillas = ['minimalista', 'moderno_grid', 'galeria']
-const plantillasLabel = ['Minimalista', 'Moderno Grid', 'Galería']
+export default function RegistroPage() {
+  const navigate = useNavigate();
+  const { registroVendedor, cargando, error, limpiarError } = useAuthStore();
+  
+  // Control de flujo de la interfaz
+  const [paso, setPaso] = useState(1);
+  const [mensajeExito, setMensajeExito] = useState('');
+  const [errorLocal, setErrorLocal] = useState('');
 
-export default function RegisterWizard() {
-  const navigate = useNavigate()
-  const { registroVendedor, cargando, error, limpiarError } = useAuthStore()
-  const [step, setStep] = useState(1)
-  const [mensaje, setMensaje] = useState('')
-  const [errorLocal, setErrorLocal] = useState('')
+  // --- PASO 1: Credenciales ---
+  const [nombre, setNombre] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmarPassword, setConfirmarPassword] = useState('');
+
+  // --- PASO 2: Proceso (Preferencias) ---
+  const [tieneNegocio, setTieneNegocio] = useState(true);
+  const [preferencia, setPreferencia] = useState('');
+  const [alergia, setAlergia] = useState('');
+  const [otraAlergia, setOtraAlergia] = useState('');
+
+  // --- PASO 3: Datos del negocio ---
+  const [nombreTienda, setNombreTienda] = useState('');
+  const [ubicacion, setUbicacion] = useState('');
+  const [telefonoTienda, setTelefonoTienda] = useState('');
+  const [especialidad, setEspecialidad] = useState('');
+
+  // --- PASO 4: Personalización (Diseño) ---
+  const [colorPrimario, setColorPrimario] = useState('#8F5E4F');
+  const [colorSecundario, setColorSecundario] = useState('#F8EFE6');
+  const [plantilla, setPlantilla] = useState('moderno_grid');
+
+  // Por defecto, inicializamos métodos de pago como en la lógica original
+  const [metodosPago] = useState(['yape', 'efectivo']); 
 
   // ============================================
-  // Estado del formulario (4 pasos)
-  // ============================================
-  // Paso 1: Credenciales
-  const [nombre, setNombre] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmarPassword, setConfirmarPassword] = useState('')
-
-  // Paso 2: Datos del negocio
-  const [nombreTienda, setNombreTienda] = useState('')
-  const [ubicacion, setUbicacion] = useState('')
-  const [telefonoTienda, setTelefonoTienda] = useState('')
-  const [especialidad, setEspecialidad] = useState('')
-  const [descripcion, setDescripcion] = useState('')
-
-  // Paso 3: Personalización
-  const [colorPrimario, setColorPrimario] = useState('#d4687a')
-  const [plantilla, setPlantilla] = useState('minimalista')
-
-  // Paso 4: Pagos
-  const [metodosPago, setMetodosPago] = useState(['yape'])
-
-  // ============================================
-  // Validación por paso
+  // Validaciones
   // ============================================
   const validarPaso = () => {
-    setErrorLocal('')
+    setErrorLocal('');
 
-    if (step === 1) {
+    if (paso === 1) {
       if (!nombre || !email || !password || !confirmarPassword) {
-        setErrorLocal('Completa todos los campos.')
-        return false
+        setErrorLocal('Por favor, completa todos los campos.');
+        return false;
       }
       if (password.length < 6) {
-        setErrorLocal('La contraseña debe tener al menos 6 caracteres.')
-        return false
+        setErrorLocal('La contraseña debe tener al menos 6 caracteres.');
+        return false;
       }
       if (password !== confirmarPassword) {
-        setErrorLocal('Las contraseñas no coinciden.')
-        return false
+        setErrorLocal('Las contraseñas no coinciden.');
+        return false;
       }
     }
 
-    if (step === 2) {
+    if (paso === 3) {
       if (!nombreTienda || !ubicacion || !telefonoTienda || !especialidad) {
-        setErrorLocal('Completa todos los campos obligatorios.')
-        return false
+        setErrorLocal('Completa los detalles de tu pastelería para continuar.');
+        return false;
       }
     }
 
-    return true
-  }
+    return true;
+  };
 
-  // ============================================
-  // Siguiente paso o finalizar
-  // ============================================
-  const handleSiguiente = async () => {
-    if (!validarPaso()) return
-
-    if (step < 4) {
-      setStep(step + 1)
-      setErrorLocal('')
-    } else {
-      // Paso 4: Enviar todo al backend
-      await handleFinalizar()
+  const handleSiguiente = (e) => {
+    if (e) e.preventDefault();
+    if (validarPaso()) {
+      limpiarError();
+      setPaso(paso + 1);
     }
-  }
+  };
+
+  const handleAtras = (e) => {
+    if (e) e.preventDefault();
+    setErrorLocal('');
+    setPaso(paso - 1);
+  };
 
   // ============================================
-  // Enviar registro al backend
+  // Envío al Backend PostgreSQL
   // ============================================
-  const handleFinalizar = async () => {
-    setErrorLocal('')
-    setMensaje('')
-    limpiarError()
+  const handleFinalizar = async (e) => {
+    e.preventDefault();
+    setErrorLocal('');
+    setMensajeExito('');
+    limpiarError();
 
     try {
       await registroVendedor({
@@ -98,339 +102,319 @@ export default function RegisterWizard() {
         email,
         password,
         nombreTienda,
-        descripcion,
+        descripcion: preferencia ? `Especialidad en ${preferencia}` : '', // Extra opcional
         ubicacion,
         telefonoTienda,
         especialidad,
         colorPrimario,
         plantilla,
         metodosPago,
-      })
+      });
 
-      setMensaje('🎉 ¡Tu tienda ha sido creada exitosamente! Redirigiendo a tu dashboard...')
-      setTimeout(() => navigate('/dashboard'), 2000)
+      setMensajeExito('🎉 ¡Tu tienda ha sido registrada exitosamente! Redirigiendo...');
+      setTimeout(() => navigate('/dashboard'), 2500);
     } catch (err) {
-      setErrorLocal(err.message)
+      setErrorLocal(err.message || 'Ocurrió un error al registrar la tienda.');
     }
-  }
+  };
 
-  // Toggle método de pago
-  const toggleMetodoPago = (metodo) => {
-    if (metodosPago.includes(metodo)) {
-      if (metodosPago.length > 1) {
-        setMetodosPago(metodosPago.filter((m) => m !== metodo))
-      }
-    } else {
-      setMetodosPago([...metodosPago, metodo])
-    }
-  }
-
-  return (
-    <div style={{ maxWidth: step === 3 ? '900px' : '640px', margin: '2rem auto', padding: '0 1rem', transition: 'max-width 0.3s ease' }}>
-      <h1 style={{ fontSize: '24px', fontStyle: 'italic', color: '#3a1a1a', marginBottom: '1.5rem' }}>
-        ¡Empecemos! Crea tu cuenta
-      </h1>
-
-      {/* Mensajes de feedback */}
-      {mensaje && (
-        <div style={{ background: '#e8f5e9', borderRadius: '10px', padding: '12px', marginBottom: '1rem', fontSize: '13px', color: '#2d5a27', border: '1px solid #a8d5a2', textAlign: 'center' }}>
-          {mensaje}
-        </div>
-      )}
+  // Componente reutilizable para mostrar errores/éxitos
+  const StatusMessage = () => (
+    <>
       {(errorLocal || error) && (
-        <div style={{ background: '#fde8e8', borderRadius: '10px', padding: '12px', marginBottom: '1rem', fontSize: '13px', color: '#8b2f2f', border: '1px solid #e8a0a0', textAlign: 'center' }}>
+        <div style={{ background: '#fde8e8', color: '#8b2f2f', padding: '10px 15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem', border: '1px solid #e8a0a0' }}>
           ❌ {errorLocal || error}
         </div>
       )}
-
-      <div style={{ background: '#fdf0eb', borderRadius: '16px', padding: '2rem', border: '1px solid #e8d5cc' }}>
-        
-        {/* Stepper */}
-        <div style={{ display: 'flex', marginBottom: '2rem' }}>
-          {steps.map((s, i) => (
-            <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', position: 'relative' }}>
-              {i < 3 && <div style={{ position: 'absolute', top: '16px', left: '50%', width: '100%', height: '2px', background: i + 1 < step ? '#8b2f5f' : '#e8c8b4' }} />}
-              <div style={{
-                width: '32px', height: '32px', borderRadius: '50%', display: 'flex',
-                alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: '600',
-                background: i + 1 <= step ? '#8b2f5f' : '#e8c8b4',
-                color: i + 1 <= step ? '#fff' : '#8b6a5a',
-                position: 'relative', zIndex: 1,
-                boxShadow: i + 1 === step ? '0 0 0 4px #f5c4d4' : 'none'
-              }}>{i + 1}</div>
-              <span style={{ fontSize: '11px', color: '#6b4c4c' }}>{s}</span>
-            </div>
-          ))}
+      {mensajeExito && (
+        <div style={{ background: '#e8f5e9', color: '#2d5a27', padding: '10px 15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem', border: '1px solid #a8d5a2' }}>
+          {mensajeExito}
         </div>
+      )}
+    </>
+  );
 
-        {/* ============================================ */}
-        {/* Paso 1: Credenciales */}
-        {/* ============================================ */}
-        {step === 1 && (
-          <div>
-            <h3 style={{ marginBottom: '1.5rem', color: '#3a1a1a' }}>Paso 1: Crea tu Cuenta Administrativa</h3>
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '12px 14px', marginBottom: '10px' }}>
-                  <input type="text" placeholder="Tu nombre completo" value={nombre} onChange={(e) => setNombre(e.target.value)}
-                    style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '13px', width: '100%' }} />
-                </div>
-                <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '12px 14px', marginBottom: '10px' }}>
-                  <input type="email" placeholder="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)}
-                    style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '13px', width: '100%' }} />
-                </div>
-                <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '12px 14px', marginBottom: '10px' }}>
-                  <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)}
-                    style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '13px', width: '100%' }} />
-                </div>
-                <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '12px 14px', marginBottom: '10px' }}>
-                  <input type="password" placeholder="Confirmar contraseña" value={confirmarPassword} onChange={(e) => setConfirmarPassword(e.target.value)}
-                    style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '13px', width: '100%' }} />
-                </div>
-              </div>
-              <div style={{ fontSize: '56px' }}>👩‍💻</div>
-            </div>
-          </div>
-        )}
-
-        {/* ============================================ */}
-        {/* Paso 2: Datos del Negocio */}
-        {/* ============================================ */}
-        {step === 2 && (
-          <div>
-            <h3 style={{ marginBottom: '1.5rem', color: '#3a1a1a' }}>Paso 2: Detalles de tu Pastelería</h3>
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '12px 14px', marginBottom: '10px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <span>🏪</span>
-                  <input type="text" placeholder="Nombre de tu Pastelería" value={nombreTienda} onChange={(e) => setNombreTienda(e.target.value)}
-                    style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '13px', flex: 1 }} />
-                </div>
-                <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '12px 14px', marginBottom: '10px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <span>📍</span>
-                  <input type="text" placeholder="Ubicación o Distrito" value={ubicacion} onChange={(e) => setUbicacion(e.target.value)}
-                    style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '13px', flex: 1 }} />
-                </div>
-                <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '12px 14px', marginBottom: '10px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <span>📞</span>
-                  <input type="tel" placeholder="Teléfono de Contacto" value={telefonoTienda} onChange={(e) => setTelefonoTienda(e.target.value)}
-                    style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '13px', flex: 1 }} />
-                </div>
-                <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '12px 14px', marginBottom: '10px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <span>🎂</span>
-                  <select value={especialidad} onChange={(e) => setEspecialidad(e.target.value)}
-                    style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '13px', flex: 1, color: especialidad ? '#3a1a1a' : '#9a7a7a' }}>
-                    <option value="">Selecciona tu especialidad</option>
-                    <option value="Tortas de Autor">Tortas de Autor</option>
-                    <option value="Cookies y Galletas">Cookies y Galletas</option>
-                    <option value="Postres Veganos">Postres Veganos</option>
-                    <option value="Repostería Clásica">Repostería Clásica</option>
-                    <option value="Cupcakes">Cupcakes</option>
-                    <option value="Bocaditos y Dulces">Bocaditos y Dulces</option>
-                    <option value="Panadería Artesanal">Panadería Artesanal</option>
-                    <option value="Otro">Otro</option>
-                  </select>
-                </div>
-                <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '12px 14px', marginBottom: '10px' }}>
-                  <textarea placeholder="Breve descripción de tu negocio (opcional)" value={descripcion} onChange={(e) => setDescripcion(e.target.value)}
-                    rows={2} style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '13px', width: '100%', resize: 'vertical', fontFamily: 'inherit' }} />
-                </div>
-              </div>
-              <div style={{ fontSize: '56px' }}>🏪</div>
-            </div>
-          </div>
-        )}
-
-        {/* ============================================ */}
-        {/* Paso 3: Personalización Visual */}
-        {/* ============================================ */}
-        {step === 3 && (
-          <div>
-            <h3 style={{ marginBottom: '1rem', color: '#3a1a1a' }}>Paso 3: Personaliza tu Tienda</h3>
-
-            {/* Subir logo */}
-            <div style={{ background: '#fff', border: '1px dashed #c8a4a4', borderRadius: '10px', padding: '12px', marginBottom: '10px', fontSize: '13px', color: '#9a7a7a', cursor: 'pointer' }}>
-              ☁️ Subir tu Logotipo (Formato PNG, JPG) — Próximamente
-            </div>
-
-            {/* Selector de color */}
-            <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '10px', padding: '14px', marginBottom: '14px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <span style={{ fontSize: '13px', color: '#6b4c4c', fontWeight: '500' }}>🎨 Color Principal de Marca</span>
-                <div style={{ display: 'flex', gap: '6px' }}>
-                  {coloresDisponibles.map(c => (
-                    <div
-                      key={c}
-                      onClick={() => setColorPrimario(c)}
-                      style={{
-                        width: '28px', height: '28px', borderRadius: '50%', background: c, cursor: 'pointer',
-                        border: colorPrimario === c ? '3px solid #3a1a1a' : '3px solid transparent',
-                        transition: 'all 0.2s', transform: colorPrimario === c ? 'scale(1.15)' : 'scale(1)',
-                        boxShadow: colorPrimario === c ? `0 2px 8px ${c}66` : 'none'
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-              {/* Mini preview de marca */}
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '8px 12px', background: '#fdf8f5', borderRadius: '8px' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: colorPrimario, transition: 'background 0.3s' }} />
-                <div>
-                  <div style={{ fontSize: '14px', fontWeight: '700', color: colorPrimario, transition: 'color 0.3s' }}>{nombreTienda || 'Tu Pastelería'}</div>
-                  <div style={{ fontSize: '10px', color: '#9a7a7a' }}>Así se verá tu marca</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Selector de plantilla con mini-previews */}
-            <p style={{ fontSize: '13px', color: '#6b4c4c', marginBottom: '10px', fontWeight: '500' }}>
-              📐 Selecciona el diseño de tu tienda:
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '16px' }}>
-              {/* Minimalista */}
-              <div
-                onClick={() => setPlantilla('minimalista')}
-                style={{
-                  border: `2px solid ${plantilla === 'minimalista' ? '#8b2f5f' : '#e8c8b4'}`,
-                  borderRadius: '12px', overflow: 'hidden', cursor: 'pointer',
-                  background: '#fff', transition: 'all 0.2s',
-                  boxShadow: plantilla === 'minimalista' ? '0 4px 12px rgba(139,47,95,0.15)' : 'none',
-                  transform: plantilla === 'minimalista' ? 'translateY(-2px)' : 'none',
-                }}
-              >
-                <div style={{ height: '130px', padding: '6px' }}>
-                  <MiniMinimalista color={colorPrimario} nombre={nombreTienda} activa={plantilla === 'minimalista'} />
-                </div>
-                <div style={{ padding: '8px', borderTop: '1px solid #f0e6de', textAlign: 'center', background: plantilla === 'minimalista' ? '#8b2f5f' : '#fdf8f5' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '600', color: plantilla === 'minimalista' ? '#fff' : '#6b4c4c' }}>
-                    {plantilla === 'minimalista' ? '✓ ' : ''}Minimalista
-                  </span>
-                </div>
-              </div>
-
-              {/* Moderno Grid */}
-              <div
-                onClick={() => setPlantilla('moderno_grid')}
-                style={{
-                  border: `2px solid ${plantilla === 'moderno_grid' ? '#8b2f5f' : '#e8c8b4'}`,
-                  borderRadius: '12px', overflow: 'hidden', cursor: 'pointer',
-                  background: '#fff', transition: 'all 0.2s',
-                  boxShadow: plantilla === 'moderno_grid' ? '0 4px 12px rgba(139,47,95,0.15)' : 'none',
-                  transform: plantilla === 'moderno_grid' ? 'translateY(-2px)' : 'none',
-                }}
-              >
-                <div style={{ height: '130px', padding: '6px' }}>
-                  <MiniModernoGrid color={colorPrimario} nombre={nombreTienda} activa={plantilla === 'moderno_grid'} />
-                </div>
-                <div style={{ padding: '8px', borderTop: '1px solid #f0e6de', textAlign: 'center', background: plantilla === 'moderno_grid' ? '#8b2f5f' : '#fdf8f5' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '600', color: plantilla === 'moderno_grid' ? '#fff' : '#6b4c4c' }}>
-                    {plantilla === 'moderno_grid' ? '✓ ' : ''}Moderno Grid
-                  </span>
-                </div>
-              </div>
-
-              {/* Galería */}
-              <div
-                onClick={() => setPlantilla('galeria')}
-                style={{
-                  border: `2px solid ${plantilla === 'galeria' ? '#8b2f5f' : '#e8c8b4'}`,
-                  borderRadius: '12px', overflow: 'hidden', cursor: 'pointer',
-                  background: '#fff', transition: 'all 0.2s',
-                  boxShadow: plantilla === 'galeria' ? '0 4px 12px rgba(139,47,95,0.15)' : 'none',
-                  transform: plantilla === 'galeria' ? 'translateY(-2px)' : 'none',
-                }}
-              >
-                <div style={{ height: '130px', padding: '6px' }}>
-                  <MiniGaleria color={colorPrimario} nombre={nombreTienda} activa={plantilla === 'galeria'} />
-                </div>
-                <div style={{ padding: '8px', borderTop: '1px solid #f0e6de', textAlign: 'center', background: plantilla === 'galeria' ? '#8b2f5f' : '#fdf8f5' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '600', color: plantilla === 'galeria' ? '#fff' : '#6b4c4c' }}>
-                    {plantilla === 'galeria' ? '✓ ' : ''}Galería
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Preview grande de la plantilla seleccionada */}
-            <div style={{ background: '#fff', border: '1px solid #e8c8b4', borderRadius: '12px', padding: '14px', marginBottom: '6px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <p style={{ fontSize: '12px', color: '#6b4c4c', fontWeight: '500', margin: 0 }}>
-                  👁️ Vista previa — <strong style={{ color: '#8b2f5f' }}>{plantillasLabel[plantillas.indexOf(plantilla)]}</strong>
+  return (
+    <div className="registro-page-container">
+      <main className="registro-content">
+        <div className="registro-card">
+          
+          {/* --- Lado Izquierdo: Formulario Dinámico --- */}
+          <div className="registro-left-panel">
+            
+            {/* --- PASO 1 --- */}
+            {paso === 1 && (
+              <>
+                <h1 className="registro-title">REGÍSTRATE</h1>
+                <p className="registro-subtitle">
+                  Crea tu cuenta para acceder al marketplace o registrar tu pastelería.
                 </p>
-                <span style={{ fontSize: '10px', color: '#bbb' }}>Los datos son de ejemplo</span>
-              </div>
-              <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #eee' }}>
-                <PreviewGrande plantilla={plantilla} color={colorPrimario} nombre={nombreTienda} />
-              </div>
-            </div>
+
+                <StatusMessage />
+
+                <button className="btn-google">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  Continuar con Google
+                </button>
+
+                <div className="divider">o</div>
+
+                <form onSubmit={handleSiguiente}>
+                  <div className="form-group">
+                    <User size={20} className="input-icon" />
+                    <input type="text" placeholder="Nombre de usuario" className="form-input" value={nombre} onChange={e => setNombre(e.target.value)} required />
+                  </div>
+                  <div className="form-group">
+                    <Mail size={20} className="input-icon" />
+                    <input type="email" placeholder="Correo electrónico" className="form-input" value={email} onChange={e => setEmail(e.target.value)} required />
+                  </div>
+                  <div className="form-group">
+                    <Lock size={20} className="input-icon" />
+                    <input type="password" placeholder="Contraseña" className="form-input" value={password} onChange={e => setPassword(e.target.value)} required />
+                  </div>
+                  <div className="form-group">
+                    <Lock size={20} className="input-icon" />
+                    <input type="password" placeholder="Confirmar Contraseña" className="form-input" value={confirmarPassword} onChange={e => setConfirmarPassword(e.target.value)} required />
+                  </div>
+                  <button type="submit" className="btn-submit">Continuar</button>
+                </form>
+              </>
+            )}
+
+            {/* --- PASO 2 --- */}
+            {paso === 2 && (
+              <>
+                <h1 className="registro-title">PROCESO DE REGISTRO</h1>
+                <StatusMessage />
+                
+                <form onSubmit={handleSiguiente}>
+                  <p className="required-label">
+                    <span className="asterisk">*</span> ¿Tienes un negocio que quieras registrar?
+                  </p>
+                  <label className="checkbox-label">
+                    <input type="checkbox" checked={tieneNegocio} onChange={(e) => setTieneNegocio(e.target.checked)} />
+                    Sí, quiero registrar mi emprendimiento
+                  </label>
+
+                  <div className="divider">opcional</div>
+
+                  <div>
+                    <label className="select-label">Preferencias</label>
+                    <select className="custom-select" value={preferencia} onChange={e => setPreferencia(e.target.value)}>
+                      <option value=""></option>
+                      <option value="dulce">Dulce</option>
+                      <option value="salado">Salado</option>
+                    </select>
+                  </div>
+
+                  <div style={{ marginTop: '15px' }}>
+                    <label className="select-label">¿Alergias?</label>
+                    <div className="alergias-row">
+                      <select className="custom-select" value={alergia} onChange={e => setAlergia(e.target.value)}>
+                        <option value=""></option>
+                        <option value="gluten">Gluten</option>
+                        <option value="lactosa">Lactosa</option>
+                      </select>
+                      <span className="otro-label">Otro:</span>
+                      <input type="text" className="input-otro" value={otraAlergia} onChange={e => setOtraAlergia(e.target.value)} />
+                    </div>
+                  </div>
+
+                  <div className="button-group">
+                    <button type="button" className="btn-submit" onClick={handleAtras}>Atrás</button>
+                    <button type="submit" className="btn-submit">Continuar</button>
+                  </div>
+                </form>
+              </>
+            )}
+
+            {/* --- PASO 3 --- */}
+            {paso === 3 && (
+              <>
+                <h1 className="registro-title" style={{ fontSize: '1.8rem', lineHeight: '1.2', marginBottom: '5px' }}>
+                  PROCESO DE REGISTRO DE PASTELERIA
+                </h1>
+                <p className="registro-subtitle" style={{ marginBottom: '15px' }}>
+                  Paso 1: Detalles de tu pastelería
+                </p>
+
+                <StatusMessage />
+
+                <form onSubmit={handleSiguiente}>
+                  <label className="step3-label">Nombre del emprendimiento</label>
+                  <input type="text" className="step3-input" value={nombreTienda} onChange={e => setNombreTienda(e.target.value)} required />
+                  
+                  <label className="step3-label">Ubicación</label>
+                  <input type="text" className="step3-input" value={ubicacion} onChange={e => setUbicacion(e.target.value)} required />
+                  
+                  <label className="step3-label">Número de contacto</label>
+                  <input type="tel" className="step3-input" value={telefonoTienda} onChange={e => setTelefonoTienda(e.target.value)} required />
+                  
+                  <label className="step3-label">Especialidad (ej. galletas, tortas, bocaditos)</label>
+                  <select className="step3-select" value={especialidad} onChange={e => setEspecialidad(e.target.value)} required>
+                    <option value=""></option>
+                    <option value="Tortas">Tortas</option>
+                    <option value="Galletas">Galletas</option>
+                    <option value="Bocaditos">Bocaditos</option>
+                    <option value="Vegano">Vegano</option>
+                  </select>
+                  
+                  <div className="button-group">
+                    <button type="button" className="btn-submit" onClick={handleAtras}>Atrás</button>
+                    <button type="submit" className="btn-submit">Continuar</button>
+                  </div>
+                </form>
+              </>
+            )}
+
+            {/* --- PASO 4 --- */}
+            {paso === 4 && (
+              <>
+                <h1 className="registro-title" style={{ fontSize: '1.8rem', lineHeight: '1.2', marginBottom: '5px' }}>
+                  PROCESO DE REGISTRO DE PASTELERIA
+                </h1>
+                <p className="registro-subtitle" style={{ marginBottom: '20px' }}>
+                  Paso 2: Diseño de tu página
+                </p>
+
+                <StatusMessage />
+
+                <form onSubmit={handleFinalizar}>
+                  <div className="step4-top-section">
+                    
+                    <div className="step4-col">
+                      <label className="step3-label" style={{marginTop: 0}}>Sube tu logotipo</label>
+                      <div className="upload-box">
+                        <Upload size={32} />
+                      </div>
+                    </div>
+
+                    <div className="vertical-divider"></div>
+
+                    <div className="step4-col">
+                      <label className="step3-label" style={{marginTop: 0}}>Estética</label>
+                      
+                      {/* Pickers de color nativos e integrados en el diseño */}
+                      <div className="color-picker-row">
+                        <input type="color" value={colorPrimario} onChange={(e) => setColorPrimario(e.target.value)} style={{ width: '22px', height: '22px', border: 'none', padding: 0, borderRadius: '50%', cursor: 'pointer', overflow: 'hidden' }} />
+                        <button type="button" className="btn-color" onClick={() => document.querySelector('input[type="color"]').click()}>Color principal</button>
+                      </div>
+
+                      <div className="color-picker-row">
+                        <input type="color" value={colorSecundario} onChange={(e) => setColorSecundario(e.target.value)} style={{ width: '22px', height: '22px', border: 'none', padding: 0, borderRadius: '50%', cursor: 'pointer', overflow: 'hidden' }} />
+                        <button type="button" className="btn-color" style={{backgroundColor: '#A98A80'}}>Color secundario</button>
+                      </div>
+                      
+                      <label className="small-select-label">Fuente títulos</label>
+                      <select className="step4-small-select">
+                        <option value="belleza">Belleza</option>
+                      </select>
+                      
+                      <label className="small-select-label">Fuente párrafos</label>
+                      <select className="step4-small-select">
+                        <option value="bellota">Bellota</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <label className="step3-label">Plantillas</label>
+                  <div className="plantillas-row">
+                    <div 
+                      className="plantilla-card" 
+                      style={{ borderColor: plantilla === 'moderno_grid' ? colorPrimario : '#8F5E4F', borderWidth: plantilla === 'moderno_grid' ? '2.5px' : '1.5px' }}
+                      onClick={() => setPlantilla('moderno_grid')}
+                    >GRID</div>
+                    <div 
+                      className="plantilla-card" 
+                      style={{ borderColor: plantilla === 'minimalista' ? colorPrimario : '#8F5E4F', borderWidth: plantilla === 'minimalista' ? '2.5px' : '1.5px' }}
+                      onClick={() => setPlantilla('minimalista')}
+                    >MODERNO</div>
+                    <div 
+                      className="plantilla-card" 
+                      style={{ borderColor: plantilla === 'galeria' ? colorPrimario : '#8F5E4F', borderWidth: plantilla === 'galeria' ? '2.5px' : '1.5px' }}
+                      onClick={() => setPlantilla('galeria')}
+                    >GALERIA</div>
+                  </div>
+
+                  <div className="button-group">
+                    <button type="button" className="btn-submit" onClick={handleAtras} disabled={cargando}>
+                      Atrás
+                    </button>
+                    <button type="submit" className="btn-submit" disabled={cargando}>
+                      {cargando ? 'Guardando...' : 'Finalizar'}
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+
           </div>
-        )}
 
-        {/* ============================================ */}
-        {/* Paso 4: Configuración de Pagos */}
-        {/* ============================================ */}
-        {step === 4 && (
-          <div>
-            <h3 style={{ marginBottom: '1rem', color: '#3a1a1a' }}>Paso 4: Métodos de Pago</h3>
-            <div style={{ background: '#fff3cd', borderRadius: '10px', padding: '12px', marginBottom: '1rem', fontSize: '12px', color: '#856404', border: '1px solid #ffc107' }}>
-              🔒 Modo Sandbox activado — pagos simulados para pruebas
-            </div>
+          {/* --- Lado Derecho: Contenido Dinámico --- */}
+          <div 
+            className="registro-right-panel" 
+            style={{ 
+              padding: paso === 4 ? '40px' : '50px 60px',
+              alignItems: paso === 3 ? 'flex-start' : (paso === 4 ? 'stretch' : 'center'), 
+              textAlign: paso === 3 ? 'left' : 'center' 
+            }}
+          >
+            
+            {paso === 1 && (
+              <>
+                <h2 className="right-title">INICIA CON NOSOTROS</h2>
+                <p className="right-subtitle">
+                  Ya sea tu búsqueda o tu emprendimiento,<br/>
+                  ¡estamos contigo!
+                </p>
+              </>
+            )}
 
-            <p style={{ fontSize: '13px', color: '#6b4c4c', marginBottom: '10px' }}>Selecciona los métodos de pago que aceptarás:</p>
-            {[
-              { id: 'yape', label: '📱 Yape', desc: 'Pagos móviles instantáneos' },
-              { id: 'plin', label: '📲 Plin', desc: 'Transferencias entre bancos' },
-              { id: 'tarjeta', label: '💳 Tarjeta', desc: 'Visa, Mastercard (sandbox)' },
-              { id: 'transferencia', label: '🏦 Transferencia', desc: 'Depósito bancario' },
-              { id: 'efectivo', label: '💵 Efectivo', desc: 'Pago contra entrega' },
-            ].map((m) => (
-              <div
-                key={m.id}
-                onClick={() => toggleMetodoPago(m.id)}
-                style={{
-                  background: metodosPago.includes(m.id) ? '#f0e6f0' : '#fff',
-                  border: `2px solid ${metodosPago.includes(m.id) ? '#8b2f5f' : '#e8c8b4'}`,
-                  borderRadius: '10px', padding: '12px 14px', marginBottom: '8px',
-                  cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <div>
-                  <div style={{ fontSize: '13px', fontWeight: '500', color: '#3a1a1a' }}>{m.label}</div>
-                  <div style={{ fontSize: '11px', color: '#9a7a7a' }}>{m.desc}</div>
-                </div>
-                <div style={{ fontSize: '18px' }}>{metodosPago.includes(m.id) ? '✅' : '⬜'}</div>
+            {paso === 2 && (
+              <>
+                <h2 className="right-title">¡LAS MEJORES<br/>PROMOCIONES!</h2>
+                <p className="right-subtitle">Todo en un solo lugar</p>
+              </>
+            )}
+
+            {paso === 3 && (
+              <>
+                <h2 className="right-title" style={{ fontSize: '1.9rem', lineHeight: '1.2' }}>
+                  ESTÁS A UNOS PASOS DE COMPLETAR TU REGISTRO
+                </h2>
+                <p className="right-paragraph">
+                  99.9% de clientes en Pastelerías Unidas están satisfechos con los servicios de visibilidad y afirman que tuvieron un crecimiento exponencial en sus negocios
+                </p>
+              </>
+            )}
+
+            {paso === 4 && (
+              /* Componente de Vista Previa funcional conectado a las variables de estado */
+              <div className="preview-box" style={{ padding: 0, overflow: 'hidden', border: 'none', background: colorSecundario }}>
+                <PreviewGrande 
+                  plantilla={plantilla} 
+                  color={colorPrimario} 
+                  nombre={nombreTienda || 'Mi Pastelería'} 
+                />
               </div>
-            ))}
+            )}
 
-            <div style={{ background: '#e8f5e9', borderRadius: '10px', padding: '12px', fontSize: '12px', color: '#2d5a27', border: '1px solid #a8d5a2', marginTop: '1rem' }}>
-              ✅ Tu tienda estará lista al completar este paso
-            </div>
+            {/* Oculta los elementos de "Inicia Sesión" en los pasos 3 y 4 */}
+            {(paso === 1 || paso === 2) && (
+              <>
+                <p className="right-prompt">¿Ya tienes cuenta?</p>
+                <Link to="/auth" className="btn-login">Inicia Sesión</Link>
+              </>
+            )}
           </div>
-        )}
 
-        {/* ============================================ */}
-        {/* Botones de navegación */}
-        {/* ============================================ */}
-        <button
-          onClick={handleSiguiente}
-          disabled={cargando}
-          style={{ width: '100%', background: cargando ? '#c4a0b0' : '#8b2f5f', color: '#fff', border: 'none', borderRadius: '10px', padding: '12px', fontSize: '14px', marginTop: '1.5rem', opacity: cargando ? 0.7 : 1 }}
-        >
-          {cargando
-            ? '⏳ Creando tu tienda...'
-            : step < 4
-              ? 'Siguiente Paso →'
-              : '¡Finalizar y lanzar mi tienda! 🎉'}
-        </button>
-        <button
-          onClick={() => step > 1 ? setStep(step - 1) : navigate('/')}
-          disabled={cargando}
-          style={{ width: '100%', background: '#a8d5a2', color: '#2d5a27', border: 'none', borderRadius: '10px', padding: '10px', fontSize: '13px', marginTop: '8px' }}
-        >
-          Atrás
-        </button>
-      </div>
+        </div>
+      </main>
     </div>
-  )
+  );
 }

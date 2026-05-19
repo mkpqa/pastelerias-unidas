@@ -1,0 +1,309 @@
+/* Home.css */
+:root {
+  --dark-brown: #55261C;
+  --light-brown: #8F5E4F;
+  --text-dark: #333333;
+  --bg-light: #FAFAFA;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-light);
+}
+
+/* --- Header --- */
+.header {
+  background-color: var(--dark-brown);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+}
+
+.header-logo {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 500px;
+  margin: 0 20px;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+}
+
+.header-nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.header-nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.user-icon {
+  background-color: white;
+  color: var(--dark-brown);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 40px;
+  gap: 20px;
+}
+
+.hero-banner {
+  width: 80%;
+  height: 500px;
+  border-radius: 10px;
+  overflow: hidden; /* Mantiene los bordes redondeados */
+  display: flex;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.arrow-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--dark-brown);
+  cursor: pointer;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.dot {
+  width: 30px;
+  height: 8px;
+  background-color: #C4A499;
+  border-radius: 5px;
+}
+.dot.active {
+  background-color: var(--dark-brown);
+}
+
+/* --- Featured Section --- */
+.featured-section {
+  text-align: center;
+  padding: 20px 40px 60px;
+}
+
+.featured-title {
+  color: var(--dark-brown);
+  font-size: 2.2rem; /* Puedes ajustar el tamaño si Belleza se ve más pequeña */
+  margin-bottom: 5px;
+  font-family: 'Belleza', sans-serif; /* Nueva fuente */
+  font-weight: normal; 
+}
+
+.featured-subtitle {
+  color: var(--text-dark);
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+  font-family: 'Belleza', sans-serif; /* Nueva fuente */
+}
+
+/* Container marrón claro para las tarjetas */
+.grid-container {
+  background-color: var(--light-brown);
+  border-radius: 20px;
+  padding: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* --- Cards --- */
+.card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+  font-family: 'Bellota', display; /* Aplica Bellota a toda la tarjeta por defecto */
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.img-container {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden; /* Esto evita que la imagen ampliada invada los márgenes */
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease-in-out; /* Suaviza el zoom */
+}
+
+/* Efecto hover: Amplía la imagen al pasar el mouse por la tarjeta */
+.card:hover .card-img {
+  transform: scale(1.12); /* Aumenta el tamaño al 112% */
+}
+
+.card-content {
+  padding: 15px 5px 5px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.card-title {
+  color: var(--dark-brown);
+  font-size: 1.4rem;
+  margin: 0 0 10px 0;
+  font-family: 'Bellota', display; /* Refuerza Bellota en el título */
+  font-weight: 700;
+}
+
+.card-desc {
+  font-size: 0.9rem;
+  color: #8F5E4F; /* Color marrón claro actualizado */
+  margin-bottom: 15px;
+  min-height: 40px;
+  font-family: 'Bellota Text', display; /* Fuente específica para la descripción */
+  line-height: 1.4;
+}
+
+/* --- Card Footer Layout --- */
+.card-footer {
+  display: flex;
+  flex-direction: column; /* Apila los elementos verticalmente (tags arriba, botón abajo) */
+  gap: 15px; /* Espacio entre la fila de especialidades y el botón */
+  margin-top: auto; /* Empuja todo el bloque al fondo de la tarjeta */
+  width: 100%;
+}
+
+/* --- Fila de Especialidades --- */
+.tags {
+  display: flex;
+  align-items: center; /* Centra el texto y los tags verticalmente */
+  gap: 8px;
+  width: 100%;
+  flex-wrap: nowrap; /* Obliga a que todo se mantenga en una sola línea */
+  overflow-x: auto; /* Si la pantalla es diminuta, permitirá deslizar sin dañar el diseño */
+  scrollbar-width: none; /* Oculta la barra de scroll (Firefox) */
+}
+
+/* Oculta la barra de scroll (Chrome, Safari, Edge) */
+.tags::-webkit-scrollbar {
+  display: none; 
+}
+
+/* Evita que el texto "Especialidades:" se parta o encoja */
+.tags > span:first-child {
+  white-space: nowrap;
+  flex-shrink: 0; 
+  font-family: 'Bellota Text', display; /* Para mantener consistencia con tu descripción */
+  color: #55261C; /* Ajustado al marrón oscuro según tu imagen */
+  font-size: 0.95rem;
+}
+
+/* --- Estilos de cada Tag --- */
+.tag {
+  background-color: #8F5E4F; /* Marrón claro */
+  color: white;
+  padding: 6px 14px;
+  border-radius: 8px; /* En tu imagen se ven menos redondeados, un borde de 8px queda bien */
+  font-size: 0.85rem;
+  font-family: 'Bellota', display;
+  white-space: nowrap; /* Garantiza que el texto del tag ("Tortas") no baje de línea */
+  flex-shrink: 0; /* Evita que el tag se comprima si hay poco espacio */
+}
+
+/* --- Botón Ver Catálogo --- */
+.btn-catalogo {
+  background-color: #55261C; /* Marrón oscuro */
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px; /* Bordes a juego con los tags */
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: 'Bellota', display;
+  align-self: flex-end; /* Esta propiedad es la que envía el botón a la derecha en su propia fila */
+  transition: opacity 0.2s ease;
+}
+
+.btn-catalogo:hover {
+  opacity: 0.9;
+}
+
+/* --- Footer --- */
+.footer {
+  background-color: var(--dark-brown);
+  color: white;
+  padding: 50px 40px 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-col h4 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+}
+
+.footer-col a {
+  color: #D3B8AE;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.footer-bottom {
+  width: 100%;
+  text-align: left;
+  margin-top: 30px;
+  font-size: 0.8rem;
+  color: #C4A499;
+}

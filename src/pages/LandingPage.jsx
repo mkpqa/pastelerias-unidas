@@ -1,49 +1,101 @@
-import { useNavigate } from 'react-router-dom'
+import React from 'react';
+import '../css/Home.css';
+import NavBar from '../components/NavBar'; // Asumiendo que NavBar está en el mismo nivel
 
-export default function LandingPage() {
-  const navigate = useNavigate()
+// Importación de imágenes desde la carpeta assets
+import PromocionPasteleriasUnidas from '../assets/PromocionPasteleriasUnidas.png';
+import PasteleriaDestacada1 from '../assets/PasteleriaDestacada1.png';
+import PasteleriaDestacada2 from '../assets/TiendaDestacada2.png';
+import PasteleriaDestacada3 from '../assets/TiendaDestacada3.png';
+import PasteleriaDestacada4 from '../assets/PasteleriaDescatada4.png';
 
+const bakeriesData = [
+  {
+    id: 1,
+    name: 'Dulce Herencia',
+    desc: 'Una propuesta elegante que fusiona técnicas de alta pastelería con sabores intensos.',
+    tags: ['Tortas de autor', 'Gourmet'],
+    imgUrl: PasteleriaDestacada1 
+  },
+  {
+    id: 2,
+    name: 'Tradición Limeña',
+    desc: 'El sabor de casa llevado al siguiente nivel. Recetas más queridas de la repostería peruana.',
+    tags: ['Criollo', 'Tortas'],
+    imgUrl: PasteleriaDestacada2
+  },
+  {
+    id: 3,
+    name: 'Bake & Art Studio',
+    desc: 'Donde el diseño y el azúcar se encuentran. Galletas y pasteles temáticos artísticos.',
+    tags: ['Creativo', 'Galletas'],
+    imgUrl: PasteleriaDestacada3
+  },
+  {
+    id: 4,
+    name: 'Vitalis Sweet',
+    desc: 'Postres con ingredientes 100% naturales, libres de productos de origen animal.',
+    tags: ['Vegana', 'Saludable'],
+    imgUrl: PasteleriaDestacada4
+  }
+];
+
+const Home = () => {
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem' }}>
-      <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-        <h1 style={{ fontSize: '28px', fontStyle: 'italic', color: '#3a1a1a', marginBottom: '1rem' }}>
-          ¡Únete a Pastelerías Unidas!
-        </h1>
-        <p style={{ color: '#6b4c4c', maxWidth: '500px', margin: '0 auto 2rem', lineHeight: '1.7' }}>
-          Conectamos a los mejores talentos artesanales con los amantes de la buena repostería. ¿Qué te trae hoy por aquí?
-        </p>
+    <div className="home-container">
+
+      {/* Hero / Banner modificado para ser una imagen */}
+      <section className="hero-section">
+        <button className="arrow-btn">←</button>
+        <div className="hero-banner">
+          <img 
+            src={PromocionPasteleriasUnidas} 
+            alt="Promoción 2x1 del mes" 
+            className="banner-img" 
+          />
+        </div>
+        <button className="arrow-btn">→</button>
+      </section>
+      
+      <div className="carousel-dots">
+        <div className="dot active"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', maxWidth: '700px', margin: '0 auto' }}>
-        <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e8d5cc', overflow: 'hidden' }}>
-          <div style={{ height: '160px', background: '#fde8d8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '64px' }}>👨‍🍳</div>
-          <div style={{ padding: '1.2rem' }}>
-            <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#3a1a1a' }}>Registra tu negocio</h3>
-            <p style={{ fontSize: '13px', color: '#6b4c4c', textAlign: 'center', marginBottom: '12px', lineHeight: '1.6' }}>
-              Digitaliza tu negocio hoy. Obtén tu propia página web y empieza a recibir pagos de forma segura.
-            </p>
-            <button onClick={() => navigate('/registro')} style={{ width: '100%', background: '#8b2f5f', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '13px' }}>
-              Crear mi tienda
-            </button>
-          </div>
+      {/* Featured Section */}
+      <section className="featured-section">
+        <h2 className="featured-title">PASTELERIAS DESTACADAS</h2>
+        <p className="featured-subtitle">Descubre a nuestros talentos artesanales de la semana</p>
+        
+        <div className="grid-container">
+          {bakeriesData.map((bakery) => (
+            <div className="card" key={bakery.id}>
+              {/* Contenedor clave con overflow: hidden */}
+              <div className="img-container">
+                <img src={bakery.imgUrl} alt={bakery.name} className="card-img" />
+              </div>
+              
+              <div className="card-content">
+                <h3 className="card-title">{bakery.name}</h3>
+                <p className="card-desc">{bakery.desc}</p>
+                <div className="card-footer">
+                  <div className="tags">
+                    <span style={{fontSize: '0.8rem', color: '#666', marginRight: '5px'}}>Especialidades:</span>
+                    {bakery.tags.map((tag, index) => (
+                      <span className="tag" key={index}>{tag}</span>
+                    ))}
+                  </div>
+                  <button className="btn-catalogo">Ver catálogo &gt;&gt;</button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-
-        <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e8d5cc', overflow: 'hidden' }}>
-          <div style={{ height: '160px', background: '#fdf0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '64px' }}>🎂</div>
-          <div style={{ padding: '1.2rem' }}>
-            <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#3a1a1a' }}>Encuentra tu postre ideal</h3>
-            <p style={{ fontSize: '13px', color: '#6b4c4c', textAlign: 'center', marginBottom: '12px', lineHeight: '1.6' }}>
-              Explora nuestra red de talentos locales. Descubre tortas, postres veganos y bocaditos temáticos.
-            </p>
-            <button onClick={() => navigate('/marketplace')} style={{ width: '100%', background: '#8b2f5f', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '13px' }}>
-              Ver pastelerías
-            </button>
-            <button onClick={() => navigate('/auth')} style={{ width: '100%', background: '#a8d5a2', color: '#2d5a27', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '13px', marginTop: '8px' }}>
-              Crear mi usuario
-            </button>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
-  )
-}
+  );
+};
+
+export default Home;
