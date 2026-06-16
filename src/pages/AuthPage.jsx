@@ -97,7 +97,7 @@ export default function AuthPage() {
       )}
 
       <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e8d5cc', display: 'grid', gridTemplateColumns: '1fr 1fr', overflow: 'hidden' }}>
-        
+
         {/* ============================================ */}
         {/* Columna Izquierda: Registro de Comprador */}
         {/* ============================================ */}
@@ -156,7 +156,7 @@ export default function AuthPage() {
             onClick={() => navigate('/registro')}
             style={{ width: '100%', background: '#a8d5a2', color: '#2d5a27', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
           >
-            <ChefHat size={14} /> Soy pastelero — Registrar mi tienda
+            <ChefHat size={14} /> Tengo mi tienda - Registrar
           </button>
         </form>
 
