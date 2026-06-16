@@ -176,13 +176,13 @@ export const adminAPI = {
 
   // Banners / Flyers (Vendedor)
   subirMiFlyer: (datos) =>
-    fetchAPI('/admin/banners/mi-flyer', {
+    fetchAPI('/admin/promociones/mi-flyer', {
       method: 'POST',
       body: datos, // FormData
     }),
-  obtenerMisFlyers: () => fetchAPI('/admin/banners/mis-flyers'),
+  obtenerMisFlyers: () => fetchAPI('/admin/promociones/mis-flyers'),
   eliminarMiFlyer: (id) =>
-    fetchAPI(`/admin/banners/mi-flyer/${id}`, { method: 'DELETE' }),
+    fetchAPI(`/admin/promociones/mi-flyer/${id}`, { method: 'DELETE' }),
 
   // Banners públicos (marketplace)
   obtenerBannersPublicos: () => fetchAPI('/admin/banners/publicos'),

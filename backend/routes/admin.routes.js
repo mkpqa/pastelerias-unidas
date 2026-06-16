@@ -30,9 +30,9 @@ router.get('/banners/publicos', obtenerBannersPublicos);
 // ============================================
 // Rutas del Vendedor (sube sus propios flyers)
 // ============================================
-router.post('/banners/mi-flyer', protegerRuta, autorizarRoles('vendedor'), uploadFlyer.single('imagen'), subirMiFlyer);
-router.get('/banners/mis-flyers', protegerRuta, autorizarRoles('vendedor'), obtenerMisFlyers);
-router.delete('/banners/mi-flyer/:id', protegerRuta, autorizarRoles('vendedor'), eliminarMiFlyer);
+router.post('/promociones/mi-flyer', protegerRuta, autorizarRoles('vendedor'), uploadFlyer.single('imagen'), subirMiFlyer);
+router.get('/promociones/mis-flyers', protegerRuta, autorizarRoles('vendedor'), obtenerMisFlyers);
+router.delete('/promociones/mi-flyer/:id', protegerRuta, autorizarRoles('vendedor'), eliminarMiFlyer);
 
 // ============================================
 // Rutas del Admin

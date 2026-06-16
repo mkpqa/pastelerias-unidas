@@ -4,16 +4,16 @@ const { subirImagenASupabase } = require('../config/storage');
 // Helpers para transformar la tienda de Supabase al formato que espera el Frontend
 const formatearTienda = (tienda) => {
   if (!tienda) return null;
-  
+
   // Mapeamos los campos de la base de datos (snake_case) a lo que espera el Frontend (camelCase)
-  const t = { 
-    ...tienda, 
+  const t = {
+    ...tienda,
     _id: tienda.id,
     metodosPago: tienda.metodos_pago,
     ordenMarketplace: tienda.orden_marketplace,
     createdAt: tienda.created_at
   };
-  
+
   // Adaptar tienda_diseno a personalizacion
   let diseno = null;
   if (Array.isArray(t.tienda_diseno)) {
@@ -32,7 +32,7 @@ const formatearTienda = (tienda) => {
   } else {
     t.personalizacion = {};
   }
-  
+
   // Mapear propietario a la estructura poblada si existe
   if (t.usuarios) {
     t.propietario = { _id: t.usuarios.id, nombre: t.usuarios.nombre };
@@ -100,7 +100,7 @@ const actualizarMiTienda = async (req, res) => {
     if (req.body.especialidad !== undefined) camposTienda.especialidad = req.body.especialidad;
     // Si necesitas soportar campos extra como metodos_pago
     if (req.body.metodosPago !== undefined) camposTienda.metodos_pago = req.body.metodosPago;
-    
+
     if (Object.keys(camposTienda).length > 0) {
       await supabase.from('tiendas').update(camposTienda).eq('id', tiendaActual.id);
     }
@@ -132,7 +132,7 @@ const actualizarMiTienda = async (req, res) => {
       .select('*, tienda_diseno(*)')
       .eq('id', tiendaActual.id)
       .single();
-    
+
     res.json({
       exito: true,
       mensaje: 'Tienda actualizada correctamente.',
@@ -158,7 +158,7 @@ const obtenerTiendasPublicas = async (req, res) => {
       .select('*, tienda_diseno(*)')
       .eq('activa', true)
       .order('orden_marketplace', { ascending: true })
-      .order('fecha_creacion', { ascending: false });
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
 
@@ -170,11 +170,9 @@ const obtenerTiendasPublicas = async (req, res) => {
       tiendas: tiendasFormateadas,
     });
   } catch (error) {
-    console.error('obtenerTiendasPublicas error:', error);
     res.status(500).json({
       exito: false,
       mensaje: 'Error al obtener las tiendas.',
-      detalle: error.message,
     });
   }
 };
@@ -228,7 +226,7 @@ const subirLogoTienda = async (req, res) => {
 
     // Subir imagen a Supabase Storage
     const rutaImagen = await subirImagenASupabase(req.file.buffer, req.file.originalname, 'logos');
-    
+
     // Obtener la tienda actual
     const { data: tiendaActual } = await supabase
       .from('tiendas')

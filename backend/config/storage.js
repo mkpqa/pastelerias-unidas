@@ -13,7 +13,7 @@ const subirImagenASupabase = async (fileBuffer, originalName, folder = 'misc') =
   // Generar un nombre único para evitar colisiones
   const extension = path.extname(originalName) || '.png';
   const fileName = `${folder}/${crypto.randomUUID()}${extension}`;
-  
+
   // Extraer mimetype simple basado en la extensión (opcional, Supabase lo detecta)
   let contentType = 'image/jpeg';
   if (extension.toLowerCase() === '.png') contentType = 'image/png';
@@ -27,20 +27,22 @@ const subirImagenASupabase = async (fileBuffer, originalName, folder = 'misc') =
       contentType,
       upsert: false
     });
-    
+
   if (error) {
     console.error('Error al subir imagen a Supabase:', error);
     throw new Error('No se pudo subir la imagen al servidor');
   }
-  
+
   // Obtener la URL pública del archivo subido
   const { data: publicUrlData } = supabase.storage
     .from('pastelerias_fotos')
     .getPublicUrl(fileName);
-    
+
   return publicUrlData.publicUrl;
 };
 
 module.exports = {
   subirImagenASupabase
+};
+subirImagenASupabase
 };

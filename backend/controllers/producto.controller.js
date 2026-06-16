@@ -1,18 +1,13 @@
-const supabase = require('../config/db');
+const Producto = require('../models/Producto');
 const { subirImagenASupabase } = require('../config/storage');
 
 /**
- * Helper: Obtener el tienda_id del vendedor logueado desde Supabase
+ * Controlador: Productos
+ *
+ * CRUD completo para los productos de una tienda.
+ * Todas las operaciones filtran por tienda_id (multitenancy).
+ * El tienda_id se obtiene del JWT a través del middleware protegerRuta.
  */
-const obtenerTiendaId = async (usuarioId) => {
-  const { data, error } = await supabase
-    .from('tiendas')
-    .select('id')
-    .eq('usuario_id', usuarioId)
-    .single();
-  if (error || !data) return null;
-  return data.id;
-};
 
 // ============================================
 // @desc    Crear un nuevo producto
@@ -21,39 +16,37 @@ const obtenerTiendaId = async (usuarioId) => {
 // ============================================
 const crearProducto = async (req, res) => {
   try {
-    console.log('crearProducto - usuario:', req.usuario?.id);
-    const tiendaId = await obtenerTiendaId(req.usuario.id);
-    console.log('crearProducto - tiendaId:', tiendaId);
+    const { nombre, descripcion, precio, categoria, variaciones, imagen } = req.body;
 
-    if (!tiendaId) {
-      return res.status(404).json({ exito: false, mensaje: 'El producto debe pertenecer a una tienda' });
-    }
-
-    const { nombre, descripcion, precio, disponible, categoria } = req.body;
-
-    const { data: producto, error } = await supabase
-      .from('productos')
-      .insert([{
-        tienda_id: tiendaId,
-        nombre,
-        descripcion: descripcion || null,
-        precio: parseFloat(precio),
-        disponible: disponible !== undefined ? disponible : true,
-        categoria: categoria || 'General',
-      }])
-      .select()
-      .single();
-
-    if (error) throw error;
+    const producto = await Producto.create({
+      tienda: req.tiendaId,
+      nombre,
+      descripcion,
+      precio,
+      categoria,
+      variaciones: variaciones || [],
+      imagen: imagen || '',
+    });
 
     res.status(201).json({
       exito: true,
       mensaje: 'Producto creado exitosamente.',
-      producto: formatearProducto(producto),
+      producto,
     });
   } catch (error) {
-    console.error('Error crearProducto:', error);
-    res.status(500).json({ exito: false, mensaje: 'Error al crear el producto.', detalle: error.message });
+    // Errores de validación de Mongoose
+    if (error.name === 'ValidationError') {
+      const mensajes = Object.values(error.errors).map((e) => e.message);
+      return res.status(400).json({
+        exito: false,
+        mensaje: mensajes.join('. '),
+      });
+    }
+
+    res.status(500).json({
+      exito: false,
+      mensaje: 'Error al crear el producto.',
+    });
   }
 };
 
@@ -64,27 +57,50 @@ const crearProducto = async (req, res) => {
 // ============================================
 const obtenerMisProductos = async (req, res) => {
   try {
-    const tiendaId = await obtenerTiendaId(req.usuario.id);
-    if (!tiendaId) {
-      return res.json({ exito: true, cantidad: 0, productos: [] });
-    }
-
-    const { data: productos, error } = await supabase
-      .from('productos')
-      .select('*')
-      .eq('tienda_id', tiendaId)
-      .order('fecha_creacion', { ascending: false });
-
-    if (error) throw error;
+    const productos = await Producto.find({ tienda: req.tiendaId })
+      .sort({ orden: 1, createdAt: -1 });
 
     res.json({
       exito: true,
       cantidad: productos.length,
-      productos: productos.map(formatearProducto),
+      productos,
     });
   } catch (error) {
-    console.error('Error obtenerMisProductos:', error);
-    res.status(500).json({ exito: false, mensaje: 'Error al obtener los productos.' });
+    res.status(500).json({
+      exito: false,
+      mensaje: 'Error al obtener los productos.',
+    });
+  }
+};
+
+// ============================================
+// @desc    Obtener un producto por ID (verificando que sea de mi tienda)
+// @route   GET /api/productos/:id
+// @access  Privado (vendedor)
+// ============================================
+const obtenerProductoPorId = async (req, res) => {
+  try {
+    const producto = await Producto.findOne({
+      _id: req.params.id,
+      tienda: req.tiendaId,
+    });
+
+    if (!producto) {
+      return res.status(404).json({
+        exito: false,
+        mensaje: 'Producto no encontrado.',
+      });
+    }
+
+    res.json({
+      exito: true,
+      producto,
+    });
+  } catch (error) {
+    res.status(500).json({
+      exito: false,
+      mensaje: 'Error al obtener el producto.',
+    });
   }
 };
 
@@ -95,41 +111,50 @@ const obtenerMisProductos = async (req, res) => {
 // ============================================
 const actualizarProducto = async (req, res) => {
   try {
-    const tiendaId = await obtenerTiendaId(req.usuario.id);
-    if (!tiendaId) {
-      return res.status(404).json({ exito: false, mensaje: 'Tienda no encontrada.' });
-    }
+    const camposPermitidos = [
+      'nombre', 'descripcion', 'precio', 'categoria',
+      'variaciones', 'imagen', 'disponible', 'orden',
+      'recomendado', 'enPromocion', 'precioAnterior',
+    ];
 
-    const camposPermitidos = ['nombre', 'descripcion', 'precio', 'disponible', 'categoria', 'recomendado', 'en_promocion', 'precio_anterior'];
     const actualizaciones = {};
     camposPermitidos.forEach((campo) => {
       if (req.body[campo] !== undefined) {
-        actualizaciones[campo] = campo === 'precio' || campo === 'precio_anterior'
-          ? parseFloat(req.body[campo])
-          : req.body[campo];
+        actualizaciones[campo] = req.body[campo];
       }
     });
 
-    const { data: producto, error } = await supabase
-      .from('productos')
-      .update(actualizaciones)
-      .eq('id', req.params.id)
-      .eq('tienda_id', tiendaId)
-      .select()
-      .single();
+    const producto = await Producto.findOneAndUpdate(
+      { _id: req.params.id, tienda: req.tiendaId }, // Multitenancy: solo mi tienda
+      actualizaciones,
+      { new: true, runValidators: true }
+    );
 
-    if (error || !producto) {
-      return res.status(404).json({ exito: false, mensaje: 'Producto no encontrado.' });
+    if (!producto) {
+      return res.status(404).json({
+        exito: false,
+        mensaje: 'Producto no encontrado.',
+      });
     }
 
     res.json({
       exito: true,
       mensaje: 'Producto actualizado correctamente.',
-      producto: formatearProducto(producto),
+      producto,
     });
   } catch (error) {
-    console.error('Error actualizarProducto:', error);
-    res.status(500).json({ exito: false, mensaje: 'Error al actualizar el producto.' });
+    if (error.name === 'ValidationError') {
+      const mensajes = Object.values(error.errors).map((e) => e.message);
+      return res.status(400).json({
+        exito: false,
+        mensaje: mensajes.join('. '),
+      });
+    }
+
+    res.status(500).json({
+      exito: false,
+      mensaje: 'Error al actualizar el producto.',
+    });
   }
 };
 
@@ -140,80 +165,79 @@ const actualizarProducto = async (req, res) => {
 // ============================================
 const eliminarProducto = async (req, res) => {
   try {
-    const tiendaId = await obtenerTiendaId(req.usuario.id);
-    if (!tiendaId) {
-      return res.status(404).json({ exito: false, mensaje: 'Tienda no encontrada.' });
+    const producto = await Producto.findOneAndDelete({
+      _id: req.params.id,
+      tienda: req.tiendaId, // Multitenancy: solo mi tienda
+    });
+
+    if (!producto) {
+      return res.status(404).json({
+        exito: false,
+        mensaje: 'Producto no encontrado.',
+      });
     }
 
-    const { error } = await supabase
-      .from('productos')
-      .delete()
-      .eq('id', req.params.id)
-      .eq('tienda_id', tiendaId);
-
-    if (error) throw error;
-
-    res.json({ exito: true, mensaje: 'Producto eliminado correctamente.' });
+    res.json({
+      exito: true,
+      mensaje: 'Producto eliminado correctamente.',
+    });
   } catch (error) {
-    console.error('Error eliminarProducto:', error);
-    res.status(500).json({ exito: false, mensaje: 'Error al eliminar el producto.' });
+    res.status(500).json({
+      exito: false,
+      mensaje: 'Error al eliminar el producto.',
+    });
   }
 };
 
 // ============================================
-// @desc    Obtener productos de una tienda (público)
+// @desc    Obtener productos de una tienda (PÚBLICO — marketplace)
 // @route   GET /api/productos/tienda/:tiendaId
 // @access  Público
 // ============================================
 const obtenerProductosTienda = async (req, res) => {
   try {
-    const { data: productos, error } = await supabase
-      .from('productos')
-      .select('*')
-      .eq('tienda_id', req.params.tiendaId)
-      .eq('disponible', true)
-      .order('fecha_creacion', { ascending: false });
-
-    if (error) throw error;
+    const productos = await Producto.find({
+      tienda: req.params.tiendaId,
+      disponible: true,
+    }).sort({ orden: 1, createdAt: -1 });
 
     res.json({
       exito: true,
       cantidad: productos.length,
-      productos: productos.map(formatearProducto),
+      productos,
     });
   } catch (error) {
-    console.error('Error obtenerProductosTienda:', error);
-    res.status(500).json({ exito: false, mensaje: 'Error al obtener los productos.' });
+    res.status(500).json({
+      exito: false,
+      mensaje: 'Error al obtener los productos.',
+    });
   }
 };
 
 // ============================================
-// @desc    Detalle público de un producto
+// @desc    Obtener un producto público por ID (para la página de detalle)
 // @route   GET /api/productos/:id/publico
 // @access  Público
 // ============================================
 const obtenerProductoPublico = async (req, res) => {
   try {
-    const { data: producto, error } = await supabase
-      .from('productos')
-      .select('*, tiendas(id, nombre, slug, especialidad, ubicacion)')
-      .eq('id', req.params.id)
-      .eq('disponible', true)
-      .single();
+    const producto = await Producto.findOne({
+      _id: req.params.id,
+      disponible: true,
+    }).populate('tienda', 'nombre slug personalizacion ubicacion especialidad');
 
-    if (error || !producto) {
+    if (!producto) {
       return res.status(404).json({ exito: false, mensaje: 'Producto no encontrado.' });
     }
 
-    res.json({ exito: true, producto: formatearProducto(producto) });
+    res.json({ exito: true, producto });
   } catch (error) {
-    console.error('Error obtenerProductoPublico:', error);
     res.status(500).json({ exito: false, mensaje: 'Error al obtener el producto.' });
   }
 };
 
 // ============================================
-// @desc    Subir imagen de un producto
+// @desc    Subir / reemplazar imagen de un producto
 // @route   POST /api/productos/:id/imagen
 // @access  Privado (vendedor)
 // ============================================
@@ -223,52 +247,33 @@ const subirImagenProducto = async (req, res) => {
       return res.status(400).json({ exito: false, mensaje: 'No se recibió ninguna imagen.' });
     }
 
-    const tiendaId = await obtenerTiendaId(req.usuario.id);
-    if (!tiendaId) {
-      return res.status(404).json({ exito: false, mensaje: 'Tienda no encontrada.' });
-    }
+    const rutaImagen = await subirImagenASupabase(req.file.buffer, req.file.originalname, 'productos');
 
-    const imagenUrl = await subirImagenASupabase(req.file.buffer, req.file.originalname, 'productos');
+    const producto = await Producto.findOneAndUpdate(
+      { _id: req.params.id, tienda: req.tiendaId },
+      { imagen: rutaImagen },
+      { new: true }
+    );
 
-    const { data: producto, error } = await supabase
-      .from('productos')
-      .update({ imagen_url: imagenUrl })
-      .eq('id', req.params.id)
-      .eq('tienda_id', tiendaId)
-      .select()
-      .single();
-
-    if (error || !producto) {
+    if (!producto) {
       return res.status(404).json({ exito: false, mensaje: 'Producto no encontrado.' });
     }
 
-    res.json({ exito: true, imagen: imagenUrl, producto: formatearProducto(producto) });
+    res.json({ exito: true, imagen: rutaImagen, producto });
   } catch (error) {
-    console.error('Error subirImagenProducto:', error);
     res.status(500).json({ exito: false, mensaje: 'Error al subir la imagen.' });
   }
-};
-
-// ============================================
-// Helper: Normalizar campos para el frontend
-// ============================================
-const formatearProducto = (p) => {
-  if (!p) return null;
-  return {
-    ...p,
-    _id: p.id,
-    imagen: p.imagen_url || '',
-    tienda: p.tienda_id,
-  };
 };
 
 module.exports = {
   crearProducto,
   obtenerMisProductos,
-  obtenerProductoPorId: obtenerMisProductos,
+  obtenerProductoPorId,
   actualizarProducto,
   eliminarProducto,
   obtenerProductosTienda,
   obtenerProductoPublico,
   subirImagenProducto,
+};
+
 };
