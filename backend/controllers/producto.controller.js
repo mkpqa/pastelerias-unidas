@@ -24,7 +24,13 @@ const obtenerTiendaId = async (usuarioId) => {
 // ============================================
 const crearProducto = async (req, res) => {
   try {
+    console.log('=== crearProducto ===');
+    console.log('req.usuario:', JSON.stringify(req.usuario));
+    console.log('usuario.id:', req.usuario?.id);
+
     const tiendaId = await obtenerTiendaId(req.usuario.id);
+    console.log('tiendaId encontrado:', tiendaId);
+
     if (!tiendaId) {
       return res.status(404).json({ exito: false, mensaje: 'El producto debe pertenecer a una tienda' });
     }
