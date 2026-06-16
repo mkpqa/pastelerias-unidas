@@ -1,20 +1,18 @@
-const mongoose = require('mongoose');
+const { createClient } = require('@supabase/supabase-js');
 
-/**
- * Conecta a la base de datos MongoDB.
- * Usa la URI definida en la variable de entorno MONGO_URI.
- * Si la conexión falla, el proceso se cierra con código 1.
- */
-const conectarDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+// Verificamos que las variables de entorno existan
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
-    console.log(`✅ MongoDB conectado: ${conn.connection.host}`);
-    console.log(`📦 Base de datos: ${conn.connection.name}`);
-  } catch (error) {
-    console.error(`❌ Error de conexión a MongoDB: ${error.message}`);
-    process.exit(1);
-  }
-};
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Error: Faltan credenciales de Supabase en el archivo .env');
+  process.exit(1);
+}
 
-module.exports = conectarDB;
+// Inicializamos el cliente de Supabase
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+console.log('✅ Cliente de Supabase inicializado y listo para usar');
+
+// Exportamos la conexión para usarla en los controladores
+module.exports = supabase;

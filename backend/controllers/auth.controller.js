@@ -1,71 +1,66 @@
-const Usuario = require('../models/Usuario');
-const Tienda = require('../models/Tienda');
+const supabase = require('../config/db');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 /**
- * Controller: Autenticación
- * 
- * Maneja registro (comprador y vendedor), login, y perfil.
- * El JWT generado incluye el tienda_id para vendedores,
- * lo que permite el aislamiento multitenancy en toda la app.
+ * Controller: Autenticación (Adaptado a Supabase PostgreSQL)
  */
 
 // ============================================
 // Helper: Enviar respuesta con token
 // ============================================
 const enviarTokenRespuesta = (usuario, statusCode, res) => {
-  const token = usuario.generarToken();
+  // Generamos el token manualmente
+  const token = jwt.sign(
+    { id: usuario.id, rol: usuario.rol },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRE }
+  );
+
+  // Eliminamos el hash de la contraseña antes de enviar la respuesta por seguridad
+  delete usuario.password_hash;
 
   res.status(statusCode).json({
     exito: true,
     token,
-    usuario: {
-      id: usuario._id,
-      nombre: usuario.nombre,
-      email: usuario.email,
-      rol: usuario.rol,
-      telefono: usuario.telefono,
-      tienda: usuario.tienda,
-    },
+    usuario,
   });
 };
 
 // ============================================
 // POST /api/auth/registro/comprador
-// Registro de un comprador (cliente final)
+// Registro de un comprador (rol: 'cliente')
 // ============================================
 exports.registroComprador = async (req, res, next) => {
   try {
-    const { nombre, email, password, telefono } = req.body;
+    const { nombre, email, password } = req.body;
 
-    // Verificar si el email ya existe
-    const existente = await Usuario.findOne({ email });
+    // 1. Verificar si el email ya existe
+    const { data: existente } = await supabase
+      .from('usuarios')
+      .select('id')
+      .eq('email', email)
+      .single();
+
     if (existente) {
-      return res.status(400).json({
-        exito: false,
-        mensaje: 'Ya existe una cuenta con este correo electrónico.',
-      });
+      return res.status(400).json({ exito: false, mensaje: 'Ya existe una cuenta con este correo.' });
     }
 
-    // Crear usuario con rol comprador
-    const usuario = await Usuario.create({
-      nombre,
-      email,
-      password,
-      telefono,
-      rol: 'comprador',
-    });
+    // 2. Encriptar contraseña
+    const salt = await bcrypt.genSalt(10);
+    const password_hash = await bcrypt.hash(password, salt);
 
-    enviarTokenRespuesta(usuario, 201, res);
+    // 3. Crear usuario (PostgreSQL devolverá el usuario creado gracias al .select())
+    const { data: nuevoUsuario, error } = await supabase
+      .from('usuarios')
+      .insert([{ nombre, email, password_hash, rol: 'cliente' }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    enviarTokenRespuesta(nuevoUsuario, 201, res);
   } catch (error) {
-    // Errores de validación de Mongoose
-    if (error.name === 'ValidationError') {
-      const mensajes = Object.values(error.errors).map((e) => e.message);
-      return res.status(400).json({
-        exito: false,
-        mensaje: 'Error de validación',
-        errores: mensajes,
-      });
-    }
     next(error);
   }
 };
@@ -73,83 +68,68 @@ exports.registroComprador = async (req, res, next) => {
 // ============================================
 // POST /api/auth/registro/vendedor
 // Registro completo del vendedor + su tienda
-// (Corresponde al Wizard de 4 pasos del frontend)
 // ============================================
 exports.registroVendedor = async (req, res, next) => {
   try {
     const {
-      // Paso 1: Credenciales del usuario
-      nombre,
-      email,
-      password,
-      // Paso 2: Datos del negocio
-      nombreTienda,
-      descripcion,
-      ubicacion,
-      telefonoTienda,
-      especialidad,
-      // Paso 3: Personalización visual
-      logo,
-      colorPrimario,
-      colorSecundario,
-      plantilla,
-      // Paso 4: Configuración de pagos
-      metodosPago,
+      nombre, email, password, // Usuario
+      nombreTienda, ubicacion, telefonoTienda, especialidad, metodosPago, // Tienda
+      plantilla, colorPrimario, colorSecundario, logo // Diseño
     } = req.body;
 
-    // Verificar si el email ya existe
-    const existente = await Usuario.findOne({ email });
+    // 1. Verificar email
+    const { data: existente } = await supabase.from('usuarios').select('id').eq('email', email).single();
     if (existente) {
-      return res.status(400).json({
-        exito: false,
-        mensaje: 'Ya existe una cuenta con este correo electrónico.',
-      });
+      return res.status(400).json({ exito: false, mensaje: 'Ya existe una cuenta con este correo.' });
     }
 
-    // 1. Crear el usuario vendedor (sin tienda aún)
-    const usuario = await Usuario.create({
-      nombre,
-      email,
-      password,
-      telefono: telefonoTienda,
-      rol: 'vendedor',
-    });
+    // 2. Encriptar contraseña
+    const salt = await bcrypt.genSalt(10);
+    const password_hash = await bcrypt.hash(password, salt);
 
-    // 2. Crear la tienda asociada
-    const tienda = await Tienda.create({
-      propietario: usuario._id,
-      nombre: nombreTienda,
-      descripcion: descripcion || '',
-      ubicacion,
-      telefono: telefonoTienda,
-      especialidad,
-      personalizacion: {
-        logo: logo || '',
-        colorPrimario: colorPrimario || '#d4687a',
-        colorSecundario: colorSecundario || '#fdf0eb',
-        plantilla: plantilla || 'minimalista',
-      },
-      configuracionPagos: {
-        metodosPago: metodosPago || ['yape'],
-        sandboxActivo: true,
-      },
-    });
+    // 3. Crear el usuario vendedor
+    const { data: usuario, error: errUser } = await supabase
+      .from('usuarios')
+      .insert([{ nombre, email, password_hash, rol: 'vendedor' }])
+      .select()
+      .single();
+    if (errUser) throw errUser;
 
-    // 3. Vincular la tienda al usuario
-    usuario.tienda = tienda._id;
-    await usuario.save();
+    // 4. Crear el slug para la tienda (ej: "Dulce Herencia" -> "dulce-herencia")
+    const slug = nombreTienda.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 
-    // 4. Enviar respuesta con token (ya incluye tienda_id)
+    // 5. Crear la tienda
+    const { data: tienda, error: errTienda } = await supabase
+      .from('tiendas')
+      .insert([{
+        usuario_id: usuario.id,
+        nombre: nombreTienda,
+        slug,
+        ubicacion,
+        telefono: telefonoTienda,
+        especialidad,
+        metodos_pago: metodosPago || ['yape'] // Array de Postgres
+      }])
+      .select()
+      .single();
+    if (errTienda) throw errTienda;
+
+    // 6. Crear el diseño de la tienda (relación 1:1)
+    const { error: errDiseno } = await supabase
+      .from('tienda_diseno')
+      .insert([{
+        tienda_id: tienda.id,
+        plantilla: plantilla || 'moderno_grid',
+        color_primario: colorPrimario || '#8F5E4F',
+        color_secundario: colorSecundario || '#F8EFE6',
+        logo_url: logo || null
+      }]);
+    if (errDiseno) throw errDiseno;
+
+    // Agregamos la info de la tienda al objeto de respuesta
+    usuario.tienda = tienda;
     enviarTokenRespuesta(usuario, 201, res);
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const mensajes = Object.values(error.errors).map((e) => e.message);
-      return res.status(400).json({
-        exito: false,
-        mensaje: 'Error de validación',
-        errores: mensajes,
-      });
-    }
     next(error);
   }
 };
@@ -162,40 +142,26 @@ exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Validar que se enviaron ambos campos
     if (!email || !password) {
-      return res.status(400).json({
-        exito: false,
-        mensaje: 'Por favor ingresa email y contraseña.',
-      });
+      return res.status(400).json({ exito: false, mensaje: 'Ingresa email y contraseña.' });
     }
 
-    // Buscar usuario e incluir password (normalmente excluido)
-    const usuario = await Usuario.findOne({ email }).select('+password');
+    // Buscar usuario por email
+    const { data: usuario, error } = await supabase
+      .from('usuarios')
+      .select('*')
+      .eq('email', email)
+      .single();
 
-    if (!usuario) {
-      return res.status(401).json({
-        exito: false,
-        mensaje: 'Credenciales incorrectas.',
-      });
+    if (error || !usuario) {
+      return res.status(401).json({ exito: false, mensaje: 'Credenciales incorrectas.' });
     }
 
-    // Verificar si la cuenta está activa
-    if (!usuario.activo) {
-      return res.status(401).json({
-        exito: false,
-        mensaje: 'Esta cuenta ha sido desactivada.',
-      });
-    }
-
-    // Comparar contraseña
-    const passwordCorrecto = await usuario.compararPassword(password);
+    // Comparar contraseña con bcrypt
+    const passwordCorrecto = await bcrypt.compare(password, usuario.password_hash);
 
     if (!passwordCorrecto) {
-      return res.status(401).json({
-        exito: false,
-        mensaje: 'Credenciales incorrectas.',
-      });
+      return res.status(401).json({ exito: false, mensaje: 'Credenciales incorrectas.' });
     }
 
     enviarTokenRespuesta(usuario, 200, res);
@@ -207,36 +173,36 @@ exports.login = async (req, res, next) => {
 // ============================================
 // GET /api/auth/perfil
 // Obtener perfil del usuario autenticado
-// Ruta protegida — requiere JWT
 // ============================================
 exports.obtenerPerfil = async (req, res, next) => {
   try {
-    const usuario = await Usuario.findById(req.usuario.id).populate('tienda');
+    // Buscar usuario base sin el password_hash
+    const { data: usuario, error } = await supabase
+      .from('usuarios')
+      .select('id, nombre, email, rol, preferencia_sabor, alergias, fecha_registro')
+      .eq('id', req.usuario.id)
+      .single();
 
-    if (!usuario) {
-      return res.status(404).json({
-        exito: false,
-        mensaje: 'Usuario no encontrado.',
-      });
+    if (error || !usuario) {
+      return res.status(404).json({ exito: false, mensaje: 'Usuario no encontrado.' });
     }
 
-    res.status(200).json({
-      exito: true,
-      usuario: {
-        id: usuario._id,
-        nombre: usuario.nombre,
-        email: usuario.email,
-        rol: usuario.rol,
-        telefono: usuario.telefono,
-        tienda: usuario.tienda,
-        createdAt: usuario.createdAt,
-      },
-    });
+    // Si es vendedor, buscar la información de su tienda
+    if (usuario.rol === 'vendedor') {
+      const { data: tienda } = await supabase
+        .from('tiendas')
+        .select('*, tienda_diseno(*)')
+        .eq('usuario_id', usuario.id)
+        .single();
+      
+      if (tienda) usuario.tienda = tienda;
+    }
+
+    res.status(200).json({ exito: true, usuario });
   } catch (error) {
     next(error);
   }
 };
-
 // ============================================
 // PUT /api/auth/actualizar-password
 // Cambiar contraseña del usuario autenticado
@@ -245,35 +211,36 @@ exports.actualizarPassword = async (req, res, next) => {
   try {
     const { passwordActual, passwordNuevo } = req.body;
 
-    // 1. Buscar usuario con password
-    const usuario = await Usuario.findById(req.usuario.id).select('+password');
+    // 1. Buscar usuario
+    const { data: usuario, error } = await supabase
+      .from('usuarios')
+      .select('*')
+      .eq('id', req.usuario.id)
+      .single();
+
+    if (error || !usuario) {
+      return res.status(404).json({ exito: false, mensaje: 'Usuario no encontrado.' });
+    }
 
     // 2. Verificar password actual
-    const esCorrecto = await usuario.compararPassword(passwordActual);
+    const esCorrecto = await bcrypt.compare(passwordActual, usuario.password_hash);
     if (!esCorrecto) {
-      return res.status(401).json({
-        exito: false,
-        mensaje: 'La contraseña actual es incorrecta.',
-      });
+      return res.status(401).json({ exito: false, mensaje: 'La contraseña actual es incorrecta.' });
     }
 
-    // 3. Actualizar y guardar
-    usuario.password = passwordNuevo;
-    await usuario.save();
+    // 3. Encriptar nueva contraseña y actualizar
+    const salt = await bcrypt.genSalt(10);
+    const password_hash_nuevo = await bcrypt.hash(passwordNuevo, salt);
 
-    res.status(200).json({
-      exito: true,
-      mensaje: 'Contraseña actualizada correctamente.',
-    });
+    const { error: errUpdate } = await supabase
+      .from('usuarios')
+      .update({ password_hash: password_hash_nuevo })
+      .eq('id', req.usuario.id);
+
+    if (errUpdate) throw errUpdate;
+
+    res.status(200).json({ exito: true, mensaje: 'Contraseña actualizada correctamente.' });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const mensajes = Object.values(error.errors).map((e) => e.message);
-      return res.status(400).json({
-        exito: false,
-        mensaje: 'Error de validación',
-        errores: mensajes,
-      });
-    }
     next(error);
   }
 };
@@ -286,44 +253,44 @@ exports.actualizarEmail = async (req, res, next) => {
   try {
     const { emailNuevo, passwordActual } = req.body;
 
-    // 1. Buscar usuario con password
-    const usuario = await Usuario.findById(req.usuario.id).select('+password');
+    // 1. Buscar usuario
+    const { data: usuario, error } = await supabase
+      .from('usuarios')
+      .select('*')
+      .eq('id', req.usuario.id)
+      .single();
 
-    // 2. Verificar password actual por seguridad
-    const esCorrecto = await usuario.compararPassword(passwordActual);
+    if (error || !usuario) {
+      return res.status(404).json({ exito: false, mensaje: 'Usuario no encontrado.' });
+    }
+
+    // 2. Verificar password actual
+    const esCorrecto = await bcrypt.compare(passwordActual, usuario.password_hash);
     if (!esCorrecto) {
-      return res.status(401).json({
-        exito: false,
-        mensaje: 'La contraseña actual es incorrecta.',
-      });
+      return res.status(401).json({ exito: false, mensaje: 'La contraseña actual es incorrecta.' });
     }
 
-    // 3. Verificar si el nuevo email ya está en uso por otro usuario
-    const emailExistente = await Usuario.findOne({ email: emailNuevo.toLowerCase() });
-    if (emailExistente && emailExistente._id.toString() !== req.usuario.id) {
-      return res.status(400).json({
-        exito: false,
-        mensaje: 'Este correo electrónico ya está registrado por otro usuario.',
-      });
+    // 3. Verificar si el nuevo email ya está registrado
+    const { data: emailExistente } = await supabase
+      .from('usuarios')
+      .select('id')
+      .eq('email', emailNuevo.toLowerCase())
+      .single();
+
+    if (emailExistente && emailExistente.id !== req.usuario.id) {
+      return res.status(400).json({ exito: false, mensaje: 'Este correo ya está registrado por otro usuario.' });
     }
 
-    // 4. Actualizar y guardar
-    usuario.email = emailNuevo.toLowerCase();
-    await usuario.save();
+    // 4. Actualizar email
+    const { error: errUpdate } = await supabase
+      .from('usuarios')
+      .update({ email: emailNuevo.toLowerCase() })
+      .eq('id', req.usuario.id);
 
-    res.status(200).json({
-      exito: true,
-      mensaje: 'Correo electrónico actualizado correctamente.',
-    });
+    if (errUpdate) throw errUpdate;
+
+    res.status(200).json({ exito: true, mensaje: 'Correo electrónico actualizado correctamente.' });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      const mensajes = Object.values(error.errors).map((e) => e.message);
-      return res.status(400).json({
-        exito: false,
-        mensaje: 'Error de validación',
-        errores: mensajes,
-      });
-    }
     next(error);
   }
 };

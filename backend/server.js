@@ -1,17 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const conectarDB = require('./config/db');
 
 // ============================================
 // Cargar variables de entorno
 // ============================================
 dotenv.config();
-
-// ============================================
-// Conectar a MongoDB
-// ============================================
-conectarDB();
 
 // ============================================
 // Inicializar Express
