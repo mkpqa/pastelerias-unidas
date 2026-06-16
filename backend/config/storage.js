@@ -1,5 +1,5 @@
 const supabase = require('./db');
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 const path = require('path');
 
 /**
@@ -12,7 +12,7 @@ const path = require('path');
 const subirImagenASupabase = async (fileBuffer, originalName, folder = 'misc') => {
   // Generar un nombre único para evitar colisiones
   const extension = path.extname(originalName) || '.png';
-  const fileName = `${folder}/${uuidv4()}${extension}`;
+  const fileName = `${folder}/${crypto.randomUUID()}${extension}`;
   
   // Extraer mimetype simple basado en la extensión (opcional, Supabase lo detecta)
   let contentType = 'image/jpeg';
