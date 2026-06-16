@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { adminAPI } from '../services/api'
+import { Flag, XCircle, CheckCircle, Lightbulb, Image as ImageIcon, Camera, Trash2, Plus } from 'lucide-react'
 
 export default function FlyersManager({ color }) {
   const [flyers, setFlyers] = useState([])
@@ -21,13 +22,13 @@ export default function FlyersManager({ color }) {
       const data = await adminAPI.obtenerMisFlyers()
       setFlyers(data.banners)
     } catch (err) {
-      setMensaje('❌ Error al cargar tus flyers.')
+      setMensaje({ text: 'Error al cargar tus flyers.', type: 'error' })
     } finally {
       setCargando(false)
     }
   }
 
-  const flash = (msg) => { setMensaje(msg); setTimeout(() => setMensaje(''), 3000) }
+  const flash = (text, type = 'success') => { setMensaje({ text, type }); setTimeout(() => setMensaje({ text: '', type: '' }), 3000) }
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0]
@@ -40,7 +41,7 @@ export default function FlyersManager({ color }) {
   const subirFlyer = async (e) => {
     e.preventDefault()
     if (!nuevoFlyer.titulo || !imagenArchivo) {
-      flash('❌ Título e imagen son obligatorios.')
+      flash('Título e imagen son obligatorios.', 'error')
       return
     }
 
@@ -51,14 +52,14 @@ export default function FlyersManager({ color }) {
       formData.append('imagen', imagenArchivo)
 
       await adminAPI.subirMiFlyer(formData)
-      flash('✅ Flyer subido exitosamente. Espera aprobación del administrador si está configurado.')
+      flash('Flyer subido exitosamente. Espera aprobación del administrador si está configurado.')
       setMostrarForm(false)
       setNuevoFlyer({ titulo: '', posicion: 'izquierda' })
       setImagenArchivo(null)
       setPreviewImagen(null)
       cargarFlyers()
     } catch (err) {
-      flash('❌ ' + err.message)
+      flash(err.message, 'error')
     }
   }
 
@@ -66,10 +67,10 @@ export default function FlyersManager({ color }) {
     if (!window.confirm('¿Eliminar este flyer publicitario?')) return
     try {
       await adminAPI.eliminarMiFlyer(id)
-      flash('✅ Flyer eliminado.')
+      flash('Flyer eliminado.')
       cargarFlyers()
     } catch (err) {
-      flash('❌ Error al eliminar.')
+      flash('Error al eliminar.', 'error')
     }
   }
 
@@ -79,21 +80,24 @@ export default function FlyersManager({ color }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <div>
-          <h2 style={{ fontSize: '18px', color: '#3a1a1a', margin: '0 0 4px' }}>🎪 Mis Flyers Publicitarios</h2>
+          <h2 style={{ fontSize: '18px', color: '#3a1a1a', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Flag size={20} /> Mis Flyers Publicitarios
+          </h2>
           <p style={{ fontSize: '12px', color: '#6b4c4c', margin: 0 }}>
             Sube imágenes promocionales para que aparezcan en los laterales del marketplace.
           </p>
         </div>
         {!mostrarForm && (
-          <button onClick={() => setMostrarForm(true)} style={{ background: color, color: '#fff', border: 'none', borderRadius: '8px', padding: '8px 16px', fontSize: '12px', cursor: 'pointer', fontWeight: '500' }}>
-            + Subir nuevo flyer
+          <button onClick={() => setMostrarForm(true)} style={{ background: color, color: '#fff', border: 'none', borderRadius: '8px', padding: '8px 16px', fontSize: '12px', cursor: 'pointer', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Plus size={14} /> Subir nuevo flyer
           </button>
         )}
       </div>
 
-      {mensaje && (
-        <div style={{ background: mensaje.startsWith('❌') ? '#fde8e8' : '#e8f5e9', borderRadius: '10px', padding: '10px', marginBottom: '16px', fontSize: '13px', color: mensaje.startsWith('❌') ? '#8b2f2f' : '#2d5a27', textAlign: 'center' }}>
-          {mensaje}
+      {mensaje.text && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: mensaje.type === 'error' ? '#fde8e8' : '#e8f5e9', borderRadius: '10px', padding: '10px', marginBottom: '16px', fontSize: '13px', color: mensaje.type === 'error' ? '#8b2f2f' : '#2d5a27', textAlign: 'center', border: `1px solid ${mensaje.type === 'error' ? '#e8a0a0' : '#a8d5a2'}` }}>
+          {mensaje.type === 'error' ? <XCircle size={16} /> : <CheckCircle size={16} />}
+          {mensaje.text}
         </div>
       )}
 
@@ -114,8 +118,11 @@ export default function FlyersManager({ color }) {
 
                 <label style={{ fontSize: '11px', color: '#6b4c4c', display: 'block', marginBottom: '4px' }}>Imagen del flyer (max 5MB) *</label>
                 <input type="file" accept="image/*" onChange={handleImagenChange} style={{ ...inputStyle, padding: '6px' }} />
-                <div style={{ fontSize: '10px', color: '#9a7a7a', marginTop: '-8px', marginBottom: '12px', background: '#fff3cd', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ffeeba' }}>
-                  💡 <strong>Recomendación:</strong> Usa imágenes verticales (proporción 2:3). Tamaño ideal: <strong>400x600px</strong>.
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '10px', color: '#9a7a7a', marginTop: '-8px', marginBottom: '12px', background: '#fff3cd', padding: '8px', borderRadius: '4px', border: '1px solid #ffeeba' }}>
+                  <Lightbulb size={12} color="#856404" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <div>
+                    <strong>Recomendación:</strong> Usa imágenes verticales (proporción 2:3). Tamaño ideal: <strong>400x600px</strong>.
+                  </div>
                 </div>
               </div>
               
@@ -124,7 +131,7 @@ export default function FlyersManager({ color }) {
                 {previewImagen ? (
                   <img src={previewImagen} alt="Preview" style={{ maxWidth: '100%', maxHeight: '140px', objectFit: 'contain', borderRadius: '4px' }} />
                 ) : (
-                  <div style={{ width: '100px', height: '140px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc', fontSize: '24px', borderRadius: '4px' }}>🖼️</div>
+                  <div style={{ width: '100px', height: '140px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc', fontSize: '24px', borderRadius: '4px' }}><ImageIcon size={32} /></div>
                 )}
               </div>
             </div>
@@ -145,7 +152,7 @@ export default function FlyersManager({ color }) {
         <p style={{ textAlign: 'center', color: '#888', fontSize: '13px', padding: '2rem' }}>Cargando flyers...</p>
       ) : flyers.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '2rem', background: '#fff', borderRadius: '12px', border: '1px dashed #e8d5cc' }}>
-          <div style={{ fontSize: '32px', marginBottom: '8px' }}>📸</div>
+          <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'center', color: '#d4687a' }}><Camera size={32} /></div>
           <p style={{ fontSize: '13px', color: '#6b4c4c', margin: 0 }}>Aún no has subido flyers promocionales.</p>
         </div>
       ) : (
@@ -159,8 +166,8 @@ export default function FlyersManager({ color }) {
                   <span style={{ fontSize: '10px', color: flyer.activo ? '#2d5a27' : '#8b2f2f', background: flyer.activo ? '#e8f5e9' : '#fde8e8', padding: '2px 6px', borderRadius: '4px' }}>
                     {flyer.activo ? 'Público' : 'Oculto'}
                   </span>
-                  <button onClick={() => eliminarFlyer(flyer._id)} style={{ background: 'transparent', border: 'none', color: '#c00', cursor: 'pointer', fontSize: '14px' }}>
-                    🗑️
+                  <button onClick={() => eliminarFlyer(flyer._id)} style={{ background: 'transparent', border: 'none', color: '#c00', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Trash2 size={16} />
                   </button>
                 </div>
               </div>

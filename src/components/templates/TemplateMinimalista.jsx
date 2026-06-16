@@ -4,7 +4,7 @@
  * Layout: Hero centrado → Recomendados (scroll horizontal) → Promociones (fila) → Catálogo (lista)
  */
 import { useNavigate } from 'react-router-dom'
-import { ImagenProducto, IconoCategoria, Star, Flame } from '../../utils/iconos'
+import { ImagenProducto, IconoCategoria, Star, Flame, MapPin, Cake } from '../../utils/iconos'
 
 function SeccionTitulo({ titulo, subtitulo, color }) {
   return (
@@ -65,8 +65,8 @@ export default function TemplateMinimalista({ tienda, color, recomendados, promo
         <div style={{ width: '40px', height: '2px', background: color, margin: '0 auto 16px' }} />
         <p style={{ fontSize: '13px', color: '#888', maxWidth: '420px', margin: '0 auto 16px', lineHeight: '1.6' }}>{tienda.descripcion}</p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', fontSize: '12px', color: '#bbb' }}>
-          <span>📍 {tienda.ubicacion}</span>
-          <span>🎂 {tienda.especialidad}</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><MapPin size={12} /> {tienda.ubicacion}</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Cake size={12} /> {tienda.especialidad}</span>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ export default function TemplateMinimalista({ tienda, color, recomendados, promo
           <section style={{ marginBottom: '48px' }}>
             <SeccionTitulo titulo="Promociones" subtitulo="Ofertas por tiempo limitado" color={color} />
             {promociones.map(prod => (
-              <TarjetaMinimalista key={prod._id} prod={prod} color={color} onAgregar={onAgregar} emoji={categoriaEmoji[prod.categoria] || '\ud83c\udf81'} tiendaSlug={tienda.slug} />
+              <TarjetaMinimalista key={prod._id} prod={prod} color={color} onAgregar={onAgregar} tiendaSlug={tienda.slug} />
             ))}
           </section>
         )}
@@ -111,7 +111,7 @@ export default function TemplateMinimalista({ tienda, color, recomendados, promo
             <p style={{ textAlign: 'center', color: '#ccc' }}>— No hay más productos —</p>
           ) : (
             catalogo.map(prod => (
-              <TarjetaMinimalista key={prod._id} prod={prod} color={color} onAgregar={onAgregar} emoji={categoriaEmoji[prod.categoria] || '\ud83c\udf81'} tiendaSlug={tienda.slug} />
+              <TarjetaMinimalista key={prod._id} prod={prod} color={color} onAgregar={onAgregar} tiendaSlug={tienda.slug} />
             ))
           )}
         </section>

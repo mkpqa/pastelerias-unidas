@@ -5,7 +5,7 @@
  */
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ImagenProducto } from '../../utils/iconos'
+import { ImagenProducto, IconoCategoria, MapPin, Cake, Flame } from '../../utils/iconos'
 
 function TarjetaGaleria({ prod, color, onAgregar, emoji, tiendaSlug }) {
   const [hover, setHover] = useState(false)
@@ -48,14 +48,16 @@ export default function TemplateGaleria({ tienda, color, recomendados, promocion
       <div style={{ position: 'relative', background: `linear-gradient(135deg, #0d0d18 60%, ${color}20)`, padding: '60px 24px 48px', borderBottom: `1px solid ${color}30` }}>
         <button onClick={onVolver} style={{ position: 'absolute', top: '20px', left: '20px', background: `${color}20`, border: `1px solid ${color}40`, color, borderRadius: '8px', padding: '8px 14px', cursor: 'pointer', fontSize: '13px' }}>← Marketplace</button>
         <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>{categoriaEmoji[tienda.especialidad] || '🎂'}</div>
+          <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center', color: '#e0e0f0' }}>
+            <IconoCategoria categoria={tienda.especialidad} size={48} />
+          </div>
           <h1 style={{ fontSize: '38px', fontWeight: '800', background: `linear-gradient(135deg, #fff, ${color})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: '0 0 12px', letterSpacing: '-1px' }}>
             {tienda.nombre}
           </h1>
           <p style={{ color: '#666', fontSize: '14px', lineHeight: '1.6', marginBottom: '20px' }}>{tienda.descripcion}</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', fontSize: '12px', color: '#555' }}>
-            <span style={{ background: '#1a1a2e', padding: '6px 14px', borderRadius: '20px', border: '1px solid #2a2a4e' }}>📍 {tienda.ubicacion}</span>
-            <span style={{ background: '#1a1a2e', padding: '6px 14px', borderRadius: '20px', border: '1px solid #2a2a4e' }}>🎂 {tienda.especialidad}</span>
+            <span style={{ background: '#1a1a2e', padding: '6px 14px', borderRadius: '20px', border: '1px solid #2a2a4e', display: 'flex', alignItems: 'center', gap: '6px' }}><MapPin size={12} /> {tienda.ubicacion}</span>
+            <span style={{ background: '#1a1a2e', padding: '6px 14px', borderRadius: '20px', border: '1px solid #2a2a4e', display: 'flex', alignItems: 'center', gap: '6px' }}><Cake size={12} /> {tienda.especialidad}</span>
           </div>
         </div>
       </div>
@@ -75,8 +77,8 @@ export default function TemplateGaleria({ tienda, color, recomendados, promocion
                 <div key={prod._id}
                   onClick={() => window.location.href = `/tienda/${tienda.slug}/producto/${prod._id}`}
                   style={{ background: `linear-gradient(135deg, #161622, ${color}15)`, borderRadius: '16px', padding: '24px', border: `1px solid ${color}25`, display: 'flex', gap: '16px', alignItems: 'center', cursor: 'pointer' }}>
-                  <div style={{ width: '64px', height: '64px', borderRadius: '12px', overflow: 'hidden', background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', flexShrink: 0 }}>
-                    {prod.imagen ? <img src={`http://localhost:5000${prod.imagen}`} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : categoriaEmoji[prod.categoria] || '\ud83c\udf81'}
+                  <div style={{ width: '64px', height: '64px', borderRadius: '12px', overflow: 'hidden', background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color, flexShrink: 0 }}>
+                    {prod.imagen ? <img src={`http://localhost:5000${prod.imagen}`} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <IconoCategoria categoria={prod.categoria} size={36} color={color} />}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '16px', fontWeight: '700', color: '#e0e0f0', marginBottom: '4px' }}>{prod.nombre}</div>
@@ -97,7 +99,7 @@ export default function TemplateGaleria({ tienda, color, recomendados, promocion
           <section style={{ marginBottom: '48px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
               <div style={{ width: '4px', height: '24px', background: '#ef4444', borderRadius: '2px' }} />
-              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '700', color: '#e0e0f0' }}>🔥 Promociones</h2>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '700', color: '#e0e0f0', display: 'flex', alignItems: 'center', gap: '8px' }}><Flame size={20} color="#ef4444" /> Promociones</h2>
               <div style={{ flex: 1, height: '1px', background: '#1e1e2e' }} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
@@ -106,8 +108,8 @@ export default function TemplateGaleria({ tienda, color, recomendados, promocion
                   onClick={() => window.location.href = `/tienda/${tienda.slug}/producto/${prod._id}`}
                   style={{ background: '#161622', borderRadius: '14px', padding: '20px', border: '1px solid #ef444430', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #ef4444, #f97316)' }} />
-                  <div style={{ width: '48px', height: '48px', borderRadius: '10px', overflow: 'hidden', background: '#ef444420', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '10px' }}>
-                    {prod.imagen ? <img src={`http://localhost:5000${prod.imagen}`} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : categoriaEmoji[prod.categoria] || '\ud83c\udf81'}
+                  <div style={{ width: '48px', height: '48px', borderRadius: '10px', overflow: 'hidden', background: '#ef444420', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', marginBottom: '10px' }}>
+                    {prod.imagen ? <img src={`http://localhost:5000${prod.imagen}`} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <IconoCategoria categoria={prod.categoria} size={24} color="#ef4444" />}
                   </div>
                   <div style={{ fontSize: '14px', fontWeight: '700', color: '#e0e0f0', marginBottom: '4px' }}>{prod.nombre}</div>
                   {prod.precioAnterior && <div style={{ fontSize: '11px', color: '#555', textDecoration: 'line-through' }}>Antes: S/.{prod.precioAnterior.toFixed(2)}</div>}
@@ -137,7 +139,7 @@ export default function TemplateGaleria({ tienda, color, recomendados, promocion
             <p style={{ textAlign: 'center', color: '#333', padding: '3rem' }}>No hay productos en esta categoría.</p>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '12px' }}>
-              {catalogoFiltrado.map(prod => <TarjetaGaleria key={prod._id} prod={prod} color={color} onAgregar={onAgregar} emoji={categoriaEmoji[prod.categoria] || '\ud83c\udf81'} tiendaSlug={tienda.slug} />)}
+              {catalogoFiltrado.map(prod => <TarjetaGaleria key={prod._id} prod={prod} color={color} onAgregar={onAgregar} tiendaSlug={tienda.slug} />)}
             </div>
           )}
         </section>

@@ -5,6 +5,7 @@ import useCarritoStore from '../context/useCarritoStore'
 import TemplateMinimalista from '../components/templates/TemplateMinimalista'
 import TemplateModernoGrid from '../components/templates/TemplateModernoGrid'
 import TemplateGaleria from '../components/templates/TemplateGaleria'
+import { ShoppingCart, CheckCircle, Store, XCircle } from 'lucide-react'
 
 const categoriaEmoji = {
   Tortas:'🎂',Cupcakes:'🧁',Galletas:'🍪',Postres:'🍰',
@@ -77,13 +78,13 @@ export default function TiendaDetalle() {
 
   if (cargando) return (
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'70vh',gap:'12px'}}>
-      <div style={{fontSize:'52px'}}>🎂</div>
+      <div style={{color: '#8b2f5f'}}><Store size={52} /></div>
       <p style={{color:'#888',fontSize:'14px'}}>Cargando tienda...</p>
     </div>
   )
   if (error) return (
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'70vh',gap:'16px'}}>
-      <div style={{fontSize:'48px'}}>😢</div>
+      <div style={{color: '#c00'}}><XCircle size={48} /></div>
       <p style={{color:'#c00',fontSize:'14px'}}>{error}</p>
       <button onClick={() => navigate('/marketplace')} style={{background:'#8b2f5f',color:'#fff',border:'none',borderRadius:'8px',padding:'10px 20px',cursor:'pointer'}}>← Volver al Marketplace</button>
     </div>
@@ -111,7 +112,7 @@ export default function TiendaDetalle() {
       {/* ── BARRA CARRITO ─── */}
       {cantidadCarrito > 0 && !showCheckout && (
         <div onClick={() => setShowCheckout(true)} style={{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%)',background:'#1a1a2e',color:'#fff',padding:'14px 28px',borderRadius:'40px',display:'flex',alignItems:'center',gap:'20px',boxShadow:'0 6px 24px rgba(0,0,0,0.25)',zIndex:100,cursor:'pointer',userSelect:'none'}}>
-          <span style={{fontSize:'22px'}}>🛒</span>
+          <ShoppingCart size={22} />
           <span style={{fontWeight:'600'}}>{cantidadCarrito} items</span>
           <span style={{width:'1px',height:'20px',background:'rgba(255,255,255,0.2)'}}/>
           <span style={{fontWeight:'700',color:'#4ade80'}}>S/. {totalCarrito.toFixed(2)}</span>
@@ -125,12 +126,12 @@ export default function TiendaDetalle() {
           <div onClick={() => setShowCheckout(false)} style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.45)'}}/>
           <div style={{position:'absolute',top:0,right:0,bottom:0,width:'400px',background:'#fff',display:'flex',flexDirection:'column',boxShadow:'-8px 0 30px rgba(0,0,0,0.15)'}}>
             <div style={{padding:'20px 24px',borderBottom:'1px solid #eee',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-              <h2 style={{margin:0,fontSize:'18px',color:'#1a1a2e'}}>🛒 Tu Pedido</h2>
-              <button onClick={() => setShowCheckout(false)} style={{background:'#f5f5f5',border:'none',borderRadius:'50%',width:'32px',height:'32px',cursor:'pointer',fontSize:'18px'}}>×</button>
+              <h2 style={{margin:0,fontSize:'18px',color:'#1a1a2e',display:'flex',alignItems:'center',gap:'8px'}}><ShoppingCart size={20} /> Tu Pedido</h2>
+              <button onClick={() => setShowCheckout(false)} style={{background:'#f5f5f5',border:'none',borderRadius:'50%',width:'32px',height:'32px',cursor:'pointer',fontSize:'18px',display:'flex',alignItems:'center',justifyContent:'center'}}><XCircle size={16} color="#666"/></button>
             </div>
             {pedidoExitoso ? (
               <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'24px',textAlign:'center'}}>
-                <div style={{fontSize:'64px',marginBottom:'16px'}}>✅</div>
+                <div style={{color:'#22c55e',marginBottom:'16px'}}><CheckCircle size={64} /></div>
                 <h3 style={{color:'#1a1a2e',marginBottom:'8px'}}>¡Pedido realizado!</h3>
                 <p style={{color:'#555',fontSize:'14px',marginBottom:'24px'}}>Tu pedido <strong>{pedidoExitoso.codigo}</strong> fue enviado a la pastelería.</p>
                 <button onClick={() => { setPedidoExitoso(null); setShowCheckout(false) }} style={{background:color,color:'#fff',border:'none',borderRadius:'8px',padding:'12px 24px',cursor:'pointer',fontWeight:'600'}}>Seguir comprando</button>
@@ -152,8 +153,8 @@ export default function TiendaDetalle() {
                   <div style={{display:'flex',justifyContent:'space-between',marginBottom:'16px',fontSize:'18px',fontWeight:'700',color:'#1a1a2e'}}>
                     <span>Total</span><span style={{color}}>S/. {totalCarrito.toFixed(2)}</span>
                   </div>
-                  <button onClick={handlePagar} disabled={haciendoPedido} style={{width:'100%',background:haciendoPedido?'#aaa':'#22c55e',color:'#fff',border:'none',padding:'14px',borderRadius:'10px',fontSize:'15px',fontWeight:'700',cursor:haciendoPedido?'not-allowed':'pointer'}}>
-                    {haciendoPedido ? 'Procesando...' : '✅ Confirmar Pedido'}
+                  <button onClick={handlePagar} disabled={haciendoPedido} style={{width:'100%',background:haciendoPedido?'#aaa':'#22c55e',color:'#fff',border:'none',padding:'14px',borderRadius:'10px',fontSize:'15px',fontWeight:'700',cursor:haciendoPedido?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:'8px'}}>
+                    {haciendoPedido ? 'Procesando...' : <><CheckCircle size={18} /> Confirmar Pedido</>}
                   </button>
                   <button onClick={vaciarCarrito} style={{width:'100%',marginTop:'10px',background:'none',border:'1px solid #eee',padding:'10px',borderRadius:'8px',fontSize:'13px',cursor:'pointer',color:'#888'}}>Vaciar carrito</button>
                 </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { pedidosAPI } from '../services/api'
+import { ShoppingCart, ShoppingBag, XCircle, CheckCircle } from 'lucide-react'
 
 export default function PedidosManager({ color }) {
   const [pedidos, setPedidos] = useState([])
@@ -16,7 +17,7 @@ export default function PedidosManager({ color }) {
       const data = await pedidosAPI.obtenerPedidosVendedor()
       setPedidos(data.pedidos)
     } catch (err) {
-      setMensaje('❌ Error al cargar los pedidos.')
+      setMensaje({ text: 'Error al cargar los pedidos.', type: 'error' })
     } finally {
       setCargando(false)
     }
@@ -46,7 +47,9 @@ export default function PedidosManager({ color }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <div>
-          <h2 style={{ fontSize: '18px', color: '#3a1a1a', margin: '0 0 4px' }}>🛒 Gestión de Pedidos</h2>
+          <h2 style={{ fontSize: '18px', color: '#3a1a1a', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ShoppingCart size={20} /> Gestión de Pedidos
+          </h2>
           <p style={{ fontSize: '12px', color: '#6b4c4c', margin: 0 }}>
             Revisa los pedidos recibidos y actualiza su estado.
           </p>
@@ -56,11 +59,16 @@ export default function PedidosManager({ color }) {
         </div>
       </div>
 
-      {mensaje && <div style={{ color: '#c00', marginBottom: '16px', fontSize: '13px' }}>{mensaje}</div>}
+      {mensaje.text && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: mensaje.type === 'error' ? '#c00' : '#2d5a27', background: mensaje.type === 'error' ? '#fde8e8' : '#e8f5e9', padding: '10px', borderRadius: '8px', marginBottom: '16px', fontSize: '13px' }}>
+          {mensaje.type === 'error' ? <XCircle size={16} /> : <CheckCircle size={16} />}
+          {mensaje.text}
+        </div>
+      )}
 
       {pedidos.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', background: '#fdf8f5', borderRadius: '12px', border: '1px dashed #e8c8b4' }}>
-          <div style={{ fontSize: '32px', marginBottom: '8px' }}>🛍️</div>
+          <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'center', color: '#d4687a' }}><ShoppingBag size={32} /></div>
           <p style={{ fontSize: '13px', color: '#6b4c4c', margin: 0 }}>Aún no has recibido pedidos.</p>
         </div>
       ) : (

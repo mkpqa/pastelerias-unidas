@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import '../css/RegistroPage.css';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { User, Lock, Mail, Upload } from 'lucide-react';
+import { User, Lock, Mail, Upload, XCircle, CheckCircle } from 'lucide-react';
 import useAuthStore from '../context/useAuthStore';
 import { PreviewGrande } from '../components/TemplatePreview';
 
@@ -111,7 +111,7 @@ export default function RegistroPage() {
         metodosPago,
       });
 
-      setMensajeExito('🎉 ¡Tu tienda ha sido registrada exitosamente! Redirigiendo...');
+      setMensajeExito('¡Tu tienda ha sido registrada exitosamente! Redirigiendo...');
       setTimeout(() => navigate('/dashboard'), 2500);
     } catch (err) {
       setErrorLocal(err.message || 'Ocurrió un error al registrar la tienda.');
@@ -122,13 +122,13 @@ export default function RegistroPage() {
   const StatusMessage = () => (
     <>
       {(errorLocal || error) && (
-        <div style={{ background: '#fde8e8', color: '#8b2f2f', padding: '10px 15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem', border: '1px solid #e8a0a0' }}>
-          ❌ {errorLocal || error}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#fde8e8', color: '#8b2f2f', padding: '10px 15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem', border: '1px solid #e8a0a0' }}>
+          <XCircle size={16} /> {errorLocal || error}
         </div>
       )}
       {mensajeExito && (
-        <div style={{ background: '#e8f5e9', color: '#2d5a27', padding: '10px 15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem', border: '1px solid #a8d5a2' }}>
-          {mensajeExito}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#e8f5e9', color: '#2d5a27', padding: '10px 15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem', border: '1px solid #a8d5a2' }}>
+          <CheckCircle size={16} /> {mensajeExito}
         </div>
       )}
     </>

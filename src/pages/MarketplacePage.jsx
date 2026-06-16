@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { tiendasAPI, adminAPI, API_BASE } from '../services/api'
+import { tiendasAPI, adminAPI } from '../services/api'
+import { Store, Star, MapPin, Cake, Tent, Cookie, Candy, Croissant, Leaf, Package, Heart } from 'lucide-react'
 
 export default function MarketplacePage() {
   const navigate = useNavigate()
@@ -30,10 +31,16 @@ export default function MarketplacePage() {
     }
   }
 
-  const especialidadEmoji = {
-    'Tortas de Autor': '🎂', 'Cupcakes Artísticos': '🧁', 'Cookies y Galletas': '🍪',
-    'Postres Veganos': '🌿', 'Bocaditos para Eventos': '🍬', 'Panadería Artesanal': '🥐',
-    'Repostería Peruana': '🇵🇪', 'Chocolatería Fina': '🍫', 'Otro': '🍰',
+  const EspecialidadIcon = {
+    'Tortas de Autor': <Cake size={48} />, 
+    'Cupcakes Artísticos': <Cake size={48} />, 
+    'Cookies y Galletas': <Cookie size={48} />,
+    'Postres Veganos': <Leaf size={48} />, 
+    'Bocaditos para Eventos': <Candy size={48} />, 
+    'Panadería Artesanal': <Croissant size={48} />,
+    'Repostería Peruana': <Heart size={48} />, 
+    'Chocolatería Fina': <Package size={48} />, 
+    'Otro': <Cake size={48} />,
   }
 
   // Componente Banner/Flyer (Carrusel)
@@ -51,7 +58,7 @@ export default function MarketplacePage() {
     if (banners.length === 0) {
       return (
         <div style={{ background: '#fdf8f5', borderRadius: '14px', padding: '20px', textAlign: 'center', border: '1px dashed #e8c8b4' }}>
-          <div style={{ fontSize: '24px', marginBottom: '6px' }}>🎪</div>
+          <div style={{ marginBottom: '6px', color: '#e8c8b4', display: 'flex', justifyContent: 'center' }}><Tent size={24} /></div>
           <div style={{ fontSize: '11px', color: '#9a7a7a' }}>Espacio publicitario</div>
         </div>
       )
@@ -116,7 +123,7 @@ export default function MarketplacePage() {
   if (cargando) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', flexDirection: 'column', gap: '12px' }}>
-        <div style={{ fontSize: '48px' }}>🎂</div>
+        <div style={{ animation: 'pulse 1.5s infinite', color: '#8b2f5f' }}><Store size={48} /></div>
         <p style={{ color: '#9a7a7a', fontSize: '14px' }}>Cargando marketplace...</p>
       </div>
     )
@@ -150,7 +157,7 @@ export default function MarketplacePage() {
         <div>
           {tiendas.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem', background: '#fff', borderRadius: '16px', border: '1px dashed #e8c8b4' }}>
-              <div style={{ fontSize: '48px', marginBottom: '12px' }}>🏪</div>
+              <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', color: '#e8c8b4' }}><Store size={48} /></div>
               <p style={{ fontSize: '14px', color: '#6b4c4c' }}>Aún no hay tiendas registradas</p>
               <p style={{ fontSize: '12px', color: '#9a7a7a' }}>¡Sé el primero en registrar tu pastelería!</p>
               <button onClick={() => navigate('/registro')} style={{ marginTop: '12px', background: '#8b2f5f', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 24px', fontSize: '13px', cursor: 'pointer' }}>
@@ -161,7 +168,7 @@ export default function MarketplacePage() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               {tiendas.map(tienda => {
                 const color = tienda.personalizacion?.colorPrimario || '#8b2f5f'
-                const emoji = especialidadEmoji[tienda.especialidad] || '🍰'
+                const icon = EspecialidadIcon[tienda.especialidad] || <Cake size={48} />
 
                 return (
                   <div key={tienda._id} style={{
@@ -178,8 +185,9 @@ export default function MarketplacePage() {
                         position: 'absolute', top: '10px', right: '10px', background: '#ffd700',
                         color: '#6d4c00', padding: '3px 10px', borderRadius: '12px', fontSize: '10px',
                         fontWeight: '700', zIndex: 1, boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                        display: 'flex', alignItems: 'center', gap: '4px'
                       }}>
-                        ⭐ Destacada
+                        <Star size={10} fill="currentColor" /> Destacada
                       </div>
                     )}
 
@@ -193,7 +201,7 @@ export default function MarketplacePage() {
                           <img src={`http://localhost:5000${tienda.personalizacion.logo}`} alt={tienda.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
                         </div>
                       ) : (
-                        emoji
+                        <div style={{ color }}>{icon}</div>
                       )}
                     </div>
 
@@ -210,8 +218,8 @@ export default function MarketplacePage() {
                       )}
 
                       <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginBottom: '10px' }}>
-                        <span style={{ fontSize: '11px', color: '#888' }}>📍 {tienda.ubicacion}</span>
-                        <span style={{ fontSize: '11px', color: '#888' }}>🎂 {tienda.especialidad}</span>
+                        <span style={{ fontSize: '11px', color: '#888', display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={11} /> {tienda.ubicacion}</span>
+                        <span style={{ fontSize: '11px', color: '#888', display: 'flex', alignItems: 'center', gap: '4px' }}><Cake size={11} /> {tienda.especialidad}</span>
                       </div>
 
                       <button

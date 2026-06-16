@@ -14,6 +14,8 @@
  * 3. Galería — Estilo visual/Instagram, imágenes grandes
  */
 
+import { Cake, CakeSlice, Cookie, Candy, Croissant, Search, ShoppingCart } from 'lucide-react'
+
 // ============================================
 // Plantilla 1: Minimalista
 // ============================================
@@ -41,7 +43,7 @@ function MiniMinimalista({ color, nombre, activa }) {
       <div style={{ padding: '0 8px 8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         {[1, 2].map((i) => (
           <div key={i} style={{ display: 'flex', gap: '5px', alignItems: 'center', padding: '4px', borderRadius: '4px', border: '1px solid #f0f0f0' }}>
-            <div style={{ width: '20px', height: '20px', borderRadius: '4px', background: `${color}22`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px' }}>🎂</div>
+            <div style={{ width: '20px', height: '20px', borderRadius: '4px', background: `${color}22`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}><Cake size={10} /></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: '5px', fontWeight: '600', color: '#333' }}>Producto {i}</div>
               <div style={{ fontSize: '4px', color: '#999' }}>Descripción breve</div>
@@ -88,8 +90,8 @@ function MiniModernoGrid({ color, nombre, activa }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', padding: '6px' }}>
         {[1, 2, 3, 4].map((i) => (
           <div key={i} style={{ background: '#fff', borderRadius: '4px', overflow: 'hidden', border: '1px solid #f0f0f0' }}>
-            <div style={{ height: '18px', background: `${color}${15 + i * 5}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px' }}>
-              {['🎂', '🧁', '🍪', '🍰'][i - 1]}
+            <div style={{ height: '18px', background: `${color}${15 + i * 5}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}>
+              {[<Cake size={10} key="cake"/>, <CakeSlice size={10} key="slice"/>, <Cookie size={10} key="cookie"/>, <CakeSlice size={10} key="slice2"/>][i - 1]}
             </div>
             <div style={{ padding: '3px 4px' }}>
               <div style={{ fontSize: '4px', fontWeight: '600', color: '#333' }}>Producto {i}</div>
@@ -137,9 +139,9 @@ function MiniGaleria({ color, nombre, activa }) {
             height: '18px', borderRadius: '2px',
             background: `${color}${20 + i * 8}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '7px'
+            color: '#333'
           }}>
-            {['🎂', '🧁', '🍪', '🍰', '🍩', '🥐'][i - 1]}
+            {[<Cake size={10} key="1"/>, <CakeSlice size={10} key="2"/>, <Cookie size={10} key="3"/>, <CakeSlice size={10} key="4"/>, <Candy size={10} key="5"/>, <Croissant size={10} key="6"/>][i - 1]}
           </div>
         ))}
       </div>
@@ -184,12 +186,12 @@ function PreviewMinimalista({ color, nombre }) {
       <div style={{ padding: '0 16px 16px' }}>
         <div style={{ fontSize: '9px', letterSpacing: '1.5px', color: '#999', textAlign: 'center', marginBottom: '10px' }}>NUESTROS PRODUCTOS</div>
         {[
-          { n: 'Torta de Chocolate', p: 'S/.85', e: '🎂' },
-          { n: 'Cheesecake de Maracuyá', p: 'S/.65', e: '🍰' },
-          { n: 'Box de Cupcakes x6', p: 'S/.45', e: '🧁' },
+          { n: 'Torta de Chocolate', p: 'S/.85', e: <Cake size={18} /> },
+          { n: 'Cheesecake de Maracuyá', p: 'S/.65', e: <CakeSlice size={18} /> },
+          { n: 'Box de Cupcakes x6', p: 'S/.45', e: <CakeSlice size={18} /> },
         ].map((prod, i) => (
           <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '8px 10px', marginBottom: '6px', borderRadius: '8px', border: '1px solid #f0f0f0' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>{prod.e}</div>
+            <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333', flexShrink: 0 }}>{prod.e}</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: '10px', fontWeight: '600', color: '#333' }}>{prod.n}</div>
               <div style={{ fontSize: '8px', color: '#aaa' }}>Hecho con ingredientes premium</div>
@@ -210,8 +212,8 @@ function PreviewModernoGrid({ color, nombre }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
           <span style={{ fontSize: '13px', fontWeight: '700', color: '#fff', letterSpacing: '1.5px' }}>{nombre || 'MI TIENDA'}</span>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.7)' }}>🔍</span>
-            <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.7)' }}>🛒</span>
+            <span style={{ color: 'rgba(255,255,255,0.7)' }}><Search size={12} /></span>
+            <span style={{ color: 'rgba(255,255,255,0.7)' }}><ShoppingCart size={12} /></span>
           </div>
         </div>
         <div style={{ fontSize: '8px', color: 'rgba(255,255,255,0.8)' }}>Descubre nuestras creaciones artesanales</div>
@@ -233,13 +235,13 @@ function PreviewModernoGrid({ color, nombre }) {
       {/* Grid de productos */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '8px 12px 12px' }}>
         {[
-          { n: 'Torta Red Velvet', p: 'S/.95', e: '🎂' },
-          { n: 'Cupcakes x4', p: 'S/.32', e: '🧁' },
-          { n: 'Cookies Doble Choc', p: 'S/.18', e: '🍪' },
-          { n: 'Pie de Limón', p: 'S/.55', e: '🍰' },
+          { n: 'Torta Red Velvet', p: 'S/.95', e: <Cake size={20} /> },
+          { n: 'Cupcakes x4', p: 'S/.32', e: <CakeSlice size={20} /> },
+          { n: 'Cookies Doble Choc', p: 'S/.18', e: <Cookie size={20} /> },
+          { n: 'Pie de Limón', p: 'S/.55', e: <CakeSlice size={20} /> },
         ].map((prod, i) => (
           <div key={i} style={{ background: '#fff', borderRadius: '8px', overflow: 'hidden', border: '1px solid #f0f0f0' }}>
-            <div style={{ height: '40px', background: `${color}${18 + i * 6}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>{prod.e}</div>
+            <div style={{ height: '40px', background: `${color}${18 + i * 6}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}>{prod.e}</div>
             <div style={{ padding: '6px 8px' }}>
               <div style={{ fontSize: '9px', fontWeight: '600', color: '#333', marginBottom: '2px' }}>{prod.n}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -283,12 +285,12 @@ function PreviewGaleria({ color, nombre }) {
       {/* Galería estilo Instagram */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '3px', padding: '0 12px 12px' }}>
         {[
-          { e: '🎂', label: 'Torta' },
-          { e: '🧁', label: 'Cupcake' },
-          { e: '🍪', label: 'Cookie' },
-          { e: '🍰', label: 'Postre' },
-          { e: '🍩', label: 'Dona' },
-          { e: '🥐', label: 'Croissant' },
+          { e: <Cake size={16} />, label: 'Torta' },
+          { e: <CakeSlice size={16} />, label: 'Cupcake' },
+          { e: <Cookie size={16} />, label: 'Cookie' },
+          { e: <CakeSlice size={16} />, label: 'Postre' },
+          { e: <Candy size={16} />, label: 'Dona' },
+          { e: <Croissant size={16} />, label: 'Croissant' },
         ].map((item, i) => (
           <div key={i} style={{
             height: '36px', borderRadius: '4px',
@@ -296,7 +298,7 @@ function PreviewGaleria({ color, nombre }) {
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             gap: '2px', position: 'relative', overflow: 'hidden',
           }}>
-            <span style={{ fontSize: '12px' }}>{item.e}</span>
+            <span style={{ color: '#333' }}>{item.e}</span>
             <span style={{ fontSize: '5px', color: '#fff', fontWeight: '500' }}>{item.label}</span>
           </div>
         ))}

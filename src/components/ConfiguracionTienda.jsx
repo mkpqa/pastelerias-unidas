@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { tiendasAPI } from '../services/api'
+import { Palette, Edit2, Store, Camera, MessageCircle, Sparkles, XCircle, CheckCircle, Save, X } from 'lucide-react'
 
 const plantillasDisponibles = [
   { id: 'minimalista', nombre: 'Minimalista (Clásica)' },
@@ -10,7 +11,7 @@ const plantillasDisponibles = [
 export default function ConfiguracionTienda({ tienda, onUpdate }) {
   const [editando, setEditando] = useState(false)
   const [cargando, setCargando] = useState(false)
-  const [mensaje, setMensaje] = useState('')
+  const [mensaje, setMensaje] = useState({ text: '', type: '' })
   const fileInputRef = useRef(null)
 
   // Estado del formulario
@@ -27,7 +28,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
   const [nuevoServicioPreview, setNuevoServicioPreview] = useState(null)
   const fileServicioRef = useRef(null)
 
-  const flash = (msg) => { setMensaje(msg); setTimeout(() => setMensaje(''), 3000) }
+  const flash = (text, type = 'success') => { setMensaje({ text, type }); setTimeout(() => setMensaje({ text: '', type: '' }), 3000) }
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0]
@@ -47,7 +48,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
 
   const handleAñadirServicio = async () => {
     if (!nuevoServicioTitulo || !nuevoServicioFile) {
-      flash('❌ El título y la imagen son obligatorios.')
+      flash('El título y la imagen son obligatorios.', 'error')
       return
     }
     setCargando(true)
@@ -59,9 +60,9 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
       setNuevoServicioTitulo('')
       setNuevoServicioFile(null)
       setNuevoServicioPreview(null)
-      flash('✅ Servicio añadido a la lista. (No olvides Guardar Cambios)')
+      flash('Servicio añadido a la lista. (No olvides Guardar Cambios)')
     } catch (err) {
-      flash('❌ Error al subir imagen de servicio: ' + err.message)
+      flash('Error al subir imagen de servicio: ' + err.message, 'error')
     } finally {
       setCargando(false)
     }
@@ -98,11 +99,11 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
         await tiendasAPI.subirLogoTienda(formData)
       }
 
-      flash('✅ Configuración guardada correctamente.')
+      flash('Configuración guardada correctamente.')
       setEditando(false)
       if (onUpdate) onUpdate()
     } catch (err) {
-      flash('❌ Error al guardar: ' + err.message)
+      flash('Error al guardar: ' + err.message, 'error')
     } finally {
       setCargando(false)
     }
@@ -115,10 +116,10 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
       <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e8d5cc', padding: '20px', height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '14px', color: '#3a1a1a', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '18px' }}>🎨</span> Personalización Visual
+            <Palette size={18} /> Personalización Visual
           </h3>
-          <button onClick={() => setEditando(true)} style={{ background: '#fdf0eb', color: '#8b2f5f', border: 'none', borderRadius: '8px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: '600' }}>
-            ✏️ Editar
+          <button onClick={() => setEditando(true)} style={{ background: '#fdf0eb', color: '#8b2f5f', border: 'none', borderRadius: '8px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Edit2 size={12} /> Editar
           </button>
         </div>
 
@@ -127,7 +128,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
             {tienda.personalizacion?.logo ? (
               <img src={`http://localhost:5000${tienda.personalizacion.logo}`} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#fff' }} />
             ) : (
-              <span style={{ fontSize: '24px', color: '#fff' }}>🏪</span>
+              <Store size={24} color="#fff" />
             )}
           </div>
           <div>
@@ -146,12 +147,13 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
   return (
     <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e8d5cc', padding: '20px', boxShadow: '0 8px 24px rgba(0,0,0,0.05)' }}>
       <h3 style={{ fontSize: '14px', color: '#3a1a1a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        ✏️ Editar Personalización
+        <Edit2 size={16} /> Editar Personalización
       </h3>
 
-      {mensaje && (
-        <div style={{ background: mensaje.startsWith('❌') ? '#fde8e8' : '#e8f5e9', color: mensaje.startsWith('❌') ? '#8b2f2f' : '#2d5a27', padding: '8px', borderRadius: '8px', fontSize: '12px', marginBottom: '12px', textAlign: 'center' }}>
-          {mensaje}
+      {mensaje.text && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: mensaje.type === 'error' ? '#fde8e8' : '#e8f5e9', color: mensaje.type === 'error' ? '#8b2f2f' : '#2d5a27', padding: '8px', borderRadius: '8px', fontSize: '12px', marginBottom: '12px', textAlign: 'center' }}>
+          {mensaje.type === 'error' ? <XCircle size={14} /> : <CheckCircle size={14} />}
+          {mensaje.text}
         </div>
       )}
 
@@ -163,7 +165,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
             {logoPreview ? (
               <img src={logoPreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             ) : (
-              <span style={{ fontSize: '24px' }}>📷</span>
+              <Camera size={24} color="#999" />
             )}
           </div>
           <div>
@@ -198,14 +200,14 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
       <div style={{ marginBottom: '16px' }}>
         <label style={{ fontSize: '12px', color: '#6b4c4c', display: 'block', marginBottom: '8px', fontWeight: '600' }}>WhatsApp (para redirección de servicios)</label>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '16px', width: '20px' }}>💬</span>
+          <MessageCircle size={16} color="#666" />
           <input type="text" placeholder="Número (ej: 51900800700)" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} style={{ flex: 1, padding: '8px', border: '1px solid #eee', borderRadius: '6px', fontSize: '12px', outline: 'none' }} />
         </div>
       </div>
 
       {/* Servicios Extras (Tarjetas) */}
       <div style={{ marginBottom: '20px', padding: '12px', background: '#fdf8f5', borderRadius: '10px', border: '1px solid #e8d5cc' }}>
-        <label style={{ fontSize: '12px', color: '#3a1a1a', display: 'block', marginBottom: '8px', fontWeight: '700' }}>✨ Tarjetas de Servicios Extras</label>
+        <label style={{ fontSize: '12px', color: '#3a1a1a', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '8px', fontWeight: '700' }}><Sparkles size={14} color="#d4687a" /> Tarjetas de Servicios Extras</label>
         <p style={{ fontSize: '11px', color: '#666', marginBottom: '12px' }}>Agrega servicios como Catering, Ventas al por mayor, etc. Los clientes verán estas tarjetas y te contactarán por WhatsApp.</p>
         
         {/* Lista de servicios actuales */}
@@ -218,7 +220,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
                   {srv.titulo}
                 </div>
                 <button onClick={() => handleEliminarServicio(idx)} style={{ position: 'absolute', top: '4px', right: '4px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  ✕
+                  <X size={12} />
                 </button>
               </div>
             ))}
@@ -232,7 +234,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
               {nuevoServicioPreview ? (
                 <img src={nuevoServicioPreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
-                <span style={{ fontSize: '18px' }}>📷</span>
+                <Camera size={18} color="#999" />
               )}
             </div>
             <div style={{ flex: 1 }}>
@@ -252,8 +254,8 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
       </div>
       {/* Botones */}
       <div style={{ display: 'flex', gap: '8px' }}>
-        <button onClick={handleGuardar} disabled={cargando} style={{ flex: 1, background: '#8b2f5f', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '13px', fontWeight: '600', cursor: cargando ? 'not-allowed' : 'pointer', opacity: cargando ? 0.7 : 1 }}>
-          {cargando ? 'Guardando...' : '💾 Guardar Cambios'}
+        <button onClick={handleGuardar} disabled={cargando} style={{ flex: 1, background: '#8b2f5f', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '13px', fontWeight: '600', cursor: cargando ? 'not-allowed' : 'pointer', opacity: cargando ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          {cargando ? 'Guardando...' : <><Save size={16} /> Guardar Cambios</>}
         </button>
         <button onClick={() => setEditando(false)} disabled={cargando} style={{ background: '#f5f5f5', color: '#666', border: 'none', borderRadius: '8px', padding: '10px 16px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
           Cancelar

@@ -1,8 +1,23 @@
 import { useState, useEffect } from 'react'
 import { productosAPI } from '../services/api'
+import { 
+  Package, XCircle, CheckCircle, Edit2, Trash2, Camera, Star, 
+  Flame, Settings2, Plus, X, Sparkles, Lightbulb, 
+  Cake, CakeSlice, Cookie, Croissant, Coffee, Candy, CheckSquare, Square
+} from 'lucide-react'
 
 const categorias = ['Tortas', 'Cupcakes', 'Galletas', 'Postres', 'Bocaditos', 'Panes', 'Bebidas', 'Otro']
-const categoriasEmoji = { Tortas: '🎂', Cupcakes: '🧁', Galletas: '🍪', Postres: '🍰', Bocaditos: '🍬', Panes: '🥐', Bebidas: '☕', Otro: '📦' }
+
+const CategoriasIconos = {
+  Tortas: Cake,
+  Cupcakes: CakeSlice,
+  Galletas: Cookie,
+  Postres: CakeSlice,
+  Bocaditos: Candy,
+  Panes: Croissant,
+  Bebidas: Coffee,
+  Otro: Package
+}
 
 export default function ProductosManager({ color }) {
   const [productos, setProductos] = useState([])
@@ -98,11 +113,11 @@ export default function ProductosManager({ color }) {
       let idProducto = editando
       if (editando) {
         await productosAPI.actualizarProducto(editando, datosProducto)
-        setMensaje('\u2705 Producto actualizado correctamente')
+        setMensaje('Producto actualizado correctamente')
       } else {
         const res = await productosAPI.crearProducto(datosProducto)
         idProducto = res.producto._id
-        setMensaje('\u2705 Producto creado exitosamente')
+        setMensaje('Producto creado exitosamente')
       }
       // Subir imagen si se seleccionó una
       if (imagenArchivo && idProducto) {
@@ -126,7 +141,7 @@ export default function ProductosManager({ color }) {
 
     try {
       await productosAPI.eliminarProducto(id)
-      setMensaje('✅ Producto eliminado')
+      setMensaje('Producto eliminado')
       await cargarProductos()
       setTimeout(() => setMensaje(''), 3000)
     } catch (err) {
@@ -203,28 +218,28 @@ export default function ProductosManager({ color }) {
     <div>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <h3 style={{ fontSize: '16px', color: '#3a1a1a', margin: 0 }}>
-          📦 Mis Productos ({productos.length})
+        <h3 style={{ fontSize: '16px', color: '#3a1a1a', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Package size={20} /> Mis Productos ({productos.length})
         </h3>
         {!mostrarFormulario && (
           <button
             onClick={() => { resetFormulario(); setMostrarFormulario(true) }}
-            style={{ ...btnStyle(color, '#fff'), padding: '10px 20px', fontSize: '13px' }}
+            style={{ ...btnStyle(color, '#fff'), padding: '10px 20px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            + Agregar Producto
+            <Plus size={14} /> Agregar Producto
           </button>
         )}
       </div>
 
       {/* Mensajes */}
       {mensaje && (
-        <div style={{ background: '#e8f5e9', borderRadius: '10px', padding: '10px', marginBottom: '12px', fontSize: '13px', color: '#2d5a27', border: '1px solid #a8d5a2', textAlign: 'center' }}>
-          {mensaje}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#e8f5e9', borderRadius: '10px', padding: '10px', marginBottom: '12px', fontSize: '13px', color: '#2d5a27', border: '1px solid #a8d5a2', textAlign: 'center' }}>
+          <CheckCircle size={16} /> {mensaje}
         </div>
       )}
       {errorMsg && (
-        <div style={{ background: '#fde8e8', borderRadius: '10px', padding: '10px', marginBottom: '12px', fontSize: '13px', color: '#8b2f2f', border: '1px solid #e8a0a0', textAlign: 'center' }}>
-          ❌ {errorMsg}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#fde8e8', borderRadius: '10px', padding: '10px', marginBottom: '12px', fontSize: '13px', color: '#8b2f2f', border: '1px solid #e8a0a0', textAlign: 'center' }}>
+          <XCircle size={16} /> {errorMsg}
         </div>
       )}
 
@@ -233,8 +248,8 @@ export default function ProductosManager({ color }) {
       {/* ============================================ */}
       {mostrarFormulario && (
         <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e8d5cc', padding: '20px', marginBottom: '16px' }}>
-          <h4 style={{ fontSize: '14px', color: '#3a1a1a', marginBottom: '16px' }}>
-            {editando ? '✏️ Editar Producto' : '✨ Nuevo Producto'}
+          <h4 style={{ fontSize: '14px', color: '#3a1a1a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            {editando ? <><Edit2 size={16} /> Editar Producto</> : <><Sparkles size={16} /> Nuevo Producto</>}
           </h4>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
@@ -253,7 +268,7 @@ export default function ProductosManager({ color }) {
               <label style={{ fontSize: '11px', color: '#6b4c4c', display: 'block', marginBottom: '4px' }}>Categoría *</label>
               <select value={categoria} onChange={(e) => setCategoria(e.target.value)} style={{ ...inputStyle, color: categoria ? '#3a1a1a' : '#9a7a7a' }}>
                 <option value="">Seleccionar categoría</option>
-                {categorias.map(c => <option key={c} value={c}>{categoriasEmoji[c]} {c}</option>)}
+                {categorias.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '4px' }}>
@@ -268,11 +283,11 @@ export default function ProductosManager({ color }) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px', padding: '14px', background: '#fdf8f5', borderRadius: '10px', border: '1px solid #e8d5cc' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px', color: '#3a1a1a' }}>
               <input type="checkbox" checked={recomendado} onChange={() => setRecomendado(!recomendado)} style={{ width: '16px', height: '16px', accentColor: '#f59e0b' }} />
-              ⭐ Recomendado
+              <Star size={14} color="#f59e0b" fill={recomendado ? '#f59e0b' : 'transparent'} /> Recomendado
             </label>
             <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px', color: '#3a1a1a' }}>
               <input type="checkbox" checked={enPromocion} onChange={() => setEnPromocion(!enPromocion)} style={{ width: '16px', height: '16px', accentColor: '#ef4444' }} />
-              🔥 En Promoción
+              <Flame size={14} color="#ef4444" fill={enPromocion ? '#ef4444' : 'transparent'} /> En Promoción
             </label>
             {enPromocion && (
               <div style={{ gridColumn: '1/-1' }}>
@@ -285,7 +300,7 @@ export default function ProductosManager({ color }) {
           {/* Imagen del Producto */}
           <div style={{ marginBottom: '12px', display: 'grid', gridTemplateColumns: '1fr auto', gap: '12px', alignItems: 'center' }}>
             <div>
-              <label style={{ fontSize: '11px', color: '#6b4c4c', display: 'block', marginBottom: '4px' }}>📷 Imagen del producto (opcional)</label>
+              <label style={{ fontSize: '11px', color: '#6b4c4c', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}><Camera size={12} /> Imagen del producto (opcional)</label>
               <input
                 type="file" accept="image/*"
                 onChange={e => {
@@ -295,14 +310,20 @@ export default function ProductosManager({ color }) {
                 style={{ ...inputStyle, padding: '6px', fontSize: '12px' }}
               />
                               <span style={{ fontSize: '10px', color: '#bbb' }}>JPG, PNG, WEBP · máx. 5MB</span>
-                <div style={{ fontSize: '10px', color: '#6b4c4c', marginTop: '4px', background: '#e8f4fd', padding: '4px 8px', borderRadius: '4px', border: '1px solid #d1ecf1' }}>
-                  💡 <strong>Recomendación:</strong> Usa imágenes cuadradas (proporción 1:1). Tamaño ideal: <strong>800x800px</strong>.
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '10px', color: '#6b4c4c', marginTop: '4px', background: '#e8f4fd', padding: '8px', borderRadius: '4px', border: '1px solid #d1ecf1' }}>
+                  <Lightbulb size={12} color="#0c5460" style={{ flexShrink: 0, marginTop: '1px' }} />
+                  <div>
+                    <strong>Recomendación:</strong> Usa imágenes cuadradas (proporción 1:1). Tamaño ideal: <strong>800x800px</strong>.
+                  </div>
                 </div>
             </div>
-            <div style={{ width: '72px', height: '72px', borderRadius: '10px', background: '#f5f5f5', border: '1px solid #e0e0e0', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div style={{ width: '72px', height: '72px', borderRadius: '10px', background: '#f5f5f5', border: '1px solid #e0e0e0', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#bbb' }}>
               {previewImagen
                 ? <img src={previewImagen} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : <span style={{ fontSize: '28px' }}>{categoriasEmoji[categoria] || '📦'}</span>
+                : (() => {
+                    const Icon = CategoriasIconos[categoria] || Package;
+                    return <Icon size={28} />;
+                  })()
               }
             </div>
           </div>
@@ -317,9 +338,9 @@ export default function ProductosManager({ color }) {
           {/* ============================================ */}
           <div style={{ marginBottom: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <label style={{ fontSize: '12px', color: '#6b4c4c', fontWeight: '500' }}>🎛️ Variaciones (opciones para el cliente)</label>
-              <button onClick={agregarVariacion} style={btnStyle('#fdf0eb', '#8b2f5f')}>
-                + Agregar Variación
+              <label style={{ fontSize: '12px', color: '#6b4c4c', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px' }}><Settings2 size={14} /> Variaciones (opciones para el cliente)</label>
+              <button onClick={agregarVariacion} style={{ ...btnStyle('#fdf0eb', '#8b2f5f'), display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Plus size={12} /> Agregar Variación
               </button>
             </div>
 
@@ -343,7 +364,7 @@ export default function ProductosManager({ color }) {
                     <input type="checkbox" checked={v.requerida} onChange={() => actualizarVariacion(vi, 'requerida', !v.requerida)} style={{ accentColor: color }} />
                     Req.
                   </label>
-                  <button onClick={() => eliminarVariacion(vi)} style={{ ...btnStyle('#fde8e8', '#8b2f2f'), padding: '6px 10px' }}>✕</button>
+                  <button onClick={() => eliminarVariacion(vi)} style={{ ...btnStyle('#fde8e8', '#8b2f2f'), padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={14} /></button>
                 </div>
 
                 {v.tipo === 'seleccion' && (
@@ -358,11 +379,11 @@ export default function ProductosManager({ color }) {
                           <input type="number" value={opt.precioAdicional} onChange={(e) => actualizarOpcion(vi, oi, 'precioAdicional', e.target.value)}
                             min="0" step="0.5" style={{ ...inputStyle, width: '70px', background: '#fff', padding: '6px 8px', fontSize: '12px' }} />
                         </div>
-                        <button onClick={() => eliminarOpcion(vi, oi)} style={{ background: 'none', border: 'none', color: '#cc5555', cursor: 'pointer', fontSize: '14px' }}>✕</button>
+                        <button onClick={() => eliminarOpcion(vi, oi)} style={{ background: 'none', border: 'none', color: '#cc5555', cursor: 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center' }}><X size={14} /></button>
                       </div>
                     ))}
-                    <button onClick={() => agregarOpcion(vi)} style={{ ...btnStyle('transparent', color), padding: '4px 8px', marginTop: '6px', fontSize: '11px' }}>
-                      + Opción
+                    <button onClick={() => agregarOpcion(vi)} style={{ ...btnStyle('transparent', color), padding: '4px 8px', marginTop: '6px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Plus size={10} /> Opción
                     </button>
                   </div>
                 )}
@@ -372,8 +393,8 @@ export default function ProductosManager({ color }) {
 
           {/* Botones */}
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button onClick={handleGuardar} style={{ ...btnStyle(color, '#fff'), flex: 1, padding: '12px', fontSize: '14px' }}>
-              {editando ? '💾 Guardar Cambios' : '✨ Crear Producto'}
+            <button onClick={handleGuardar} style={{ ...btnStyle(color, '#fff'), flex: 1, padding: '12px', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              {editando ? <><Save size={16} /> Guardar Cambios</> : <><Sparkles size={16} /> Crear Producto</>}
             </button>
             <button onClick={resetFormulario} style={{ ...btnStyle('#f0e0d4', '#6b4c4c'), padding: '12px 24px' }}>
               Cancelar
@@ -389,7 +410,7 @@ export default function ProductosManager({ color }) {
         <p style={{ textAlign: 'center', color: '#9a7a7a', fontSize: '14px', padding: '2rem 0' }}>Cargando productos...</p>
       ) : productos.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#fff', borderRadius: '14px', border: '1px dashed #e8c8b4' }}>
-          <div style={{ fontSize: '48px', marginBottom: '12px' }}>📦</div>
+          <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', color: '#d4687a' }}><Package size={48} /></div>
           <p style={{ fontSize: '14px', color: '#6b4c4c', marginBottom: '4px' }}>Aún no tienes productos</p>
           <p style={{ fontSize: '12px', color: '#9a7a7a' }}>Agrega tu primer producto para que aparezca en tu tienda</p>
         </div>
@@ -404,23 +425,26 @@ export default function ProductosManager({ color }) {
             }}>
               {/* Info del producto */}
               <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flex: 1 }}>
-                <div style={{ width: '52px', height: '52px', borderRadius: '10px', background: `${color}18`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', flexShrink: 0, position: 'relative' }}>
+                <div style={{ width: '52px', height: '52px', borderRadius: '10px', background: `${color}18`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, position: 'relative', color: '#6b4c4c' }}>
                   {prod.imagen
                     ? <img src={`http://localhost:5000${prod.imagen}`} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <span>{categoriasEmoji[prod.categoria] || '📦'}</span>
+                    : (() => {
+                        const Icon = CategoriasIconos[prod.categoria] || Package;
+                        return <Icon size={24} />;
+                      })()
                   }
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                     <span style={{ fontSize: '14px', fontWeight: '600', color: '#3a1a1a' }}>{prod.nombre}</span>
-                    {prod.recomendado && <span style={{ fontSize: '9px', background: '#fff3cd', color: '#856404', padding: '2px 6px', borderRadius: '4px' }}>⭐ TOP</span>}
-                    {prod.enPromocion && <span style={{ fontSize: '9px', background: '#fde8e8', color: '#b91c1c', padding: '2px 6px', borderRadius: '4px' }}>🔥 PROMO</span>}
+                    {prod.recomendado && <span style={{ fontSize: '9px', background: '#fff3cd', color: '#856404', padding: '2px 6px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '2px' }}><Star size={8} fill="#856404" /> TOP</span>}
+                    {prod.enPromocion && <span style={{ fontSize: '9px', background: '#fde8e8', color: '#b91c1c', padding: '2px 6px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '2px' }}><Flame size={8} fill="#b91c1c" /> PROMO</span>}
                     {!prod.disponible && <span style={{ fontSize: '9px', background: '#f5f5f5', color: '#888', padding: '2px 6px', borderRadius: '4px' }}>Oculto</span>}
                   </div>
-                  <div style={{ fontSize: '11px', color: '#9a7a7a', display: 'flex', gap: '12px', marginTop: '2px' }}>
+                  <div style={{ fontSize: '11px', color: '#9a7a7a', display: 'flex', gap: '12px', marginTop: '2px', alignItems: 'center' }}>
                     <span>{prod.categoria}</span>
                     {prod.enPromocion && prod.precioAnterior && <span style={{ textDecoration: 'line-through', color: '#bbb' }}>S/.{prod.precioAnterior}</span>}
-                    {prod.variaciones?.length > 0 && <span>🎛️ {prod.variaciones.length} var.</span>}
+                    {prod.variaciones?.length > 0 && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Settings2 size={10} /> {prod.variaciones.length} var.</span>}
                   </div>
                 </div>
               </div>
@@ -432,18 +456,18 @@ export default function ProductosManager({ color }) {
                 </span>
 
                 <button onClick={() => toggleDisponibilidad(prod)} title={prod.disponible ? 'Desactivar' : 'Activar'}
-                  style={{ ...btnStyle(prod.disponible ? '#e8f5e9' : '#fde8e8', prod.disponible ? '#2d5a27' : '#8b2f2f'), padding: '6px 10px', fontSize: '14px' }}>
-                  {prod.disponible ? '✅' : '⬜'}
+                  style={{ ...btnStyle(prod.disponible ? '#e8f5e9' : '#fde8e8', prod.disponible ? '#2d5a27' : '#8b2f2f'), padding: '6px 10px', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {prod.disponible ? <CheckSquare size={16} /> : <Square size={16} />}
                 </button>
 
-                <button onClick={() => editarProducto(prod)}
-                  style={{ ...btnStyle('#fdf0eb', '#8b2f5f'), padding: '6px 10px' }}>
-                  ✏️
+                <button onClick={() => editarProducto(prod)} title="Editar"
+                  style={{ ...btnStyle('#fdf0eb', '#8b2f5f'), padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Edit2 size={16} />
                 </button>
 
-                <button onClick={() => handleEliminar(prod._id)}
-                  style={{ ...btnStyle('#fde8e8', '#8b2f2f'), padding: '6px 10px' }}>
-                  🗑️
+                <button onClick={() => handleEliminar(prod._id)} title="Eliminar"
+                  style={{ ...btnStyle('#fde8e8', '#8b2f2f'), padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Trash2 size={16} />
                 </button>
               </div>
             </div>

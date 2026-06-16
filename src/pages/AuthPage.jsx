@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../context/useAuthStore'
+import { CheckCircle, XCircle, ChefHat } from 'lucide-react'
 
 export default function AuthPage() {
   const navigate = useNavigate()
@@ -85,13 +86,13 @@ export default function AuthPage() {
     <div style={{ maxWidth: '700px', margin: '2rem auto', padding: '0 1rem' }}>
       {/* Mensajes de feedback */}
       {mensaje && (
-        <div style={{ background: '#e8f5e9', borderRadius: '10px', padding: '12px', marginBottom: '1rem', fontSize: '13px', color: '#2d5a27', border: '1px solid #a8d5a2', textAlign: 'center' }}>
-          ✅ {mensaje}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#e8f5e9', borderRadius: '10px', padding: '12px', marginBottom: '1rem', fontSize: '13px', color: '#2d5a27', border: '1px solid #a8d5a2', textAlign: 'center' }}>
+          <CheckCircle size={16} /> {mensaje}
         </div>
       )}
       {(errorLocal || error) && (
-        <div style={{ background: '#fde8e8', borderRadius: '10px', padding: '12px', marginBottom: '1rem', fontSize: '13px', color: '#8b2f2f', border: '1px solid #e8a0a0', textAlign: 'center' }}>
-          ❌ {errorLocal || error}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#fde8e8', borderRadius: '10px', padding: '12px', marginBottom: '1rem', fontSize: '13px', color: '#8b2f2f', border: '1px solid #e8a0a0', textAlign: 'center' }}>
+          <XCircle size={16} /> {errorLocal || error}
         </div>
       )}
 
@@ -153,9 +154,9 @@ export default function AuthPage() {
           <button
             type="button"
             onClick={() => navigate('/registro')}
-            style={{ width: '100%', background: '#a8d5a2', color: '#2d5a27', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '12px' }}
+            style={{ width: '100%', background: '#a8d5a2', color: '#2d5a27', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
           >
-            🧑‍🍳 Soy pastelero — Registrar mi tienda
+            <ChefHat size={14} /> Soy pastelero — Registrar mi tienda
           </button>
         </form>
 
@@ -164,7 +165,7 @@ export default function AuthPage() {
         {/* ============================================ */}
         <form onSubmit={handleLogin} style={{ padding: '2.5rem 2rem' }}>
           <h2 style={{ fontStyle: 'italic', marginBottom: '1rem', color: '#3a1a1a' }}>Iniciar sesión</h2>
-          <div style={{ textAlign: 'center', fontSize: '56px', marginBottom: '1rem' }}>👨‍🍳</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', color: '#8b2f5f' }}><ChefHat size={56} /></div>
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ fontSize: '12px', color: '#6b4c4c', display: 'block', marginBottom: '4px' }}>Correo electrónico</label>
             <input
