@@ -19,7 +19,7 @@ const plantillasLabel = {
 
 export default function DashboardVendedor() {
   const navigate = useNavigate()
-  const { usuario, estaLogueado } = useAuthStore()
+  const { usuario, token, estaLogueado } = useAuthStore()
   const [tienda, setTienda] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
@@ -38,7 +38,7 @@ export default function DashboardVendedor() {
       return
     }
     cargarTienda()
-  }, [usuario])
+  }, [usuario, token])
 
   const cargarTienda = async () => {
     try {

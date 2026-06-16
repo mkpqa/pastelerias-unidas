@@ -16,7 +16,7 @@ const coloresTexto = ['#3a1a1a', '#4a2800', '#1b5e20', '#4a148c', '#004d40', '#8
 
 export default function AdminDashboard() {
   const navigate = useNavigate()
-  const { usuario, estaLogueado } = useAuthStore()
+  const { usuario, token, estaLogueado } = useAuthStore()
 
   const [stats, setStats] = useState(null)
   const [tiendas, setTiendas] = useState([])
@@ -31,7 +31,7 @@ export default function AdminDashboard() {
     if (!estaLogueado()) { navigate('/auth'); return }
     if (usuario && usuario.rol !== 'admin') { navigate('/marketplace'); return }
     cargarDatos()
-  }, [usuario])
+  }, [usuario, token])
 
   const cargarDatos = async () => {
     try {
