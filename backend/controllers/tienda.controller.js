@@ -158,7 +158,7 @@ const obtenerTiendasPublicas = async (req, res) => {
       .select('*, tienda_diseno(*)')
       .eq('activa', true)
       .order('orden_marketplace', { ascending: true })
-      .order('created_at', { ascending: false });
+      .order('fecha_creacion', { ascending: false });
 
     if (error) throw error;
 
@@ -170,9 +170,11 @@ const obtenerTiendasPublicas = async (req, res) => {
       tiendas: tiendasFormateadas,
     });
   } catch (error) {
+    console.error('obtenerTiendasPublicas error:', error);
     res.status(500).json({
       exito: false,
       mensaje: 'Error al obtener las tiendas.',
+      detalle: error.message,
     });
   }
 };
