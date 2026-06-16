@@ -78,7 +78,7 @@ export default function TemplateGaleria({ tienda, color, recomendados, promocion
                   onClick={() => window.location.href = `/tienda/${tienda.slug}/producto/${prod._id}`}
                   style={{ background: `linear-gradient(135deg, #161622, ${color}15)`, borderRadius: '16px', padding: '24px', border: `1px solid ${color}25`, display: 'flex', gap: '16px', alignItems: 'center', cursor: 'pointer' }}>
                   <div style={{ width: '64px', height: '64px', borderRadius: '12px', overflow: 'hidden', background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color, flexShrink: 0 }}>
-                    {prod.imagen ? <img src={`http://localhost:5000${prod.imagen}`} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <IconoCategoria categoria={prod.categoria} size={36} color={color} />}
+                    {prod.imagen ? <img src={prod.imagen} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <IconoCategoria categoria={prod.categoria} size={36} color={color} />}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '16px', fontWeight: '700', color: '#e0e0f0', marginBottom: '4px' }}>{prod.nombre}</div>
@@ -109,7 +109,7 @@ export default function TemplateGaleria({ tienda, color, recomendados, promocion
                   style={{ background: '#161622', borderRadius: '14px', padding: '20px', border: '1px solid #ef444430', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #ef4444, #f97316)' }} />
                   <div style={{ width: '48px', height: '48px', borderRadius: '10px', overflow: 'hidden', background: '#ef444420', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', marginBottom: '10px' }}>
-                    {prod.imagen ? <img src={`http://localhost:5000${prod.imagen}`} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <IconoCategoria categoria={prod.categoria} size={24} color="#ef4444" />}
+                    {prod.imagen ? <img src={prod.imagen} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <IconoCategoria categoria={prod.categoria} size={24} color="#ef4444" />}
                   </div>
                   <div style={{ fontSize: '14px', fontWeight: '700', color: '#e0e0f0', marginBottom: '4px' }}>{prod.nombre}</div>
                   {prod.precioAnterior && <div style={{ fontSize: '11px', color: '#555', textDecoration: 'line-through' }}>Antes: S/.{prod.precioAnterior.toFixed(2)}</div>}

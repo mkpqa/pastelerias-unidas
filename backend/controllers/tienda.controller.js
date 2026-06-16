@@ -1,11 +1,45 @@
-const Tienda = require('../models/Tienda');
+const supabase = require('../config/db');
+const { subirImagenASupabase } = require('../config/storage');
 
-/**
- * Controlador: Tiendas
- *
- * Gestiona las operaciones sobre las tiendas de los vendedores.
- * Cada vendedor solo puede ver/editar SU propia tienda (multitenancy).
- */
+// Helpers para transformar la tienda de Supabase al formato que espera el Frontend
+const formatearTienda = (tienda) => {
+  if (!tienda) return null;
+  
+  // Mapeamos los campos de la base de datos (snake_case) a lo que espera el Frontend (camelCase)
+  const t = { 
+    ...tienda, 
+    _id: tienda.id,
+    metodosPago: tienda.metodos_pago,
+    ordenMarketplace: tienda.orden_marketplace,
+    createdAt: tienda.created_at
+  };
+  
+  // Adaptar tienda_diseno a personalizacion
+  let diseno = null;
+  if (Array.isArray(t.tienda_diseno)) {
+    diseno = t.tienda_diseno[0];
+  } else if (t.tienda_diseno) {
+    diseno = t.tienda_diseno;
+  }
+
+  if (diseno) {
+    t.personalizacion = {
+      plantilla: diseno.plantilla,
+      colorPrimario: diseno.color_primario,
+      colorSecundario: diseno.color_secundario,
+      logo: diseno.logo_url
+    };
+  } else {
+    t.personalizacion = {};
+  }
+  
+  // Mapear propietario a la estructura poblada si existe
+  if (t.usuarios) {
+    t.propietario = { _id: t.usuarios.id, nombre: t.usuarios.nombre };
+  }
+
+  return t;
+};
 
 // ============================================
 // @desc    Obtener MI tienda (la del vendedor logueado)
@@ -14,9 +48,13 @@ const Tienda = require('../models/Tienda');
 // ============================================
 const obtenerMiTienda = async (req, res) => {
   try {
-    const tienda = await Tienda.findOne({ propietario: req.usuario._id });
+    const { data: tienda, error } = await supabase
+      .from('tiendas')
+      .select('*, tienda_diseno(*)')
+      .eq('usuario_id', req.usuario.id)
+      .single();
 
-    if (!tienda) {
+    if (error || !tienda) {
       return res.status(404).json({
         exito: false,
         mensaje: 'No tienes una tienda registrada.',
@@ -25,7 +63,7 @@ const obtenerMiTienda = async (req, res) => {
 
     res.json({
       exito: true,
-      tienda,
+      tienda: formatearTienda(tienda),
     });
   } catch (error) {
     res.status(500).json({
@@ -42,42 +80,63 @@ const obtenerMiTienda = async (req, res) => {
 // ============================================
 const actualizarMiTienda = async (req, res) => {
   try {
-    const camposPermitidos = [
-      'nombre',
-      'descripcion',
-      'ubicacion',
-      'telefono',
-      'especialidad',
-      'personalizacion',
-      'configuracionPagos',
-      'tarjetasServicios',
-      'redesSociales'
-    ];
+    // 1. Obtener la tienda actual
+    const { data: tiendaActual } = await supabase
+      .from('tiendas')
+      .select('id')
+      .eq('usuario_id', req.usuario.id)
+      .single();
 
-    const actualizaciones = {};
-    camposPermitidos.forEach((campo) => {
-      if (req.body[campo] !== undefined) {
-        actualizaciones[campo] = req.body[campo];
-      }
-    });
-
-    const tienda = await Tienda.findOneAndUpdate(
-      { propietario: req.usuario._id },
-      actualizaciones,
-      { new: true, runValidators: true }
-    );
-
-    if (!tienda) {
-      return res.status(404).json({
-        exito: false,
-        mensaje: 'No tienes una tienda registrada.',
-      });
+    if (!tiendaActual) {
+      return res.status(404).json({ exito: false, mensaje: 'Tienda no encontrada.' });
     }
 
+    // 2. Separar datos de la tabla tiendas vs tienda_diseno
+    const camposTienda = {};
+    if (req.body.nombre !== undefined) camposTienda.nombre = req.body.nombre;
+    if (req.body.descripcion !== undefined) camposTienda.descripcion = req.body.descripcion;
+    if (req.body.ubicacion !== undefined) camposTienda.ubicacion = req.body.ubicacion;
+    if (req.body.telefono !== undefined) camposTienda.telefono = req.body.telefono;
+    if (req.body.especialidad !== undefined) camposTienda.especialidad = req.body.especialidad;
+    // Si necesitas soportar campos extra como metodos_pago
+    if (req.body.metodosPago !== undefined) camposTienda.metodos_pago = req.body.metodosPago;
+    
+    if (Object.keys(camposTienda).length > 0) {
+      await supabase.from('tiendas').update(camposTienda).eq('id', tiendaActual.id);
+    }
+
+    // 3. Actualizar tienda_diseno
+    if (req.body.personalizacion) {
+      const p = req.body.personalizacion;
+      const camposDiseno = {};
+      if (p.plantilla) camposDiseno.plantilla = p.plantilla;
+      if (p.colorPrimario) camposDiseno.color_primario = p.colorPrimario;
+      if (p.colorSecundario) camposDiseno.color_secundario = p.colorSecundario;
+      if (p.logo !== undefined) camposDiseno.logo_url = p.logo;
+
+      if (Object.keys(camposDiseno).length > 0) {
+        // Verificar si existe el diseño
+        const { data: disenoExistente } = await supabase.from('tienda_diseno').select('id').eq('tienda_id', tiendaActual.id).single();
+        if (disenoExistente) {
+          await supabase.from('tienda_diseno').update(camposDiseno).eq('tienda_id', tiendaActual.id);
+        } else {
+          camposDiseno.tienda_id = tiendaActual.id;
+          await supabase.from('tienda_diseno').insert([camposDiseno]);
+        }
+      }
+    }
+
+    // 4. Retornar la tienda actualizada
+    const { data: tiendaUpdated } = await supabase
+      .from('tiendas')
+      .select('*, tienda_diseno(*)')
+      .eq('id', tiendaActual.id)
+      .single();
+    
     res.json({
       exito: true,
       mensaje: 'Tienda actualizada correctamente.',
-      tienda,
+      tienda: formatearTienda(tiendaUpdated),
     });
   } catch (error) {
     res.status(500).json({
@@ -94,14 +153,21 @@ const actualizarMiTienda = async (req, res) => {
 // ============================================
 const obtenerTiendasPublicas = async (req, res) => {
   try {
-    const tiendas = await Tienda.find({ activa: true })
-      .select('nombre slug descripcion ubicacion especialidad personalizacion destacada')
-      .sort({ ordenMarketplace: 1, createdAt: -1 });
+    const { data: tiendas, error } = await supabase
+      .from('tiendas')
+      .select('*, tienda_diseno(*)')
+      .eq('activa', true)
+      .order('orden_marketplace', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const tiendasFormateadas = tiendas.map(formatearTienda);
 
     res.json({
       exito: true,
-      cantidad: tiendas.length,
-      tiendas,
+      cantidad: tiendasFormateadas.length,
+      tiendas: tiendasFormateadas,
     });
   } catch (error) {
     res.status(500).json({
@@ -118,12 +184,14 @@ const obtenerTiendasPublicas = async (req, res) => {
 // ============================================
 const obtenerTiendaPorSlug = async (req, res) => {
   try {
-    const tienda = await Tienda.findOne({
-      slug: req.params.slug,
-      activa: true,
-    }).populate('propietario', 'nombre');
+    const { data: tienda, error } = await supabase
+      .from('tiendas')
+      .select('*, tienda_diseno(*), usuarios(id, nombre)')
+      .eq('slug', req.params.slug)
+      .eq('activa', true)
+      .single();
 
-    if (!tienda) {
+    if (error || !tienda) {
       return res.status(404).json({
         exito: false,
         mensaje: 'Tienda no encontrada.',
@@ -132,7 +200,7 @@ const obtenerTiendaPorSlug = async (req, res) => {
 
     res.json({
       exito: true,
-      tienda,
+      tienda: formatearTienda(tienda),
     });
   } catch (error) {
     res.status(500).json({
@@ -156,26 +224,40 @@ const subirLogoTienda = async (req, res) => {
       });
     }
 
-    const rutaImagen = `/uploads/logos/${req.file.filename}`;
+    // Subir imagen a Supabase Storage
+    const rutaImagen = await subirImagenASupabase(req.file.buffer, req.file.originalname, 'logos');
+    
+    // Obtener la tienda actual
+    const { data: tiendaActual } = await supabase
+      .from('tiendas')
+      .select('id')
+      .eq('usuario_id', req.usuario.id)
+      .single();
 
-    const tienda = await Tienda.findOneAndUpdate(
-      { propietario: req.usuario._id },
-      { 'personalizacion.logo': rutaImagen },
-      { new: true }
-    );
-
-    if (!tienda) {
-      return res.status(404).json({
-        exito: false,
-        mensaje: 'No tienes una tienda registrada.',
-      });
+    if (!tiendaActual) {
+      return res.status(404).json({ exito: false, mensaje: 'No tienes una tienda registrada.' });
     }
+
+    // Actualizar el logo en tienda_diseno
+    const { data: disenoExistente } = await supabase.from('tienda_diseno').select('id').eq('tienda_id', tiendaActual.id).single();
+    if (disenoExistente) {
+      await supabase.from('tienda_diseno').update({ logo_url: rutaImagen }).eq('tienda_id', tiendaActual.id);
+    } else {
+      await supabase.from('tienda_diseno').insert([{ tienda_id: tiendaActual.id, logo_url: rutaImagen }]);
+    }
+
+    // Obtener la tienda actualizada para devolverla
+    const { data: tiendaUpdated } = await supabase
+      .from('tiendas')
+      .select('*, tienda_diseno(*)')
+      .eq('id', tiendaActual.id)
+      .single();
 
     res.json({
       exito: true,
       mensaje: 'Logo subido correctamente.',
       logo: rutaImagen,
-      tienda,
+      tienda: formatearTienda(tiendaUpdated),
     });
   } catch (error) {
     res.status(500).json({
@@ -199,7 +281,8 @@ const subirImagenServicio = async (req, res) => {
       });
     }
 
-    const rutaImagen = `/uploads/servicios/${req.file.filename}`;
+    // Subir imagen a Supabase Storage
+    const rutaImagen = await subirImagenASupabase(req.file.buffer, req.file.originalname, 'servicios');
 
     res.json({
       exito: true,

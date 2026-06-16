@@ -84,9 +84,9 @@ export default function MarketplacePage() {
         onMouseLeave={e => e.currentTarget.style.transform = 'none'}
       >
         {/* Fondo difuminado para rellenar espacios */}
-        <img src={`http://localhost:5000${bannerActivo.imagen}`} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(20px)', opacity: 0.7, transform: 'scale(1.1)' }} />
+        <img src={bannerActivo.imagen} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(20px)', opacity: 0.7, transform: 'scale(1.1)' }} />
         {/* Imagen principal responsiva */}
-        <img src={`http://localhost:5000${bannerActivo.imagen}`} alt={bannerActivo.titulo} style={{ position: 'relative', width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
+        <img src={bannerActivo.imagen} alt={bannerActivo.titulo} style={{ position: 'relative', width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
         
         {/* Gradiente y título superpuesto */}
         <div style={{
@@ -198,7 +198,7 @@ export default function MarketplacePage() {
                     }}>
                       {tienda.personalizacion?.logo ? (
                         <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#fff', padding: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                          <img src={`http://localhost:5000${tienda.personalizacion.logo}`} alt={tienda.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
+                          <img src={tienda.personalizacion.logo} alt={tienda.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
                         </div>
                       ) : (
                         <div style={{ color }}>{icon}</div>

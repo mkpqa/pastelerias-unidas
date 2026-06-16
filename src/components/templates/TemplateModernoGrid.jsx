@@ -387,7 +387,7 @@ export default function TemplateModernoGrid({ tienda, color, productos, recomend
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px'
                     }}>
                       <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', borderRadius: '4px' }}>
-                        <img src={`http://localhost:5000${srv.imagen}`} alt={srv.titulo} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src={srv.imagen} alt={srv.titulo} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
                       
                       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '12px' }}>

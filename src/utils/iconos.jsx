@@ -53,7 +53,7 @@ export function ImagenProducto({
   const [errorImg, setErrorImg] = useState(false)
 
   if (src && !errorImg) {
-    const imgUrl = src.startsWith('http') ? src : `http://localhost:5000${src}`
+    const imgUrl = src.startsWith('http') ? src : src
     return (
       <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', background: '#f5f5f5', ...style }} className={className}>
         {/* Fondo difuminado */}

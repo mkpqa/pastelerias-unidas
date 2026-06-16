@@ -17,7 +17,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
   // Estado del formulario
   const [colorPrimario, setColorPrimario] = useState(tienda.personalizacion?.colorPrimario || '#d4687a')
   const [plantilla, setPlantilla] = useState(tienda.personalizacion?.plantilla || 'minimalista')
-  const [logoPreview, setLogoPreview] = useState(tienda.personalizacion?.logo ? `http://localhost:5000${tienda.personalizacion.logo}` : null)
+  const [logoPreview, setLogoPreview] = useState(tienda.personalizacion?.logo ? tienda.personalizacion.logo : null)
   const [logoFile, setLogoFile] = useState(null)
   
   // WhatsApp y Servicios
@@ -126,7 +126,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center', padding: '16px', background: '#fdf8f5', borderRadius: '10px', marginBottom: '12px' }}>
           <div style={{ width: '64px', height: '64px', borderRadius: '12px', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', boxShadow: `0 4px 12px ${color}40` }}>
             {tienda.personalizacion?.logo ? (
-              <img src={`http://localhost:5000${tienda.personalizacion.logo}`} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#fff' }} />
+              <img src={tienda.personalizacion.logo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#fff' }} />
             ) : (
               <Store size={24} color="#fff" />
             )}
@@ -215,7 +215,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '12px', marginBottom: '16px' }}>
             {tarjetasServicios.map((srv, idx) => (
               <div key={idx} style={{ background: '#fff', border: '1px solid #eee', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
-                <img src={`http://localhost:5000${srv.imagen}`} alt={srv.titulo} style={{ width: '100%', height: '80px', objectFit: 'cover' }} />
+                <img src={srv.imagen} alt={srv.titulo} style={{ width: '100%', height: '80px', objectFit: 'cover' }} />
                 <div style={{ padding: '8px', fontSize: '11px', fontWeight: '600', textAlign: 'center', color: '#333' }}>
                   {srv.titulo}
                 </div>

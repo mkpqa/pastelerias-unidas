@@ -290,7 +290,7 @@ export default function AdminDashboard() {
               <h4 style={{ fontSize: '14px', color: '#1a1a2e', marginBottom: '12px', borderBottom: '1px solid #eee', paddingBottom: '8px' }}>← Columna Izquierda</h4>
               {banners.filter(b => b.posicion === 'izquierda').map(b => (
                 <div key={b._id} style={{ display: 'flex', gap: '12px', padding: '12px', border: '1px solid #e0e0e0', borderRadius: '10px', marginBottom: '10px', opacity: b.activo ? 1 : 0.6 }}>
-                  <img src={`http://localhost:5000${b.imagen}`} alt={b.titulo} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px' }} />
+                  <img src={b.imagen} alt={b.titulo} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px' }} />
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '13px', fontWeight: '600', color: '#1a1a2e' }}>{b.titulo}</div>
                     <div style={{ fontSize: '11px', color: '#666' }}>Tienda: {b.tienda?.nombre || 'Desconocida'}</div>
@@ -315,7 +315,7 @@ export default function AdminDashboard() {
               <h4 style={{ fontSize: '14px', color: '#1a1a2e', marginBottom: '12px', borderBottom: '1px solid #eee', paddingBottom: '8px' }}>Columna Derecha →</h4>
               {banners.filter(b => b.posicion === 'derecha').map(b => (
                 <div key={b._id} style={{ display: 'flex', gap: '12px', padding: '12px', border: '1px solid #e0e0e0', borderRadius: '10px', marginBottom: '10px', opacity: b.activo ? 1 : 0.6 }}>
-                  <img src={`http://localhost:5000${b.imagen}`} alt={b.titulo} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px' }} />
+                  <img src={b.imagen} alt={b.titulo} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px' }} />
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '13px', fontWeight: '600', color: '#1a1a2e' }}>{b.titulo}</div>
                     <div style={{ fontSize: '11px', color: '#666' }}>Tienda: {b.tienda?.nombre || 'Desconocida'}</div>

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Usuario = require('../models/Usuario');
+const supabase = require('../config/db');
 
 /**
  * Middleware: protegerRuta
@@ -32,17 +32,22 @@ const protegerRuta = async (req, res, next) => {
     // Desencriptar el JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Buscar al usuario en la BD y adjuntarlo a req
-    req.usuario = await Usuario.findById(decoded.id).select('-password');
+    // Buscar al usuario en la BD (Supabase Postgres)
+    const { data: usuario, error } = await supabase
+      .from('usuarios')
+      .select('id, nombre, email, rol, preferencia_sabor, alergias')
+      .eq('id', decoded.id)
+      .single();
 
-    if (!req.usuario) {
+    if (error || !usuario) {
       return res.status(401).json({
         exito: false,
         mensaje: 'No autorizado. Usuario no encontrado.',
       });
     }
 
-    // Adjuntar el tienda_id directamente (para multitenancy rápido)
+    req.usuario = usuario;
+    // Adjuntar el tienda_id directamente (si existiera en el token)
     req.tiendaId = decoded.tienda || null;
 
     next();

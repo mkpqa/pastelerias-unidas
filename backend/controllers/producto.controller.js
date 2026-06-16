@@ -1,4 +1,5 @@
 const Producto = require('../models/Producto');
+const { subirImagenASupabase } = require('../config/storage');
 
 /**
  * Controlador: Productos
@@ -246,7 +247,7 @@ const subirImagenProducto = async (req, res) => {
       return res.status(400).json({ exito: false, mensaje: 'No se recibió ninguna imagen.' });
     }
 
-    const rutaImagen = `/uploads/productos/${req.file.filename}`;
+    const rutaImagen = await subirImagenASupabase(req.file.buffer, req.file.originalname, 'productos');
 
     const producto = await Producto.findOneAndUpdate(
       { _id: req.params.id, tienda: req.tiendaId },

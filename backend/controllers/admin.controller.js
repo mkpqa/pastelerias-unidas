@@ -2,6 +2,7 @@ const Tienda = require('../models/Tienda');
 const Banner = require('../models/Banner');
 const Usuario = require('../models/Usuario');
 const Producto = require('../models/Producto');
+const { subirImagenASupabase } = require('../config/storage');
 
 /**
  * Controlador: Admin
@@ -212,8 +213,10 @@ const crearBanner = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ exito: false, mensaje: 'La imagen es obligatoria.' });
 
+    const rutaImagen = await subirImagenASupabase(req.file.buffer, req.file.originalname, 'flyers');
+
     const banner = await Banner.create({
-      imagen: `/uploads/flyers/${req.file.filename}`,
+      imagen: rutaImagen,
       titulo: req.body.titulo || 'Flyer Promocional',
       linkCTA: req.body.linkCTA || '/marketplace',
       posicion: req.body.posicion || 'izquierda',
@@ -303,8 +306,10 @@ const subirMiFlyer = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ exito: false, mensaje: 'La imagen es obligatoria.' });
 
+    const rutaImagen = await subirImagenASupabase(req.file.buffer, req.file.originalname, 'flyers');
+
     const banner = await Banner.create({
-      imagen: `/uploads/flyers/${req.file.filename}`,
+      imagen: rutaImagen,
       titulo: req.body.titulo || 'Promoción',
       linkCTA: `/tienda/${req.body.slug || ''}`,
       posicion: req.body.posicion || 'izquierda',

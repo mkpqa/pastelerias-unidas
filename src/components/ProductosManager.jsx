@@ -85,7 +85,7 @@ export default function ProductosManager({ color }) {
     setEnPromocion(prod.enPromocion || false)
     setPrecioAnterior(prod.precioAnterior ? String(prod.precioAnterior) : '')
     setImagenArchivo(null)
-    setPreviewImagen(prod.imagen ? `http://localhost:5000${prod.imagen}` : null)
+    setPreviewImagen(prod.imagen ? prod.imagen : null)
     setVariaciones(prod.variaciones || [])
     setMostrarFormulario(true); setErrorMsg('')
   }
@@ -427,7 +427,7 @@ export default function ProductosManager({ color }) {
               <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flex: 1 }}>
                 <div style={{ width: '52px', height: '52px', borderRadius: '10px', background: `${color}18`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, position: 'relative', color: '#6b4c4c' }}>
                   {prod.imagen
-                    ? <img src={`http://localhost:5000${prod.imagen}`} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ? <img src={prod.imagen} alt={prod.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     : (() => {
                         const Icon = CategoriasIconos[prod.categoria] || Package;
                         return <Icon size={24} />;

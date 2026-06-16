@@ -159,7 +159,7 @@ export default function FlyersManager({ color }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
           {flyers.map(flyer => (
             <div key={flyer._id} style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e8d5cc', overflow: 'hidden', opacity: flyer.activo ? 1 : 0.6 }}>
-              <img src={`http://localhost:5000${flyer.imagen}`} alt={flyer.titulo} style={{ width: '100%', height: '160px', objectFit: 'cover' }} />
+              <img src={flyer.imagen} alt={flyer.titulo} style={{ width: '100%', height: '160px', objectFit: 'cover' }} />
               <div style={{ padding: '12px' }}>
                 <h4 style={{ fontSize: '13px', color: '#3a1a1a', margin: '0 0 4px' }}>{flyer.titulo}</h4>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
