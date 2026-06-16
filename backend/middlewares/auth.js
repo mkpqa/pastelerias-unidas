@@ -29,9 +29,8 @@ const protegerRuta = async (req, res, next) => {
   }
 
   try {
-    // Desencriptar el JWT usando un fallback temporal si falta la variable de entorno
-    const secret = process.env.JWT_SECRET || 'pruebadepasteleriasunidas2026_2004!';
-    const decoded = jwt.verify(token, secret);
+    // Desencriptar el JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Buscar al usuario en la BD (Supabase Postgres)
     const { data: usuario, error } = await supabase

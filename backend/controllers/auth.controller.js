@@ -10,14 +10,11 @@ const jwt = require('jsonwebtoken');
 // Helper: Enviar respuesta con token
 // ============================================
 const enviarTokenRespuesta = (usuario, statusCode, res) => {
-  // Generamos el token manualmente usando un fallback temporal
-  const secret = process.env.JWT_SECRET || 'pruebadepasteleriasunidas2026_2004!';
-  const expire = process.env.JWT_EXPIRE || '7d';
-
+  // Generamos el token manualmente
   const token = jwt.sign(
     { id: usuario.id, rol: usuario.rol },
-    secret,
-    { expiresIn: expire }
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRE }
   );
 
   // Eliminamos el hash de la contraseña antes de enviar la respuesta por seguridad
