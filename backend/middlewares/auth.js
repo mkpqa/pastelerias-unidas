@@ -29,8 +29,9 @@ const protegerRuta = async (req, res, next) => {
   }
 
   try {
-    // Desencriptar el JWT
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Desencriptar el JWT usando un fallback temporal si falta la variable de entorno
+    const secret = process.env.JWT_SECRET || 'pruebadepasteleriasunidas2026_2004!';
+    const decoded = jwt.verify(token, secret);
 
     // Buscar al usuario en la BD (Supabase Postgres)
     const { data: usuario, error } = await supabase
@@ -52,6 +53,7 @@ const protegerRuta = async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.error("Auth Middleware Error:", error);
     return res.status(401).json({
       exito: false,
       mensaje: 'No autorizado. Token inválido o expirado.',
