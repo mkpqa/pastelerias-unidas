@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/Home.css';
-import NavBar from '../components/NavBar'; // Asumiendo que NavBar está en el mismo nivel
 
 // Importación de imágenes desde la carpeta assets
 import PromocionPasteleriasUnidas from '../assets/PromocionPasteleriasUnidas.png';
@@ -8,6 +7,18 @@ import PasteleriaDestacada1 from '../assets/PasteleriaDestacada1.png';
 import PasteleriaDestacada2 from '../assets/TiendaDestacada2.png';
 import PasteleriaDestacada3 from '../assets/TiendaDestacada3.png';
 import PasteleriaDestacada4 from '../assets/PasteleriaDescatada4.png';
+import ImgGlobo from '../assets/promocion-el-globo-cumpleaños.png';
+import ImgAlimentos from '../assets/banner-cuadrado-alimentos.png';
+import ImgCafe from '../assets/cafe-20-dscto-scaled.png';
+
+
+// Imágenes del carrusel hero — agrega más aquí cuando las tengas
+const bannerImages = [
+  { src: PromocionPasteleriasUnidas, alt: 'Promoción 2x1 del mes' },
+  { src: ImgGlobo, alt: 'Promoción cumpleaños' },
+  { src: ImgAlimentos, alt: 'Promoción 15%' },
+  { src: ImgCafe, alt: 'Promoción cafe' },
+];
 
 const bakeriesData = [
   {
@@ -41,27 +52,51 @@ const bakeriesData = [
 ];
 
 const Home = () => {
+  const [indiceActivo, setIndiceActivo] = useState(0);
+
+  // Rotación automática cada 4 segundos (solo si hay más de 1 imagen)
+  useEffect(() => {
+    if (bannerImages.length <= 1) return;
+    const intervalo = setInterval(() => {
+      setIndiceActivo((prev) => (prev + 1) % bannerImages.length);
+    }, 8000);
+    return () => clearInterval(intervalo);
+  }, []);
+
+  const irAnterior = () =>
+    setIndiceActivo((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
+
+  const irSiguiente = () =>
+    setIndiceActivo((prev) => (prev + 1) % bannerImages.length);
+
   return (
     <div className="home-container">
 
-      {/* Hero / Banner modificado para ser una imagen */}
+      {/* Hero / Carrusel */}
       <section className="hero-section">
-        <button className="arrow-btn">←</button>
+        <button className="arrow-btn" onClick={irAnterior}>←</button>
         <div className="hero-banner">
-          <img 
-            src={PromocionPasteleriasUnidas} 
-            alt="Promoción 2x1 del mes" 
-            className="banner-img" 
-          />
+          <div
+            className="carousel-track"
+            style={{ transform: `translateX(-${indiceActivo * 100}%)` }}
+          >
+            {bannerImages.map((img, idx) => (
+              <img key={idx} src={img.src} alt={img.alt} className="banner-img" />
+            ))}
+          </div>
         </div>
-        <button className="arrow-btn">→</button>
+        <button className="arrow-btn" onClick={irSiguiente}>→</button>
       </section>
-      
+
       <div className="carousel-dots">
-        <div className="dot active"></div>
-        <div className="dot"></div>
-        <div className="dot"></div>
-        <div className="dot"></div>
+        {bannerImages.map((_, idx) => (
+          <div
+            key={idx}
+            className={`dot ${idx === indiceActivo ? 'active' : ''}`}
+            onClick={() => setIndiceActivo(idx)}
+            style={{ cursor: 'pointer' }}
+          />
+        ))}
       </div>
 
       {/* Featured Section */}

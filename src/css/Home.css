@@ -84,11 +84,19 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
+.carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
 .banner-img {
+  min-width: 100%;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  flex-shrink: 0;
 }
 
 .arrow-btn {

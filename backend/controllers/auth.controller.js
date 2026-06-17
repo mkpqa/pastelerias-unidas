@@ -35,7 +35,12 @@ exports.registroComprador = async (req, res, next) => {
   try {
     const { nombre, email, password } = req.body;
 
-    // 1. Verificar si el email ya existe
+    // 1. Validar campos requeridos
+    if (!nombre || !email || !password) {
+      return res.status(400).json({ exito: false, mensaje: 'Nombre, correo y contraseña son requeridos.' });
+    }
+
+    // 2. Verificar si el email ya existe
     const { data: existente } = await supabase
       .from('usuarios')
       .select('id')
