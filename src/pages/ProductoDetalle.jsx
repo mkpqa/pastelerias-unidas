@@ -123,8 +123,8 @@ export default function ProductoDetalle() {
             {/* Imagen o icono SVG */}
             {producto.imagen ? (
               <>
-                <img src={`${API_BASE}${producto.imagen}`} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(30px)', opacity: 0.5, transform: 'scale(1.1)' }} />
-                <img src={`${API_BASE}${producto.imagen}`} alt={producto.nombre} style={{ position: 'relative', width: '100%', height: '100%', objectFit: 'contain', display: 'block', zIndex: 1 }} />
+                <img src={producto.imagen} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(30px)', opacity: 0.5, transform: 'scale(1.1)' }} />
+                <img src={producto.imagen} alt={producto.nombre} style={{ position: 'relative', width: '100%', height: '100%', objectFit: 'contain', display: 'block', zIndex: 1 }} />
               </>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', opacity: 0.35 }}>

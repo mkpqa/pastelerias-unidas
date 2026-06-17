@@ -13,7 +13,7 @@ import {
   ShoppingCart, MapPin, Search, Grid3X3,
 } from 'lucide-react'
 
-const API_BASE = 'http://localhost:5000'
+
 
 /* ────────────────────────────────────────────────────
    Tarjeta de Categoría (vista principal)
@@ -36,7 +36,7 @@ function TarjetaCategoria({ nombre, imagen, cantidad, color, onClick }) {
       {/* Imagen de fondo */}
       <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${color}30, ${color}60)` }}>
         {imagen ? (
-          <img src={`${API_BASE}${imagen}`} alt={nombre}
+          <img src={imagen} alt={nombre}
             style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: hover ? 1 : 0.85, transition: 'opacity 0.3s' }} />
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.3 }}>
@@ -276,7 +276,7 @@ export default function TemplateModernoGrid({ tienda, color, productos, recomend
         <div style={{ padding: '0 24px 0', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {tienda.personalizacion?.logo && (
             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#fff', padding: '4px', marginBottom: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-              <img src={`${API_BASE}${tienda.personalizacion.logo}`} alt={tienda.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
+              <img src={tienda.personalizacion.logo} alt={tienda.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
             </div>
           )}
           <h1 style={{ color: '#fff', fontSize: '32px', fontWeight: '800', margin: '0 0 6px', letterSpacing: '-0.5px' }}>{tienda.nombre}</h1>
