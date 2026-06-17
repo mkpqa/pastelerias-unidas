@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { tiendasAPI, adminAPI } from '../services/api'
 import { Store, Star, MapPin, Cake, Tent, Cookie, Candy, Croissant, Leaf, Package, Heart } from 'lucide-react'
+import '../css/Marketplace.css'
 
 export default function MarketplacePage() {
   const navigate = useNavigate()
@@ -146,10 +147,10 @@ export default function MarketplacePage() {
       </h2>
 
       {/* Layout 3 columnas: Flyers | Tiendas | Flyers */}
-      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr 200px', gap: '20px', alignItems: 'start' }}>
+      <div className="marketplace-layout">
 
         {/* ====== COLUMNA IZQUIERDA: Flyers ====== */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', position: 'sticky', top: '80px' }}>
+        <div className="marketplace-flyer-col">
           <FlyerCarousel banners={bannersIzq} />
         </div>
 
@@ -165,7 +166,7 @@ export default function MarketplacePage() {
               </button>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="tiendas-grid">
               {tiendas.map(tienda => {
                 const color = tienda.personalizacion?.colorPrimario || '#8b2f5f'
                 const icon = EspecialidadIcon[tienda.especialidad] || <Cake size={48} />
@@ -192,7 +193,7 @@ export default function MarketplacePage() {
                     )}
 
                     {/* Header con color de la tienda */}
-                    <div style={{
+                    <div className="tienda-card-header" style={{
                       height: '120px', background: `linear-gradient(135deg, ${color}22, ${color}44)`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '56px',
                     }}>
@@ -243,7 +244,7 @@ export default function MarketplacePage() {
         </div>
 
         {/* ====== COLUMNA DERECHA: Flyers ====== */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', position: 'sticky', top: '80px' }}>
+        <div className="marketplace-flyer-col">
           <FlyerCarousel banners={bannersDer} />
         </div>
       </div>

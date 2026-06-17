@@ -1,0 +1,121 @@
+/* NavBar.css */
+
+/* ── Área de búsqueda + carrito (siempre visible) ── */
+.navbar-search-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  max-width: 560px;
+  margin: 0 24px;
+}
+
+/* ── Wrapper interno del input ── */
+.navbar-search-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Links de escritorio: ocultos en móvil ── */
+.navbar-desktop-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+/* ── Texto de info del usuario: oculto en móvil ── */
+.user-info-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* ── Botón hamburguesa: solo visible en móvil ── */
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+/* ── Ícono de usuario en móvil: oculto en desktop ── */
+.navbar-mobile-user {
+  display: none;
+  flex-shrink: 0;
+}
+
+/* ── Cajón de navegación móvil ── */
+.nav-drawer {
+  display: none;
+  position: absolute;
+  top: 80px;
+  left: 0;
+  right: 0;
+  background: #55261C;
+  flex-direction: column;
+  z-index: 999;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-drawer.abierto {
+  display: flex;
+}
+
+.nav-drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: 'Belgrano', serif;
+  font-size: 15px;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  background: none;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.nav-drawer-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-drawer-item:last-child {
+  border-bottom: none;
+}
+
+/* ============================================
+   RESPONSIVO — ≤ 768px
+   ============================================ */
+@media (max-width: 768px) {
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .navbar-desktop-links {
+    display: none;
+  }
+
+  .user-info-text {
+    display: none;
+  }
+
+  .navbar-mobile-user {
+    display: flex;
+  }
+
+  .navbar-search-area {
+    margin: 0 10px;
+    max-width: 100%;
+  }
+}
