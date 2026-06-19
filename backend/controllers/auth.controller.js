@@ -1,6 +1,9 @@
 const supabase = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 /**
  * Controller: Autenticación (Adaptado a Supabase PostgreSQL)
@@ -302,6 +305,48 @@ exports.actualizarEmail = async (req, res, next) => {
     if (errUpdate) throw errUpdate;
 
     res.status(200).json({ exito: true, mensaje: 'Correo electrónico actualizado correctamente.' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ============================================
+// POST /api/auth/google
+// Login / registro con Google OAuth
+// ============================================
+exports.loginConGoogle = async (req, res, next) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) {
+      return res.status(400).json({ exito: false, mensaje: 'Token de Google requerido.' });
+    }
+
+    // Verificar el ID token con la clave pública de Google
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const { email, name: nombre } = ticket.getPayload();
+
+    // Buscar usuario existente por email
+    let { data: usuario } = await supabase
+      .from('usuarios')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (!usuario) {
+      // Primer login con Google → crear cuenta automáticamente como cliente
+      const { data: nuevoUsuario, error } = await supabase
+        .from('usuarios')
+        .insert([{ nombre, email, password_hash: '', rol: 'cliente' }])
+        .select()
+        .single();
+      if (error) throw error;
+      usuario = nuevoUsuario;
+    }
+
+    enviarTokenRespuesta(usuario, 200, res);
   } catch (error) {
     next(error);
   }

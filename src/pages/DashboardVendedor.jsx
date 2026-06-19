@@ -25,7 +25,7 @@ export default function DashboardVendedor() {
   // Proteger la ruta: si no está logueado o no es vendedor, redirigir
   useEffect(() => {
     if (!estaLogueado()) {
-      navigate('/auth')
+      navigate('/')
       return
     }
     if (usuario && usuario.rol !== 'vendedor') {
@@ -71,8 +71,8 @@ export default function DashboardVendedor() {
       <div style={{ maxWidth: '600px', margin: '3rem auto', padding: '0 1rem' }}>
         <div style={{ background: '#fde8e8', borderRadius: '12px', padding: '20px', border: '1px solid #e8a0a0', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
           <p style={{ fontSize: '14px', color: '#8b2f2f', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}><XCircle size={16} /> {error}</p>
-          <button onClick={() => navigate('/auth')} style={{ marginTop: '12px', padding: '8px 20px', background: '#8b2f5f', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>
-            Iniciar sesión
+          <button onClick={() => navigate('/')} style={{ marginTop: '12px', padding: '8px 20px', background: '#8b2f5f', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>
+            Ir al inicio
           </button>
         </div>
       </div>

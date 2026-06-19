@@ -59,6 +59,12 @@ export const authAPI = {
       body: JSON.stringify(datos),
     }),
 
+  loginConGoogle: (credential) =>
+    fetchAPI('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ credential }),
+    }),
+
   obtenerPerfil: () => fetchAPI('/auth/perfil'),
   actualizarPassword: (datos) =>
     fetchAPI('/auth/actualizar-password', {

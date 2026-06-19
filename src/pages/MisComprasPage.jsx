@@ -174,7 +174,7 @@ export default function MisComprasPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!estaLogueado()) { navigate('/auth'); return }
+    if (!estaLogueado()) { navigate('/'); return }
     cargarPedidos()
   }, [])
 
