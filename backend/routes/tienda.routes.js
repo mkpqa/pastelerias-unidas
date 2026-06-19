@@ -8,6 +8,7 @@ const {
   subirImagenServicio,
   obtenerTiendasPublicas,
   obtenerTiendaPorSlug,
+  obtenerHomeData,
 } = require('../controllers/tienda.controller');
 const { uploadLogo, uploadServicio } = require('../middlewares/upload');
 
@@ -47,7 +48,8 @@ router.post(
 // ============================================
 // Rutas Públicas
 // ============================================
-router.get('/', obtenerTiendasPublicas);         // GET /api/tiendas
-router.get('/:slug', obtenerTiendaPorSlug);      // GET /api/tiendas/dulce-herencia
+router.get('/', obtenerTiendasPublicas);              // GET /api/tiendas
+router.get('/home-data', obtenerHomeData);            // GET /api/tiendas/home-data (ANTES de /:slug)
+router.get('/:slug', obtenerTiendaPorSlug);           // GET /api/tiendas/:slug
 
 module.exports = router;

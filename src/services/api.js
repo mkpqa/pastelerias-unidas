@@ -78,6 +78,7 @@ export const authAPI = {
 
 export const tiendasAPI = {
   obtenerTodas: () => fetchAPI('/tiendas'),
+  obtenerHomeData: () => fetchAPI('/tiendas/home-data'),
   obtenerPorSlug: (slug) => fetchAPI(`/tiendas/${slug}`),
   obtenerMiTienda: () => fetchAPI('/tiendas/mi-tienda'),
   actualizarMiTienda: (datos) =>
@@ -166,10 +167,10 @@ export const adminAPI = {
     }),
   toggleBanner: (id) =>
     fetchAPI(`/admin/banners/${id}/toggle`, { method: 'PUT' }),
-  cambiarPosicionBanner: (id, datos) =>
+  toggleZonaBanner: (id, zona, accion) =>
     fetchAPI(`/admin/banners/${id}/posicion`, {
       method: 'PUT',
-      body: JSON.stringify(datos),
+      body: JSON.stringify({ zona, accion }),
     }),
   eliminarBanner: (id) =>
     fetchAPI(`/admin/banners/${id}`, { method: 'DELETE' }),

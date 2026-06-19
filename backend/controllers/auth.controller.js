@@ -78,7 +78,7 @@ exports.registroVendedor = async (req, res, next) => {
   try {
     const {
       nombre, email, password, // Usuario
-      nombreTienda, ubicacion, telefonoTienda, especialidad, metodosPago, // Tienda
+      nombreTienda, descripcion, ubicacion, telefonoTienda, especialidad, metodosPago, // Tienda
       plantilla, colorPrimario, colorSecundario, logo // Diseño
     } = req.body;
 
@@ -101,7 +101,13 @@ exports.registroVendedor = async (req, res, next) => {
     if (errUser) throw errUser;
 
     // 4. Crear el slug para la tienda (ej: "Dulce Herencia" -> "dulce-herencia")
-    const slug = nombreTienda.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    const slugBase = nombreTienda.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+
+    // Verificar colisión de slug y agregar sufijo numérico si es necesario
+    let slug = slugBase;
+    const { count } = await supabase
+      .from('tiendas').select('id', { count: 'exact', head: true }).like('slug', `${slugBase}%`);
+    if (count > 0) slug = `${slugBase}-${count + 1}`;
 
     // 5. Crear la tienda
     const { data: tienda, error: errTienda } = await supabase
@@ -110,6 +116,7 @@ exports.registroVendedor = async (req, res, next) => {
         usuario_id: usuario.id,
         nombre: nombreTienda,
         slug,
+        descripcion: descripcion || '',
         ubicacion,
         telefono: telefonoTienda,
         especialidad,

@@ -1,15 +1,90 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { tiendasAPI, adminAPI } from '../services/api'
-import { Store, Star, MapPin, Cake, Tent, Cookie, Candy, Croissant, Leaf, Package, Heart } from 'lucide-react'
+import { Store, Star, MapPin, Cake, Tent, Cookie, Candy, Croissant, Leaf, Package, Heart, Search, X } from 'lucide-react'
 import '../css/Marketplace.css'
+
+/* Cabecera animada: cicla entre logo y fotos de productos */
+function TarjetaHeader({ logo, imagenesProductos, color, icon }) {
+  const diapositivas = [
+    ...(logo ? [{ tipo: 'logo', src: logo }] : []),
+    ...imagenesProductos.map(src => ({ tipo: 'producto', src })),
+  ]
+  const [idx, setIdx] = useState(0)
+  const [fade, setFade] = useState(true)
+  const timerRef = useRef(null)
+
+  useEffect(() => {
+    if (diapositivas.length <= 1) return
+    timerRef.current = setInterval(() => {
+      setFade(false)
+      setTimeout(() => {
+        setIdx(prev => (prev + 1) % diapositivas.length)
+        setFade(true)
+      }, 300)
+    }, 3000)
+    return () => clearInterval(timerRef.current)
+  }, [diapositivas.length])
+
+  const actual = diapositivas[idx]
+
+  return (
+    <div style={{
+      height: '120px',
+      background: `linear-gradient(135deg, ${color}22, ${color}44)`,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      position: 'relative', overflow: 'hidden',
+    }}>
+      {actual ? (
+        <>
+          {/* Fondo difuminado */}
+          <img
+            src={actual.src} alt=""
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(18px)', opacity: 0.35, transform: 'scale(1.1)', pointerEvents: 'none', transition: 'opacity 0.3s' }}
+          />
+          {/* Imagen principal */}
+          <div style={{
+            position: 'relative', zIndex: 1,
+            opacity: fade ? 1 : 0, transition: 'opacity 0.3s',
+            ...(actual.tipo === 'logo'
+              ? { width: '82px', height: '82px', borderRadius: '50%', background: '#fff', padding: '5px', boxShadow: '0 4px 16px rgba(0,0,0,0.18)', flexShrink: 0 }
+              : { width: '100%', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }
+            ),
+          }}>
+            <img
+              src={actual.src} alt=""
+              style={{
+                width: '100%', height: '100%',
+                objectFit: actual.tipo === 'logo' ? 'contain' : 'cover',
+                borderRadius: actual.tipo === 'logo' ? '50%' : '0',
+              }}
+            />
+          </div>
+          {/* Puntos indicadores */}
+          {diapositivas.length > 1 && (
+            <div style={{ position: 'absolute', bottom: '6px', left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: '4px', zIndex: 2 }}>
+              {diapositivas.map((_, i) => (
+                <div key={i} style={{ width: i === idx ? '10px' : '5px', height: '5px', borderRadius: '3px', background: '#fff', opacity: i === idx ? 0.9 : 0.45, transition: 'all 0.3s' }} />
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <div style={{ color, fontSize: '56px' }}>{icon}</div>
+      )}
+    </div>
+  )
+}
 
 export default function MarketplacePage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [tiendas, setTiendas] = useState([])
   const [bannersIzq, setBannersIzq] = useState([])
   const [bannersDer, setBannersDer] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [filtroEspecialidad, setFiltroEspecialidad] = useState(null)
+  const [busqueda, setBusqueda] = useState(searchParams.get('q') || '')
 
   useEffect(() => {
     cargarDatos()
@@ -23,8 +98,8 @@ export default function MarketplacePage() {
         adminAPI.obtenerBannersPublicos(),
       ])
       setTiendas(tData.tiendas)
-      setBannersIzq(bData.banners.filter(b => b.posicion === 'izquierda'))
-      setBannersDer(bData.banners.filter(b => b.posicion === 'derecha'))
+      setBannersIzq(bData.banners.filter(b => b.zonas?.includes('izquierda')))
+      setBannersDer(bData.banners.filter(b => b.zonas?.includes('derecha')))
     } catch (err) {
       console.error('Error cargando marketplace:', err)
     } finally {
@@ -146,6 +221,71 @@ export default function MarketplacePage() {
         NUESTROS ALIADOS
       </h2>
 
+      {/* ── Buscador ── */}
+      <div style={{ maxWidth: '480px', margin: '0 auto 1.5rem', position: 'relative' }}>
+        <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#8F5E4F', pointerEvents: 'none' }} />
+        <input
+          type="text"
+          value={busqueda}
+          onChange={e => setBusqueda(e.target.value)}
+          placeholder="Buscar por nombre, especialidad, ubicación..."
+          style={{
+            width: '100%', boxSizing: 'border-box',
+            padding: '10px 36px 10px 38px',
+            borderRadius: '25px', border: '2px solid #e8d5cc',
+            outline: 'none', fontSize: '14px', color: '#3a1a1a',
+            fontFamily: "'Belgrano', serif",
+            background: '#fff', transition: 'border-color 0.15s',
+          }}
+          onFocus={e => e.target.style.borderColor = '#55261C'}
+          onBlur={e => e.target.style.borderColor = '#e8d5cc'}
+        />
+        {busqueda && (
+          <button
+            onClick={() => setBusqueda('')}
+            style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: '2px', display: 'flex', alignItems: 'center' }}
+          >
+            <X size={15} color="#8F5E4F" />
+          </button>
+        )}
+      </div>
+
+      {/* ── Chips de filtro por especialidad ── */}
+      {tiendas.length > 0 && (() => {
+        const especialidades = [...new Set(tiendas.map(t => t.especialidad).filter(Boolean))]
+        return (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '1.5rem' }}>
+            <button
+              onClick={() => setFiltroEspecialidad(null)}
+              style={{
+                padding: '6px 16px', borderRadius: '20px', fontSize: '13px', cursor: 'pointer',
+                border: `2px solid ${filtroEspecialidad === null ? '#55261C' : '#e8d5cc'}`,
+                background: filtroEspecialidad === null ? '#55261C' : '#fff',
+                color: filtroEspecialidad === null ? '#fff' : '#6b4c4c',
+                fontFamily: "'Belgrano', serif", fontWeight: '600', transition: 'all 0.15s',
+              }}
+            >
+              Todas
+            </button>
+            {especialidades.map(esp => (
+              <button
+                key={esp}
+                onClick={() => setFiltroEspecialidad(esp === filtroEspecialidad ? null : esp)}
+                style={{
+                  padding: '6px 16px', borderRadius: '20px', fontSize: '13px', cursor: 'pointer',
+                  border: `2px solid ${filtroEspecialidad === esp ? '#55261C' : '#e8d5cc'}`,
+                  background: filtroEspecialidad === esp ? '#55261C' : '#fff',
+                  color: filtroEspecialidad === esp ? '#fff' : '#6b4c4c',
+                  fontFamily: "'Belgrano', serif", fontWeight: '600', transition: 'all 0.15s',
+                }}
+              >
+                {esp}
+              </button>
+            ))}
+          </div>
+        )
+      })()}
+
       {/* Layout 3 columnas: Flyers | Tiendas | Flyers */}
       <div className="marketplace-layout">
 
@@ -155,7 +295,15 @@ export default function MarketplacePage() {
         </div>
 
         {/* ====== COLUMNA CENTRAL: Tiendas ====== */}
-        <div>
+        {(() => {
+          const q = busqueda.trim().toLowerCase()
+          const tiendasFiltradas = tiendas
+            .filter(t => !filtroEspecialidad || t.especialidad === filtroEspecialidad)
+            .filter(t => !q || [t.nombre, t.descripcion, t.especialidad, t.ubicacion]
+              .some(campo => campo?.toLowerCase().includes(q)))
+
+          return (
+          <div>
           {tiendas.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem', background: '#fff', borderRadius: '16px', border: '1px dashed #e8c8b4' }}>
               <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', color: '#e8c8b4' }}><Store size={48} /></div>
@@ -165,9 +313,22 @@ export default function MarketplacePage() {
                 Registrar mi tienda
               </button>
             </div>
+          ) : tiendasFiltradas.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', background: '#fff', borderRadius: '16px', border: '1px dashed #e8c8b4' }}>
+              <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', color: '#e8c8b4' }}><Search size={48} /></div>
+              <p style={{ fontSize: '14px', color: '#6b4c4c' }}>
+                {q ? `Sin resultados para "${busqueda}"` : 'No hay tiendas con esa especialidad'}
+              </p>
+              <button
+                onClick={() => { setBusqueda(''); setFiltroEspecialidad(null) }}
+                style={{ marginTop: '12px', background: '#55261C', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px 24px', fontSize: '13px', cursor: 'pointer', fontFamily: "'Belgrano', serif" }}
+              >
+                Limpiar filtros
+              </button>
+            </div>
           ) : (
             <div className="tiendas-grid">
-              {tiendas.map(tienda => {
+              {tiendasFiltradas.map(tienda => {
                 const color = tienda.personalizacion?.colorPrimario || '#8b2f5f'
                 const icon = EspecialidadIcon[tienda.especialidad] || <Cake size={48} />
 
@@ -192,19 +353,13 @@ export default function MarketplacePage() {
                       </div>
                     )}
 
-                    {/* Header con color de la tienda */}
-                    <div className="tienda-card-header" style={{
-                      height: '120px', background: `linear-gradient(135deg, ${color}22, ${color}44)`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '56px',
-                    }}>
-                      {tienda.personalizacion?.logo ? (
-                        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#fff', padding: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                          <img src={tienda.personalizacion.logo} alt={tienda.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
-                        </div>
-                      ) : (
-                        <div style={{ color }}>{icon}</div>
-                      )}
-                    </div>
+                    {/* Cabecera animada: logo + fotos de productos */}
+                    <TarjetaHeader
+                      logo={tienda.personalizacion?.logo || null}
+                      imagenesProductos={tienda.imagenesProductos || []}
+                      color={color}
+                      icon={icon}
+                    />
 
                     {/* Barra de color */}
                     <div style={{ height: '4px', background: color }} />
@@ -241,7 +396,9 @@ export default function MarketplacePage() {
               })}
             </div>
           )}
-        </div>
+          </div>
+          )
+        })()}
 
         {/* ====== COLUMNA DERECHA: Flyers ====== */}
         <div className="marketplace-flyer-col">

@@ -292,22 +292,45 @@ const toggleBanner = async (req, res) => {
   }
 };
 
+const ZONAS_VALIDAS = ['carrusel_home', 'izquierda', 'derecha'];
+
 const cambiarPosicionBanner = async (req, res) => {
   try {
-    const { posicion } = req.body;
-    if (!['izquierda', 'derecha'].includes(posicion)) {
-      return res.status(400).json({ exito: false, mensaje: 'Posición inválida.' });
+    const { zona, accion } = req.body; // accion: 'agregar' | 'quitar'
+    if (!ZONAS_VALIDAS.includes(zona)) {
+      return res.status(400).json({ exito: false, mensaje: 'Zona inválida.' });
     }
+    if (!['agregar', 'quitar'].includes(accion)) {
+      return res.status(400).json({ exito: false, mensaje: 'Acción inválida.' });
+    }
+
+    // Leer posicion actual
+    const { data: actual } = await supabase
+      .from('banners').select('posicion').eq('id', req.params.id).single();
+    if (!actual) return res.status(404).json({ exito: false, mensaje: 'Flyer no encontrado.' });
+
+    const zonas = actual.posicion
+      ? actual.posicion.split(',').map(z => z.trim()).filter(z => ZONAS_VALIDAS.includes(z))
+      : [];
+
+    let nuevasZonas;
+    if (accion === 'agregar') {
+      nuevasZonas = zonas.includes(zona) ? zonas : [...zonas, zona];
+    } else {
+      nuevasZonas = zonas.filter(z => z !== zona);
+    }
+
+    const nuevaPosicion = nuevasZonas.join(',') || 'sin_zona';
 
     const { data: banner, error } = await supabase
       .from('banners')
-      .update({ posicion })
+      .update({ posicion: nuevaPosicion })
       .eq('id', req.params.id)
       .select('*, tiendas(id, nombre, slug)')
       .single();
 
-    if (error || !banner) return res.status(404).json({ exito: false, mensaje: 'Flyer no encontrado.' });
-    res.json({ exito: true, mensaje: 'Posición actualizada.', banner: formatearBanner(banner) });
+    if (error) throw error;
+    res.json({ exito: true, mensaje: 'Zonas actualizadas.', banner: formatearBanner(banner) });
   } catch (error) {
     console.error('cambiarPosicionBanner:', error);
     res.status(500).json({ exito: false, mensaje: 'Error al cambiar posición.' });
@@ -419,11 +442,15 @@ const eliminarMiFlyer = async (req, res) => {
 // ============================================
 const formatearBanner = (b) => {
   if (!b) return null;
+  const zonas = b.posicion
+    ? b.posicion.split(',').map(z => z.trim()).filter(Boolean)
+    : [];
   return {
     ...b,
     _id: b.id,
     linkCTA: b.link_cta,
     tienda: b.tiendas || null,
+    zonas, // array de zonas activas: ['carrusel_home', 'izquierda', ...]
   };
 };
 

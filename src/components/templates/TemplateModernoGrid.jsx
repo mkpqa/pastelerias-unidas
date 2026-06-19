@@ -253,7 +253,7 @@ export default function TemplateModernoGrid({ tienda, color, productos, recomend
 
   // Productos Novedades (ordenados por fecha)
   const productosNovedades = useMemo(() => {
-    return [...productos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    return [...productos].sort((a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion))
   }, [productos])
 
   return (

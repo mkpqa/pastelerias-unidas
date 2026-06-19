@@ -24,6 +24,7 @@ export default function DashboardVendedor() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
   const [totalProductos, setTotalProductos] = useState(0)
+  const [totalPedidos, setTotalPedidos] = useState(0)
   const [modalPasswordOpen, setModalPasswordOpen] = useState(false)
   const [modalEmailOpen, setModalEmailOpen] = useState(false)
 
@@ -40,7 +41,12 @@ export default function DashboardVendedor() {
     cargarTienda()
   }, [usuario, token])
 
-  const cargarTienda = async () => {
+  const cargarTienda = async (tiendaDirecta) => {
+    // Si se pasa una tienda directamente (ej: desde respuesta de upload), usarla sin re-fetch
+    if (tiendaDirecta) {
+      setTienda(tiendaDirecta)
+      return
+    }
     try {
       setCargando(true)
       const datos = await tiendasAPI.obtenerMiTienda()
@@ -90,7 +96,14 @@ export default function DashboardVendedor() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <div>
           <h1 style={{ fontSize: '22px', color: '#3a1a1a', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <ChefHat size={22} /> Dashboard — <span style={{ color }}>{tienda.nombre}</span>
+            {tienda.personalizacion?.logo ? (
+              <div style={{ width: '28px', height: '28px', borderRadius: '50%', overflow: 'hidden', border: `1.5px solid ${color}40`, flexShrink: 0 }}>
+                <img src={tienda.personalizacion.logo} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              </div>
+            ) : (
+              <ChefHat size={22} />
+            )}
+            Dashboard — <span style={{ color }}>{tienda.nombre}</span>
           </h1>
           <div style={{ fontSize: '12px', color: '#9a7a7a', margin: 0, display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             Bienvenido, {usuario?.nombre}. Aquí puedes gestionar tu tienda.
@@ -162,8 +175,8 @@ export default function DashboardVendedor() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '20px' }}>
         {[
           { label: 'Productos', value: String(totalProductos), icon: <Package size={24} />, desc: 'en tu catálogo' },
-          { label: 'Pedidos', value: '0', icon: <ShoppingCart size={24} />, desc: 'recibidos' },
-          { label: 'Código Pedido', value: `PED-${String(tienda.contadorPedidos + 1).padStart(3, '0')}`, icon: <Hash size={24} />, desc: 'próximo número' },
+          { label: 'Pedidos', value: String(totalPedidos), icon: <ShoppingCart size={24} />, desc: 'recibidos' },
+          { label: 'Próximo Pedido', value: `PED-${String(totalPedidos + 1).padStart(3, '0')}`, icon: <Hash size={24} />, desc: 'próximo número' },
         ].map((stat, i) => (
           <div key={i} style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e8d5cc', padding: '16px', textAlign: 'center' }}>
             <div style={{ marginBottom: '4px', display: 'flex', justifyContent: 'center', color: '#8b2f5f' }}>{stat.icon}</div>
@@ -188,7 +201,7 @@ export default function DashboardVendedor() {
 
       {/* Gestión de Pedidos */}
       <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e8d5cc', padding: '20px', marginTop: '20px' }}>
-        <PedidosManager color={color} />
+        <PedidosManager color={color} onCargado={setTotalPedidos} />
       </div>
 
       {/* Gestión de Flyers */}

@@ -395,20 +395,23 @@
 .upload-box {
   width: 100%;
   aspect-ratio: 1 / 1;
-  border: 1.5px solid #8F5E4F;
+  border: 1.5px dashed #8F5E4F;
   border-radius: 12px;
   background-color: #FFFFFF;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   color: #8F5E4F;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: border-color 0.2s, background-color 0.2s;
   margin-top: 10px;
+  user-select: none;
 }
 
 .upload-box:hover {
   background-color: #fdfaf9;
+  border-color: #55261C;
 }
 
 .color-picker-row {
@@ -498,14 +501,20 @@
 /* Panel Derecho: PREVIEW */
 .preview-box {
   width: 100%;
-  height: 100%;
-  background-color: #FFFFFF;
-  border-radius: 4px; /* Borde muy sutil */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Belleza', sans-serif;
-  color: #55261C;
-  font-size: 2rem;
-  letter-spacing: 2px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Panel derecho cuando muestra la preview (paso 4) */
+.registro-preview-panel {
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .registro-preview-panel {
+    background-color: #f5ede6 !important;
+    padding: 16px !important;
+  }
 }

@@ -5,6 +5,9 @@ import useCarritoStore from '../context/useCarritoStore'
 import TemplateMinimalista from '../components/templates/TemplateMinimalista'
 import TemplateModernoGrid from '../components/templates/TemplateModernoGrid'
 import TemplateGaleria from '../components/templates/TemplateGaleria'
+import TemplateArtesanalRustico from '../components/templates/TemplateArtesanalRustico'
+import TemplateBoutiquePremium from '../components/templates/TemplateBoutiquePremium'
+import TemplateFestejoEventos from '../components/templates/TemplateFestejoEventos'
 import { ShoppingCart, CheckCircle, Store, XCircle } from 'lucide-react'
 
 const categoriaEmoji = {
@@ -72,7 +75,7 @@ export default function TiendaDetalle() {
         pago: { metodo: 'efectivo' }, entrega: { tipo: 'recojo' },
       })
       setPedidoExitoso(res.pedido); vaciarCarrito()
-    } catch { alert('Asegúrate de estar logueado como comprador.') }
+    } catch { alert('Asegúrate de estar logueado como cliente.') }
     finally { setHaciendoPedido(false) }
   }
 
@@ -103,11 +106,14 @@ export default function TiendaDetalle() {
   return (
     <div style={{background:'#fafafa', minHeight:'100vh', paddingBottom:'100px'}}>
       {/* ── TEMPLATE SEGÚN PLANTILLA ─── */}
-      {plantilla === 'minimalista'  && <TemplateMinimalista  {...templateProps} />}
-      {plantilla === 'moderno_grid' && <TemplateModernoGrid  {...templateProps} />}
-      {plantilla === 'galeria'      && <TemplateGaleria      {...templateProps} />}
+      {plantilla === 'minimalista'      && <TemplateMinimalista      {...templateProps} />}
+      {plantilla === 'moderno_grid'     && <TemplateModernoGrid      {...templateProps} />}
+      {plantilla === 'galeria'          && <TemplateGaleria          {...templateProps} />}
+      {plantilla === 'artesanal_rustico'&& <TemplateArtesanalRustico {...templateProps} />}
+      {plantilla === 'boutique_premium' && <TemplateBoutiquePremium  {...templateProps} />}
+      {plantilla === 'festejo_eventos'  && <TemplateFestejoEventos   {...templateProps} />}
       {/* Fallback */}
-      {!['minimalista','moderno_grid','galeria'].includes(plantilla) && <TemplateMinimalista {...templateProps} />}
+      {!['minimalista','moderno_grid','galeria','artesanal_rustico','boutique_premium','festejo_eventos'].includes(plantilla) && <TemplateMinimalista {...templateProps} />}
 
       {/* ── BARRA CARRITO ─── */}
       {cantidadCarrito > 0 && !showCheckout && (

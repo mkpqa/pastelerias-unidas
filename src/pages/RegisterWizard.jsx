@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../css/RegistroPage.css';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { User, Lock, Mail, Upload, XCircle, CheckCircle } from 'lucide-react';
+import { User, Lock, Mail, Upload, XCircle, CheckCircle, ImagePlus } from 'lucide-react';
 import useAuthStore from '../context/useAuthStore';
-import { PreviewGrande } from '../components/TemplatePreview';
+import { tiendasAPI } from '../services/api';
+import { PreviewGrande, MiniMinimalista, MiniModernoGrid, MiniGaleria, MiniArtesanalRustico, MiniBoutiquePremium, MiniFestejoEventos } from '../components/TemplatePreview';
 
 export default function RegistroPage() {
   const navigate = useNavigate();
-  const { registroVendedor, cargando, error, limpiarError } = useAuthStore();
+  const { registroVendedor, registroComprador, cargando, error, limpiarError } = useAuthStore();
   
   // Control de flujo de la interfaz
   const [paso, setPaso] = useState(1);
@@ -23,7 +24,7 @@ export default function RegistroPage() {
   const [confirmarPassword, setConfirmarPassword] = useState('');
 
   // --- PASO 2: Proceso (Preferencias) ---
-  const [tieneNegocio, setTieneNegocio] = useState(true);
+  const [tieneNegocio, setTieneNegocio] = useState(false);
   const [preferencia, setPreferencia] = useState('');
   const [alergia, setAlergia] = useState('');
   const [otraAlergia, setOtraAlergia] = useState('');
@@ -38,6 +39,16 @@ export default function RegistroPage() {
   const [colorPrimario, setColorPrimario] = useState('#8F5E4F');
   const [colorSecundario, setColorSecundario] = useState('#F8EFE6');
   const [plantilla, setPlantilla] = useState('moderno_grid');
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setLogoFile(file);
+    setLogoPreview(URL.createObjectURL(file));
+  };
 
   // Por defecto, inicializamos métodos de pago como en la lógica original
   const [metodosPago] = useState(['yape', 'efectivo']); 
@@ -73,12 +84,24 @@ export default function RegistroPage() {
     return true;
   };
 
-  const handleSiguiente = (e) => {
+  const handleSiguiente = async (e) => {
     if (e) e.preventDefault();
-    if (validarPaso()) {
-      limpiarError();
-      setPaso(paso + 1);
+    if (!validarPaso()) return;
+    limpiarError();
+
+    // En el paso 2: si no quiere registrar emprendimiento → registrar como comprador
+    if (paso === 2 && !tieneNegocio) {
+      try {
+        await registroComprador({ nombre, email, password });
+        setMensajeExito('¡Cuenta creada! Redirigiendo al marketplace...');
+        setTimeout(() => navigate('/marketplace'), 2000);
+      } catch (err) {
+        setErrorLocal(err.message || 'Error al crear la cuenta.');
+      }
+      return;
     }
+
+    setPaso(paso + 1);
   };
 
   const handleAtras = (e) => {
@@ -102,14 +125,26 @@ export default function RegistroPage() {
         email,
         password,
         nombreTienda,
-        descripcion: preferencia ? `Especialidad en ${preferencia}` : '', // Extra opcional
+        descripcion: preferencia ? `Especialidad en ${preferencia}` : '',
         ubicacion,
         telefonoTienda,
         especialidad,
         colorPrimario,
+        colorSecundario,
         plantilla,
         metodosPago,
       });
+
+      // Subir logo si el vendedor seleccionó uno
+      if (logoFile) {
+        try {
+          const formData = new FormData();
+          formData.append('logo', logoFile);
+          await tiendasAPI.subirLogoTienda(formData);
+        } catch {
+          // El logo no es crítico; continúa aunque falle
+        }
+      }
 
       setMensajeExito('¡Tu tienda ha sido registrada exitosamente! Redirigiendo...');
       setTimeout(() => navigate('/dashboard'), 2500);
@@ -136,7 +171,7 @@ export default function RegistroPage() {
 
   return (
     <div className="registro-page-container">
-      <main className="registro-content">
+      <main className="registro-content" style={paso === 4 ? { alignItems: 'flex-start' } : undefined}>
         <div className="registro-card">
           
           {/* --- Lado Izquierdo: Formulario Dinámico --- */}
@@ -258,10 +293,15 @@ export default function RegistroPage() {
                   <label className="step3-label">Especialidad (ej. galletas, tortas, bocaditos)</label>
                   <select className="step3-select" value={especialidad} onChange={e => setEspecialidad(e.target.value)} required>
                     <option value=""></option>
-                    <option value="Tortas">Tortas</option>
-                    <option value="Galletas">Galletas</option>
-                    <option value="Bocaditos">Bocaditos</option>
-                    <option value="Vegano">Vegano</option>
+                    <option value="Tortas de Autor">Tortas de Autor</option>
+                    <option value="Cupcakes Artísticos">Cupcakes Artísticos</option>
+                    <option value="Cookies y Galletas">Cookies y Galletas</option>
+                    <option value="Postres Veganos">Postres Veganos</option>
+                    <option value="Bocaditos para Eventos">Bocaditos para Eventos</option>
+                    <option value="Panadería Artesanal">Panadería Artesanal</option>
+                    <option value="Repostería Peruana">Repostería Peruana</option>
+                    <option value="Chocolatería Fina">Chocolatería Fina</option>
+                    <option value="Otro">Otro</option>
                   </select>
                   
                   <div className="button-group">
@@ -289,8 +329,48 @@ export default function RegistroPage() {
                     
                     <div className="step4-col">
                       <label className="step3-label" style={{marginTop: 0}}>Sube tu logotipo</label>
-                      <div className="upload-box">
-                        <Upload size={32} />
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={handleLogoChange}
+                      />
+                      <div
+                        className="upload-box"
+                        onClick={() => fileInputRef.current.click()}
+                        style={{ cursor: 'pointer', position: 'relative', overflow: 'hidden', padding: 0 }}
+                      >
+                        {logoPreview ? (
+                          <>
+                            <img
+                              src={logoPreview}
+                              alt="Logo seleccionado"
+                              style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }}
+                            />
+                            <div style={{
+                              position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)',
+                              display: 'flex', flexDirection: 'column', alignItems: 'center',
+                              justifyContent: 'center', gap: '4px', opacity: 0, transition: 'opacity 0.2s',
+                            }}
+                              onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                              onMouseLeave={e => e.currentTarget.style.opacity = 0}
+                            >
+                              <ImagePlus size={22} color="#fff" />
+                              <span style={{ color: '#fff', fontSize: '11px', fontWeight: '600' }}>Cambiar imagen</span>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <Upload size={28} color="#8F5E4F" />
+                            <span style={{ fontSize: '12px', color: '#8F5E4F', marginTop: '6px', fontWeight: '500' }}>
+                              Seleccionar imagen
+                            </span>
+                            <span style={{ fontSize: '10px', color: '#bbb', marginTop: '2px' }}>
+                              PNG, JPG · máx. 5 MB
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -323,22 +403,38 @@ export default function RegistroPage() {
                   </div>
 
                   <label className="step3-label">Plantillas</label>
-                  <div className="plantillas-row">
-                    <div 
-                      className="plantilla-card" 
-                      style={{ borderColor: plantilla === 'moderno_grid' ? colorPrimario : '#8F5E4F', borderWidth: plantilla === 'moderno_grid' ? '2.5px' : '1.5px' }}
-                      onClick={() => setPlantilla('moderno_grid')}
-                    >GRID</div>
-                    <div 
-                      className="plantilla-card" 
-                      style={{ borderColor: plantilla === 'minimalista' ? colorPrimario : '#8F5E4F', borderWidth: plantilla === 'minimalista' ? '2.5px' : '1.5px' }}
-                      onClick={() => setPlantilla('minimalista')}
-                    >MODERNO</div>
-                    <div 
-                      className="plantilla-card" 
-                      style={{ borderColor: plantilla === 'galeria' ? colorPrimario : '#8F5E4F', borderWidth: plantilla === 'galeria' ? '2.5px' : '1.5px' }}
-                      onClick={() => setPlantilla('galeria')}
-                    >GALERIA</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginTop: '10px' }}>
+                    {[
+                      { id: 'moderno_grid',      label: 'Grid',     Mini: MiniModernoGrid },
+                      { id: 'minimalista',        label: 'Clásico',  Mini: MiniMinimalista },
+                      { id: 'galeria',            label: 'Galería',  Mini: MiniGaleria },
+                      { id: 'artesanal_rustico',  label: 'Rústico',  Mini: MiniArtesanalRustico },
+                      { id: 'boutique_premium',   label: 'Premium',  Mini: MiniBoutiquePremium },
+                      { id: 'festejo_eventos',    label: 'Festivo',  Mini: MiniFestejoEventos },
+                    ].map(({ id, label, Mini }) => (
+                      <div
+                        key={id}
+                        onClick={() => setPlantilla(id)}
+                        style={{
+                          border: `${plantilla === id ? '2.5px' : '1.5px'} solid ${plantilla === id ? colorPrimario : '#C4A499'}`,
+                          borderRadius: '10px',
+                          cursor: 'pointer',
+                          overflow: 'hidden',
+                          height: '110px',
+                          position: 'relative',
+                          transition: 'border-color 0.2s, transform 0.15s',
+                          transform: plantilla === id ? 'scale(1.03)' : 'scale(1)',
+                        }}
+                      >
+                        <Mini color={colorPrimario} nombre={nombreTienda || 'Mi Tienda'} />
+                        <div style={{
+                          position: 'absolute', bottom: 0, left: 0, right: 0,
+                          background: plantilla === id ? colorPrimario : 'rgba(0,0,0,0.45)',
+                          color: '#fff', fontSize: '9px', fontWeight: '700',
+                          textAlign: 'center', padding: '3px 0', letterSpacing: '0.5px',
+                        }}>{label}</div>
+                      </div>
+                    ))}
                   </div>
 
                   <div className="button-group">
@@ -356,12 +452,12 @@ export default function RegistroPage() {
           </div>
 
           {/* --- Lado Derecho: Contenido Dinámico --- */}
-          <div 
-            className="registro-right-panel" 
-            style={{ 
-              padding: paso === 4 ? '40px' : '50px 60px',
-              alignItems: paso === 3 ? 'flex-start' : (paso === 4 ? 'stretch' : 'center'), 
-              textAlign: paso === 3 ? 'left' : 'center' 
+          <div
+            className={`registro-right-panel${paso === 4 ? ' registro-preview-panel' : ''}`}
+            style={{
+              padding: paso === 4 ? '16px' : '50px 60px',
+              alignItems: paso === 3 ? 'flex-start' : 'center',
+              textAlign: paso === 3 ? 'left' : 'center',
             }}
           >
             
@@ -394,14 +490,20 @@ export default function RegistroPage() {
             )}
 
             {paso === 4 && (
-              /* Componente de Vista Previa funcional conectado a las variables de estado */
-              <div className="preview-box" style={{ padding: 0, overflow: 'hidden', border: 'none', background: colorSecundario }}>
-                <PreviewGrande 
-                  plantilla={plantilla} 
-                  color={colorPrimario} 
-                  nombre={nombreTienda || 'Mi Pastelería'} 
-                />
-              </div>
+              <>
+                <div style={{ marginBottom: '10px', textAlign: 'center' }}>
+                  <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.45)', letterSpacing: '2px', textTransform: 'uppercase' }}>
+                    Previsualización
+                  </span>
+                </div>
+                <div className="preview-box" style={{ padding: 0, border: 'none', background: colorSecundario }}>
+                  <PreviewGrande
+                    plantilla={plantilla}
+                    color={colorPrimario}
+                    nombre={nombreTienda || 'Mi Pastelería'}
+                  />
+                </div>
+              </>
             )}
 
             {/* Oculta los elementos de "Inicia Sesión" en los pasos 3 y 4 */}
