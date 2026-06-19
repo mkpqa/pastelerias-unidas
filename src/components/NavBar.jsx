@@ -350,7 +350,7 @@ export default function NavBar() {
           </>
         ) : (
           <>
-            <Link to="/auth" style={navItem}>Únete</Link>
+            <Link to="/registro" style={navItem}>Únete</Link>
             <Link to="/contacto" style={navItem}>Contacto</Link>
             <Link to="/auth" style={navItem}>
               <div style={userCircle}><User size={ICON_SIZE} color="#55261C" /></div>
@@ -411,7 +411,7 @@ export default function NavBar() {
           </>
         ) : (
           <>
-            <Link to="/auth" className="nav-drawer-item"><UserPlus size={18} /> Únete</Link>
+            <Link to="/registro" className="nav-drawer-item"><UserPlus size={18} /> Únete</Link>
             <Link to="/contacto" className="nav-drawer-item"><Phone size={18} /> Contacto</Link>
             <Link to="/auth" className="nav-drawer-item"><User size={18} /> Iniciar sesión</Link>
           </>
