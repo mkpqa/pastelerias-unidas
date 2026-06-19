@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { tiendasAPI } from '../services/api'
-import { Palette, Edit2, Store, Camera, MessageCircle, Sparkles, XCircle, CheckCircle, Save, X } from 'lucide-react'
+import { Palette, Edit2, Store, Camera, MessageCircle, Sparkles, XCircle, CheckCircle, Save, X, Eye } from 'lucide-react'
+import { PreviewGrande } from './TemplatePreview'
 
 const plantillasDisponibles = [
   { id: 'minimalista',       nombre: 'Minimalista (Clásica)' },
@@ -201,6 +202,18 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
           </select>
         </div>
       </div>
+      {/* Vista previa en tiempo real */}
+      <div style={{ marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+          <Eye size={13} color="#8b2f5f" />
+          <span style={{ fontSize: '12px', color: '#3a1a1a', fontWeight: '700' }}>Vista previa en tiempo real</span>
+          <span style={{ fontSize: '10px', color: '#bbb', marginLeft: 'auto' }}>Datos de ejemplo</span>
+        </div>
+        <div style={{ borderRadius: '10px', overflow: 'hidden', border: '1px solid #e8d5cc' }}>
+          <PreviewGrande plantilla={plantilla} color={colorPrimario} nombre={tienda.nombre} />
+        </div>
+      </div>
+
       {/* WhatsApp */}
       <div style={{ marginBottom: '16px' }}>
         <label style={{ fontSize: '12px', color: '#6b4c4c', display: 'block', marginBottom: '8px', fontWeight: '600' }}>WhatsApp (para redirección de servicios)</label>
