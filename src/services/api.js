@@ -59,10 +59,10 @@ export const authAPI = {
       body: JSON.stringify(datos),
     }),
 
-  loginConGoogle: (credential) =>
+  loginConGoogle: (access_token) =>
     fetchAPI('/auth/google', {
       method: 'POST',
-      body: JSON.stringify({ credential }),
+      body: JSON.stringify({ access_token }),
     }),
 
   obtenerPerfil: () => fetchAPI('/auth/perfil'),

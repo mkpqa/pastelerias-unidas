@@ -1,9 +1,7 @@
 const supabase = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { OAuth2Client } = require('google-auth-library');
-
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const https = require('https');
 
 /**
  * Controller: Autenticación (Adaptado a Supabase PostgreSQL)
@@ -310,23 +308,39 @@ exports.actualizarEmail = async (req, res, next) => {
   }
 };
 
+// Helper: consultar userinfo de Google con el access_token
+const obtenerInfoGoogle = (access_token) => new Promise((resolve, reject) => {
+  const options = {
+    hostname: 'www.googleapis.com',
+    path: '/oauth2/v3/userinfo',
+    headers: { Authorization: `Bearer ${access_token}` },
+  };
+  https.get(options, (res) => {
+    let data = '';
+    res.on('data', chunk => { data += chunk; });
+    res.on('end', () => {
+      try { resolve(JSON.parse(data)); } catch (e) { reject(e); }
+    });
+  }).on('error', reject);
+});
+
 // ============================================
 // POST /api/auth/google
-// Login / registro con Google OAuth
+// Login / registro con Google OAuth (access_token flow)
 // ============================================
 exports.loginConGoogle = async (req, res, next) => {
   try {
-    const { credential } = req.body;
-    if (!credential) {
+    const { access_token } = req.body;
+    if (!access_token) {
       return res.status(400).json({ exito: false, mensaje: 'Token de Google requerido.' });
     }
 
-    // Verificar el ID token con la clave pública de Google
-    const ticket = await googleClient.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-    const { email, name: nombre } = ticket.getPayload();
+    // Verificar con la API de userinfo de Google
+    const info = await obtenerInfoGoogle(access_token);
+    if (!info.email) {
+      return res.status(401).json({ exito: false, mensaje: 'No se pudo verificar la cuenta de Google.' });
+    }
+    const { email, name: nombre } = info;
 
     // Buscar usuario existente por email
     let { data: usuario } = await supabase
@@ -336,10 +350,10 @@ exports.loginConGoogle = async (req, res, next) => {
       .single();
 
     if (!usuario) {
-      // Primer login con Google → crear cuenta automáticamente como cliente
+      // Primer login con Google → crear cuenta como cliente automáticamente
       const { data: nuevoUsuario, error } = await supabase
         .from('usuarios')
-        .insert([{ nombre, email, password_hash: '', rol: 'cliente' }])
+        .insert([{ nombre: nombre || email, email, password_hash: '', rol: 'cliente' }])
         .select()
         .single();
       if (error) throw error;
