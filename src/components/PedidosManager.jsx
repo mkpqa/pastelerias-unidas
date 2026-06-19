@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { pedidosAPI } from '../services/api'
 import { ShoppingCart, ShoppingBag, XCircle, CheckCircle, Package, User } from 'lucide-react'
 
@@ -16,6 +16,7 @@ export default function PedidosManager({ color, onCargado }) {
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
   const [mensaje, setMensaje] = useState(null)
+  const inicialRef = useRef(true)
 
   useEffect(() => {
     cargarPedidos()
@@ -31,16 +32,20 @@ export default function PedidosManager({ color, onCargado }) {
   }, [])
 
   const cargarPedidos = async () => {
+    const esInicial = inicialRef.current
+    if (esInicial) setCargando(true)
     try {
-      setCargando(true)
       const data = await pedidosAPI.obtenerPedidosVendedor()
       const lista = data.pedidos || []
       setPedidos(lista)
       onCargado?.(lista.length)
     } catch {
-      setMensaje({ text: 'Error al cargar los pedidos.', type: 'error' })
+      if (esInicial) setMensaje({ text: 'Error al cargar los pedidos.', type: 'error' })
     } finally {
-      setCargando(false)
+      if (esInicial) {
+        setCargando(false)
+        inicialRef.current = false
+      }
     }
   }
 
