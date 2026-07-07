@@ -61,6 +61,11 @@ export default function TemplateMinimalista({ tienda, color, recomendados, promo
       <div style={{ borderBottom: `3px solid ${color}`, padding: '48px 24px 32px', textAlign: 'center', position: 'relative' }}>
         <button onClick={onVolver} style={{ position: 'absolute', top: '20px', left: '20px', background: 'none', border: 'none', color: '#999', fontSize: '13px', cursor: 'pointer' }}>← Marketplace</button>
         <div style={{ fontSize: '11px', letterSpacing: '4px', color: '#bbb', marginBottom: '12px', textTransform: 'uppercase' }}>Bienvenidos a</div>
+        {tienda.personalizacion?.logo && (
+          <div style={{ width: '76px', height: '76px', margin: '0 auto 14px', borderRadius: '50%', border: `2px solid ${color}30`, overflow: 'hidden', background: `${color}08`, padding: '4px' }}>
+            <img src={tienda.personalizacion.logo} alt={tienda.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
+          </div>
+        )}
         <h1 style={{ fontSize: '36px', fontWeight: '300', color: '#1a1a1a', letterSpacing: '2px', margin: '0 0 8px', fontStyle: 'italic' }}>{tienda.nombre}</h1>
         <div style={{ width: '40px', height: '2px', background: color, margin: '0 auto 16px' }} />
         <p style={{ fontSize: '13px', color: '#888', maxWidth: '420px', margin: '0 auto 16px', lineHeight: '1.6' }}>{tienda.descripcion}</p>

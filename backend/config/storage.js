@@ -1,6 +1,13 @@
-const supabase = require('./db');
+const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const path = require('path');
+
+// Cliente con service key para operaciones de Storage (subida de archivos)
+// La anon key no tiene permisos de escritura en Storage
+const supabaseAdmin = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
+);
 
 /**
  * Sube una imagen al bucket de Supabase Storage.
@@ -21,7 +28,7 @@ const subirImagenASupabase = async (fileBuffer, originalName, folder = 'misc') =
   else if (extension.toLowerCase() === '.webp') contentType = 'image/webp';
 
   // Subir el archivo al bucket "pastelerias_fotos"
-  const { data, error } = await supabase.storage
+  const { data, error } = await supabaseAdmin.storage
     .from('pastelerias_fotos')
     .upload(fileName, fileBuffer, {
       contentType,
@@ -34,7 +41,7 @@ const subirImagenASupabase = async (fileBuffer, originalName, folder = 'misc') =
   }
 
   // Obtener la URL pública del archivo subido
-  const { data: publicUrlData } = supabase.storage
+  const { data: publicUrlData } = supabaseAdmin.storage
     .from('pastelerias_fotos')
     .getPublicUrl(fileName);
 
@@ -43,6 +50,4 @@ const subirImagenASupabase = async (fileBuffer, originalName, folder = 'misc') =
 
 module.exports = {
   subirImagenASupabase
-};
-subirImagenASupabase
 };

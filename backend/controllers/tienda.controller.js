@@ -61,9 +61,12 @@ const obtenerMiTienda = async (req, res) => {
       });
     }
 
+    const tiendaFormateada = formatearTienda(tienda);
+    console.log('[obtenerMiTienda] logo:', tiendaFormateada.personalizacion?.logo || '(sin logo)');
+
     res.json({
       exito: true,
-      tienda: formatearTienda(tienda),
+      tienda: tiendaFormateada,
     });
   } catch (error) {
     res.status(500).json({
@@ -112,11 +115,17 @@ const actualizarMiTienda = async (req, res) => {
       if (p.plantilla) camposDiseno.plantilla = p.plantilla;
       if (p.colorPrimario) camposDiseno.color_primario = p.colorPrimario;
       if (p.colorSecundario) camposDiseno.color_secundario = p.colorSecundario;
-      if (p.logo !== undefined) camposDiseno.logo_url = p.logo;
+      // El logo NUNCA se actualiza desde esta ruta; usa POST /mi-tienda/logo
+      // Si se envía un string válido lo aceptamos, pero null/undefined no tocan logo_url
+      if (p.logo && typeof p.logo === 'string') camposDiseno.logo_url = p.logo;
 
       if (Object.keys(camposDiseno).length > 0) {
-        // Verificar si existe el diseño
-        const { data: disenoExistente } = await supabase.from('tienda_diseno').select('id').eq('tienda_id', tiendaActual.id).single();
+        // 'tienda_id' es la PK de tienda_diseno (no hay columna 'id' separada)
+        const { data: disenoExistente } = await supabase
+          .from('tienda_diseno')
+          .select('tienda_id')
+          .eq('tienda_id', tiendaActual.id)
+          .maybeSingle();
         if (disenoExistente) {
           await supabase.from('tienda_diseno').update(camposDiseno).eq('tienda_id', tiendaActual.id);
         } else {
@@ -162,7 +171,29 @@ const obtenerTiendasPublicas = async (req, res) => {
 
     if (error) throw error;
 
-    const tiendasFormateadas = tiendas.map(formatearTienda);
+    // Obtener hasta 5 imágenes de productos por tienda en un solo query
+    const tiendaIds = tiendas.map(t => t.id);
+    let imagenesPorTienda = {};
+    if (tiendaIds.length > 0) {
+      const { data: productosData } = await supabase
+        .from('productos')
+        .select('tienda_id, imagen_url')
+        .in('tienda_id', tiendaIds)
+        .eq('activo', true)
+        .not('imagen_url', 'is', null);
+
+      (productosData || []).forEach(p => {
+        if (!imagenesPorTienda[p.tienda_id]) imagenesPorTienda[p.tienda_id] = [];
+        if (imagenesPorTienda[p.tienda_id].length < 5) {
+          imagenesPorTienda[p.tienda_id].push(p.imagen_url);
+        }
+      });
+    }
+
+    const tiendasFormateadas = tiendas.map(t => ({
+      ...formatearTienda(t),
+      imagenesProductos: imagenesPorTienda[t.id] || [],
+    }));
 
     res.json({
       exito: true,
@@ -240,12 +271,35 @@ const subirLogoTienda = async (req, res) => {
       return res.status(404).json({ exito: false, mensaje: 'No tienes una tienda registrada.' });
     }
 
-    // Actualizar el logo en tienda_diseno
-    const { data: disenoExistente } = await supabase.from('tienda_diseno').select('id').eq('tienda_id', tiendaActual.id).single();
+    // Actualizar el logo en tienda_diseno, verificando errores
+    const { data: disenoExistente } = await supabase
+      .from('tienda_diseno')
+      .select('tienda_id')
+      .eq('tienda_id', tiendaActual.id)
+      .maybeSingle();
+
+    console.log('[subirLogoTienda] tienda_id:', tiendaActual.id, '| disenoExistente:', disenoExistente ? 'sí' : 'no');
+    console.log('[subirLogoTienda] logo_url a guardar:', rutaImagen);
+
     if (disenoExistente) {
-      await supabase.from('tienda_diseno').update({ logo_url: rutaImagen }).eq('tienda_id', tiendaActual.id);
+      const { error: updateErr } = await supabase
+        .from('tienda_diseno')
+        .update({ logo_url: rutaImagen })
+        .eq('tienda_id', tiendaActual.id);
+      if (updateErr) {
+        console.error('[subirLogoTienda] UPDATE error:', updateErr);
+        throw new Error('Error al actualizar logo en BD: ' + updateErr.message);
+      }
+      console.log('[subirLogoTienda] UPDATE exitoso');
     } else {
-      await supabase.from('tienda_diseno').insert([{ tienda_id: tiendaActual.id, logo_url: rutaImagen }]);
+      const { error: insertErr } = await supabase
+        .from('tienda_diseno')
+        .insert([{ tienda_id: tiendaActual.id, logo_url: rutaImagen }]);
+      if (insertErr) {
+        console.error('[subirLogoTienda] INSERT error:', insertErr);
+        throw new Error('Error al insertar logo en BD: ' + insertErr.message);
+      }
+      console.log('[subirLogoTienda] INSERT exitoso');
     }
 
     // Obtener la tienda actualizada para devolverla
@@ -255,6 +309,8 @@ const subirLogoTienda = async (req, res) => {
       .eq('id', tiendaActual.id)
       .single();
 
+    console.log('[subirLogoTienda] tienda_diseno tras update:', JSON.stringify(tiendaUpdated?.tienda_diseno));
+
     res.json({
       exito: true,
       mensaje: 'Logo subido correctamente.',
@@ -262,9 +318,10 @@ const subirLogoTienda = async (req, res) => {
       tienda: formatearTienda(tiendaUpdated),
     });
   } catch (error) {
+    console.error('subirLogoTienda error:', error);
     res.status(500).json({
       exito: false,
-      mensaje: 'Error al subir el logo.',
+      mensaje: 'Error al subir el logo: ' + (error.message || 'error desconocido'),
     });
   }
 };
@@ -299,6 +356,80 @@ const subirImagenServicio = async (req, res) => {
   }
 };
 
+// ============================================
+// @desc    Datos para la home: tiendas nuevas + populares
+// @route   GET /api/tiendas/home-data
+// @access  Público
+// ============================================
+const obtenerHomeData = async (req, res) => {
+  try {
+    // Tiendas nuevas (4 más recientes) y todas las activas (para populares) en paralelo
+    const [{ data: tiendasNuevas }, { data: todasTiendas }, { data: pedidosData }] = await Promise.all([
+      supabase
+        .from('tiendas')
+        .select('*, tienda_diseno(*)')
+        .eq('activa', true)
+        .order('fecha_creacion', { ascending: false })
+        .limit(4),
+      supabase
+        .from('tiendas')
+        .select('*, tienda_diseno(*)')
+        .eq('activa', true),
+      supabase
+        .from('pedidos')
+        .select('tienda_id'),
+    ]);
+
+    // Contar pedidos por tienda
+    const conteo = {};
+    (pedidosData || []).forEach(p => {
+      conteo[p.tienda_id] = (conteo[p.tienda_id] || 0) + 1;
+    });
+
+    const tiendasPopulares = [...(todasTiendas || [])]
+      .sort((a, b) => (conteo[b.id] || 0) - (conteo[a.id] || 0))
+      .slice(0, 4);
+
+    // Imágenes de productos para ambos grupos (máx 3 por tienda)
+    const todasIds = [...new Set([
+      ...(tiendasNuevas || []).map(t => t.id),
+      ...tiendasPopulares.map(t => t.id),
+    ])];
+
+    let imagenesPorTienda = {};
+    if (todasIds.length > 0) {
+      const { data: productosData } = await supabase
+        .from('productos')
+        .select('tienda_id, imagen_url')
+        .in('tienda_id', todasIds)
+        .eq('activo', true)
+        .not('imagen_url', 'is', null);
+
+      (productosData || []).forEach(p => {
+        if (!imagenesPorTienda[p.tienda_id]) imagenesPorTienda[p.tienda_id] = [];
+        if (imagenesPorTienda[p.tienda_id].length < 3) {
+          imagenesPorTienda[p.tienda_id].push(p.imagen_url);
+        }
+      });
+    }
+
+    const formatear = (lista) => (lista || []).map(t => ({
+      ...formatearTienda(t),
+      imagenesProductos: imagenesPorTienda[t.id] || [],
+      totalPedidos: conteo[t.id] || 0,
+    }));
+
+    res.json({
+      exito: true,
+      nuevas: formatear(tiendasNuevas),
+      populares: formatear(tiendasPopulares),
+    });
+  } catch (error) {
+    console.error('obtenerHomeData:', error);
+    res.status(500).json({ exito: false, mensaje: 'Error al obtener datos del home.' });
+  }
+};
+
 module.exports = {
   obtenerMiTienda,
   actualizarMiTienda,
@@ -306,4 +437,5 @@ module.exports = {
   subirImagenServicio,
   obtenerTiendasPublicas,
   obtenerTiendaPorSlug,
+  obtenerHomeData,
 };

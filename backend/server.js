@@ -70,8 +70,12 @@ app.use((err, req, res, next) => {
 // ============================================
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 Servidor corriendo en puerto ${PORT}`);
-  console.log(`🌍 Entorno: ${process.env.NODE_ENV}`);
-  console.log(`📡 API disponible en: http://localhost:${PORT}/api\n`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 Servidor corriendo en puerto ${PORT}`);
+    console.log(`🌍 Entorno: ${process.env.NODE_ENV}`);
+    console.log(`📡 API disponible en: http://localhost:${PORT}/api\n`);
+  });
+}
+
+module.exports = app;

@@ -8,6 +8,7 @@ import DashboardVendedor from './pages/DashboardVendedor'
 import AdminDashboard from './pages/AdminDashboard'
 import TiendaDetalle from './pages/TiendaDetalle'
 import ProductoDetalle from './pages/ProductoDetalle'
+import MisComprasPage from './pages/MisComprasPage'
 import Footer from './components/Footer.jsx'
 import './index.css'
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/registro" element={<RegisterWizard />} />
             <Route path="/dashboard" element={<DashboardVendedor />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/mis-compras" element={<MisComprasPage />} />
           </Routes>
         </main>
         <Footer />

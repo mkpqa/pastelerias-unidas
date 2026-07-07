@@ -12,8 +12,8 @@ const {
 router.use(protegerRuta);
 
 // Rutas para COMPRADORES
-router.post('/', autorizarRoles('comprador'), crearPedido);
-router.get('/mis-compras', autorizarRoles('comprador'), obtenerMisCompras);
+router.post('/', autorizarRoles('cliente'), crearPedido);
+router.get('/mis-compras', autorizarRoles('cliente'), obtenerMisCompras);
 
 // Rutas para VENDEDORES
 router.get('/vendedor', autorizarRoles('vendedor'), obtenerPedidosVendedor);

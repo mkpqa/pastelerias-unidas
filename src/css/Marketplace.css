@@ -1,0 +1,62 @@
+/* Marketplace.css */
+
+/* ============================================
+   LAYOUT PRINCIPAL — 3 columnas en desktop
+   ============================================ */
+.marketplace-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr 200px;
+  gap: 20px;
+  align-items: start;
+}
+
+.marketplace-flyer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: sticky;
+  top: 80px;
+}
+
+/* ============================================
+   GRID DE TIENDAS — 2 columnas en desktop
+   ============================================ */
+.tiendas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ============================================
+   TABLET (≤ 960px)
+   Columnas laterales de flyers desaparecen,
+   las tiendas toman todo el ancho.
+   ============================================ */
+@media (max-width: 960px) {
+  .marketplace-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .marketplace-flyer-col {
+    display: none;
+  }
+
+  .tiendas-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ============================================
+   MÓVIL (≤ 540px)
+   Tiendas en 1 columna.
+   ============================================ */
+@media (max-width: 540px) {
+  .tiendas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Ajuste de tarjeta de tienda en móvil */
+  .tienda-card-header {
+    height: 90px !important;
+  }
+}

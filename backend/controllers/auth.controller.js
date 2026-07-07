@@ -1,6 +1,7 @@
 const supabase = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const https = require('https');
 
 /**
  * Controller: Autenticación (Adaptado a Supabase PostgreSQL)
@@ -35,7 +36,12 @@ exports.registroComprador = async (req, res, next) => {
   try {
     const { nombre, email, password } = req.body;
 
-    // 1. Verificar si el email ya existe
+    // 1. Validar campos requeridos
+    if (!nombre || !email || !password) {
+      return res.status(400).json({ exito: false, mensaje: 'Nombre, correo y contraseña son requeridos.' });
+    }
+
+    // 2. Verificar si el email ya existe
     const { data: existente } = await supabase
       .from('usuarios')
       .select('id')
@@ -73,7 +79,7 @@ exports.registroVendedor = async (req, res, next) => {
   try {
     const {
       nombre, email, password, // Usuario
-      nombreTienda, ubicacion, telefonoTienda, especialidad, metodosPago, // Tienda
+      nombreTienda, descripcion, ubicacion, telefonoTienda, especialidad, metodosPago, // Tienda
       plantilla, colorPrimario, colorSecundario, logo // Diseño
     } = req.body;
 
@@ -96,7 +102,13 @@ exports.registroVendedor = async (req, res, next) => {
     if (errUser) throw errUser;
 
     // 4. Crear el slug para la tienda (ej: "Dulce Herencia" -> "dulce-herencia")
-    const slug = nombreTienda.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    const slugBase = nombreTienda.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+
+    // Verificar colisión de slug y agregar sufijo numérico si es necesario
+    let slug = slugBase;
+    const { count } = await supabase
+      .from('tiendas').select('id', { count: 'exact', head: true }).like('slug', `${slugBase}%`);
+    if (count > 0) slug = `${slugBase}-${count + 1}`;
 
     // 5. Crear la tienda
     const { data: tienda, error: errTienda } = await supabase
@@ -105,6 +117,7 @@ exports.registroVendedor = async (req, res, next) => {
         usuario_id: usuario.id,
         nombre: nombreTienda,
         slug,
+        descripcion: descripcion || '',
         ubicacion,
         telefono: telefonoTienda,
         especialidad,
@@ -290,6 +303,64 @@ exports.actualizarEmail = async (req, res, next) => {
     if (errUpdate) throw errUpdate;
 
     res.status(200).json({ exito: true, mensaje: 'Correo electrónico actualizado correctamente.' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Helper: consultar userinfo de Google con el access_token
+const obtenerInfoGoogle = (access_token) => new Promise((resolve, reject) => {
+  const options = {
+    hostname: 'www.googleapis.com',
+    path: '/oauth2/v3/userinfo',
+    headers: { Authorization: `Bearer ${access_token}` },
+  };
+  https.get(options, (res) => {
+    let data = '';
+    res.on('data', chunk => { data += chunk; });
+    res.on('end', () => {
+      try { resolve(JSON.parse(data)); } catch (e) { reject(e); }
+    });
+  }).on('error', reject);
+});
+
+// ============================================
+// POST /api/auth/google
+// Login / registro con Google OAuth (access_token flow)
+// ============================================
+exports.loginConGoogle = async (req, res, next) => {
+  try {
+    const { access_token } = req.body;
+    if (!access_token) {
+      return res.status(400).json({ exito: false, mensaje: 'Token de Google requerido.' });
+    }
+
+    // Verificar con la API de userinfo de Google
+    const info = await obtenerInfoGoogle(access_token);
+    if (!info.email) {
+      return res.status(401).json({ exito: false, mensaje: 'No se pudo verificar la cuenta de Google.' });
+    }
+    const { email, name: nombre } = info;
+
+    // Buscar usuario existente por email
+    let { data: usuario } = await supabase
+      .from('usuarios')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (!usuario) {
+      // Primer login con Google → crear cuenta como cliente automáticamente
+      const { data: nuevoUsuario, error } = await supabase
+        .from('usuarios')
+        .insert([{ nombre: nombre || email, email, password_hash: '', rol: 'cliente' }])
+        .select()
+        .single();
+      if (error) throw error;
+      usuario = nuevoUsuario;
+    }
+
+    enviarTokenRespuesta(usuario, 200, res);
   } catch (error) {
     next(error);
   }

@@ -2,7 +2,7 @@ const { createClient } = require('@supabase/supabase-js');
 
 // Verificamos que las variables de entorno existan
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('❌ Error: Faltan credenciales de Supabase en el archivo .env');

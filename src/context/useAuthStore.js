@@ -28,7 +28,10 @@ const useAuthStore = create((set, get) => ({
   // Acciones
   // ============================================
 
-  setUsuario: (nuevoUsuario) => set({ usuario: nuevoUsuario }),
+  setUsuario: (nuevoUsuario, nuevoToken) => set({
+    usuario: nuevoUsuario,
+    ...(nuevoToken ? { token: nuevoToken } : {}),
+  }),
 
   /**
    * Login de usuario (comprador o vendedor)

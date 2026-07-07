@@ -150,12 +150,98 @@ function MiniGaleria({ color, nombre, activa }) {
 }
 
 // ============================================
+// Plantilla 4: Artesanal Rústico
+// ============================================
+function MiniArtesanalRustico({ color, nombre }) {
+  return (
+    <div style={{ background: '#FDF6EC', borderRadius: '6px', overflow: 'hidden', height: '100%' }}>
+      <div style={{ background: `${color}18`, borderBottom: `2px solid ${color}`, padding: '5px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: `1.5px solid ${color}`, flexShrink: 0 }} />
+        <span style={{ fontSize: '6px', fontWeight: '700', color, fontStyle: 'italic' }}>{nombre || 'Mi Tienda'}</span>
+      </div>
+      <div style={{ padding: '5px 7px' }}>
+        <div style={{ fontSize: '5px', color: '#a07850', marginBottom: '5px', letterSpacing: '0.5px' }}>✦ PRODUCTOS ARTESANALES ✦</div>
+        {[1, 2].map(i => (
+          <div key={i} style={{ display: 'flex', gap: '4px', marginBottom: '4px', background: '#fff', borderRadius: '4px', padding: '3px', border: '1px solid #e8d5b7' }}>
+            <div style={{ width: '22px', height: '22px', borderRadius: '3px', background: `${color}25`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Croissant size={11} color={color} />
+            </div>
+            <div>
+              <div style={{ fontSize: '5px', fontWeight: '700', color: '#5c3d1e' }}>Producto {i}</div>
+              <div style={{ fontSize: '4px', color: '#a07850' }}>Hecho a mano</div>
+              <div style={{ fontSize: '5px', color, fontWeight: '700' }}>S/.30</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// Plantilla 5: Boutique Premium
+// ============================================
+function MiniBoutiquePremium({ color, nombre }) {
+  return (
+    <div style={{ background: '#fff', borderRadius: '6px', overflow: 'hidden', height: '100%' }}>
+      <div style={{ borderBottom: `1px solid ${color}30`, padding: '6px 8px', display: 'flex', justifyContent: 'center' }}>
+        <span style={{ fontSize: '6px', fontWeight: '300', color: '#222', letterSpacing: '2px', textTransform: 'uppercase' }}>{nombre || 'MI TIENDA'}</span>
+      </div>
+      <div style={{ padding: '6px', textAlign: 'center' }}>
+        <div style={{ width: '20px', height: '1px', background: color, margin: '0 auto 4px' }} />
+        <div style={{ fontSize: '5px', color: '#888', letterSpacing: '1px', marginBottom: '6px' }}>SELECCIÓN EXCLUSIVA</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '3px' }}>
+          {[1, 2, 3].map(i => (
+            <div key={i} style={{ background: `${color}10`, borderRadius: '3px', padding: '4px 2px', textAlign: 'center' }}>
+              <CakeSlice size={10} color={color} />
+              <div style={{ fontSize: '4px', color: '#555', marginTop: '2px' }}>S/.{50 + i * 15}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// Plantilla 6: Festejo & Eventos
+// ============================================
+function MiniFestejoEventos({ color, nombre }) {
+  return (
+    <div style={{ background: '#fff', borderRadius: '6px', overflow: 'hidden', height: '100%' }}>
+      <div style={{ background: `linear-gradient(90deg, ${color}, ${color}bb)`, padding: '6px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: '6px', fontWeight: '800', color: '#fff' }}>{nombre || 'Mi Tienda'}</span>
+        <span style={{ fontSize: '8px' }}>🎂</span>
+      </div>
+      <div style={{ padding: '5px 6px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+        <div style={{ fontSize: '4px', color: '#888', letterSpacing: '0.5px', textAlign: 'center' }}>PARA TU EVENTO ESPECIAL</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px' }}>
+          {[
+            { label: '🎂 Tortas', bg: `${color}20` },
+            { label: '🎁 Eventos', bg: '#fde68a50' },
+            { label: '🍭 Dulces', bg: '#fbcfe850' },
+            { label: '✨ Bodas', bg: '#bbf7d050' },
+          ].map((item, i) => (
+            <div key={i} style={{ background: item.bg, borderRadius: '3px', padding: '4px', textAlign: 'center', fontSize: '5px', fontWeight: '600', color: '#444' }}>
+              {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================
 // Preview Grande (panel de previsualización detallada)
 // ============================================
 function PreviewGrande({ plantilla, color, nombre }) {
-  if (plantilla === 'minimalista') return <PreviewMinimalista color={color} nombre={nombre} />
-  if (plantilla === 'moderno_grid') return <PreviewModernoGrid color={color} nombre={nombre} />
-  if (plantilla === 'galeria') return <PreviewGaleria color={color} nombre={nombre} />
+  if (plantilla === 'minimalista')       return <PreviewMinimalista color={color} nombre={nombre} />
+  if (plantilla === 'moderno_grid')      return <PreviewModernoGrid color={color} nombre={nombre} />
+  if (plantilla === 'galeria')           return <PreviewGaleria color={color} nombre={nombre} />
+  if (plantilla === 'artesanal_rustico') return <PreviewArtesanalRustico color={color} nombre={nombre} />
+  if (plantilla === 'boutique_premium')  return <PreviewBoutiquePremium color={color} nombre={nombre} />
+  if (plantilla === 'festejo_eventos')   return <PreviewFestejoEventos color={color} nombre={nombre} />
   return null
 }
 
@@ -308,6 +394,125 @@ function PreviewGaleria({ color, nombre }) {
 }
 
 // ============================================
+// Preview Artesanal Rústico
+// ============================================
+function PreviewArtesanalRustico({ color, nombre }) {
+  return (
+    <div style={{ background: '#FDF6EC', borderRadius: '10px', overflow: 'hidden', border: '1px solid #e8d5b7' }}>
+      <div style={{ background: `${color}18`, borderBottom: `2px solid ${color}`, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: `2px solid ${color}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Croissant size={20} color={color} />
+        </div>
+        <div>
+          <div style={{ fontSize: '14px', fontWeight: '700', color, fontStyle: 'italic' }}>{nombre || 'Mi Pastelería'}</div>
+          <div style={{ fontSize: '9px', color: '#a07850', letterSpacing: '1px' }}>✦ HECHO CON AMOR ✦</div>
+        </div>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '14px' }}>
+          {['Inicio', 'Catálogo', 'Contacto'].map(l => (
+            <span key={l} style={{ fontSize: '9px', color: '#a07850' }}>{l}</span>
+          ))}
+        </div>
+      </div>
+      <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ fontSize: '9px', color: '#a07850', letterSpacing: '2px', textAlign: 'center', marginBottom: '4px' }}>NUESTROS PRODUCTOS ARTESANALES</div>
+        {[
+          { n: 'Pan de Yema Artesanal', p: 'S/.12', e: <Croissant size={20} /> },
+          { n: 'Torta Tres Leches',     p: 'S/.75', e: <Cake size={20} /> },
+          { n: 'Alfajores Tradicionales', p: 'S/.18', e: <Cookie size={20} /> },
+        ].map((prod, i) => (
+          <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'center', background: '#fff', borderRadius: '8px', padding: '10px 14px', border: '1px solid #e8d5b7' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color, flexShrink: 0 }}>{prod.e}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '11px', fontWeight: '700', color: '#5c3d1e', fontStyle: 'italic' }}>{prod.n}</div>
+              <div style={{ fontSize: '9px', color: '#a07850' }}>Elaborado con insumos naturales</div>
+            </div>
+            <div style={{ fontSize: '13px', fontWeight: '700', color }}>{prod.p}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// Preview Boutique Premium
+// ============================================
+function PreviewBoutiquePremium({ color, nombre }) {
+  return (
+    <div style={{ background: '#fff', borderRadius: '10px', overflow: 'hidden', border: '1px solid #eee' }}>
+      <div style={{ borderBottom: `1px solid ${color}25`, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: '11px', fontWeight: '300', color: '#111', letterSpacing: '3px', textTransform: 'uppercase' }}>{nombre || 'MI TIENDA'}</span>
+        <div style={{ display: 'flex', gap: '16px' }}>
+          {['Colección', 'Encargos', 'Contacto'].map(l => (
+            <span key={l} style={{ fontSize: '9px', color: '#999', letterSpacing: '0.5px' }}>{l}</span>
+          ))}
+        </div>
+      </div>
+      <div style={{ padding: '16px 20px 20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+          <div style={{ width: '30px', height: '1px', background: color, margin: '0 auto 8px' }} />
+          <div style={{ fontSize: '8px', color: '#bbb', letterSpacing: '2px' }}>SELECCIÓN EXCLUSIVA</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+          {[
+            { n: 'Opera Cake', p: 'S/.120', e: <Cake size={20} /> },
+            { n: 'Macarons',   p: 'S/.65',  e: <CakeSlice size={20} /> },
+            { n: 'Tarta Flan', p: 'S/.85',  e: <CakeSlice size={20} /> },
+          ].map((prod, i) => (
+            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+              <div style={{ width: '100%', aspectRatio: '1', background: `${color}10`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color }}>{prod.e}</div>
+              <div style={{ fontSize: '9px', fontWeight: '500', color: '#222', textAlign: 'center', letterSpacing: '0.3px' }}>{prod.n}</div>
+              <div style={{ fontSize: '10px', fontWeight: '300', color: '#555' }}>{prod.p}</div>
+              <div style={{ width: '100%', padding: '5px', border: `1px solid ${color}`, borderRadius: '4px', fontSize: '8px', color, textAlign: 'center', letterSpacing: '0.5px' }}>ENCARGAR</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// Preview Festejo & Eventos
+// ============================================
+function PreviewFestejoEventos({ color, nombre }) {
+  return (
+    <div style={{ background: '#fff', borderRadius: '10px', overflow: 'hidden', border: '1px solid #eee' }}>
+      <div style={{ background: `linear-gradient(135deg, ${color}, ${color}bb)`, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff', letterSpacing: '-0.3px' }}>{nombre || 'Mi Pastelería'} 🎂</div>
+          <div style={{ fontSize: '8px', color: 'rgba(255,255,255,0.8)', marginTop: '2px' }}>Hacemos tus celebraciones únicas</div>
+        </div>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          {['🎁', '🍭', '✨'].map((e, i) => (
+            <span key={i} style={{ fontSize: '16px' }}>{e}</span>
+          ))}
+        </div>
+      </div>
+      <div style={{ padding: '14px 18px' }}>
+        <div style={{ fontSize: '9px', color: '#888', letterSpacing: '1.5px', marginBottom: '10px', textAlign: 'center' }}>ELIGE TU OCASIÓN</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+          {[
+            { emoji: '🎂', label: 'Cumpleaños',   bg: `${color}15` },
+            { emoji: '💍', label: 'Matrimonios',  bg: '#fde68a40' },
+            { emoji: '🍼', label: 'Baby Shower',  bg: '#fbcfe840' },
+            { emoji: '🎓', label: 'Graduaciones', bg: '#bbf7d040' },
+          ].map((item, i) => (
+            <div key={i} style={{ background: item.bg, borderRadius: '8px', padding: '10px 8px', textAlign: 'center', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <div style={{ fontSize: '18px', marginBottom: '3px' }}>{item.emoji}</div>
+              <div style={{ fontSize: '9px', fontWeight: '700', color: '#444' }}>{item.label}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: color, color: '#fff', borderRadius: '8px', padding: '8px', textAlign: 'center', fontSize: '10px', fontWeight: '700', letterSpacing: '0.5px' }}>
+          COTIZAR MI EVENTO →
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================
 // Exports
 // ============================================
-export { MiniMinimalista, MiniModernoGrid, MiniGaleria, PreviewGrande }
+export { MiniMinimalista, MiniModernoGrid, MiniGaleria, MiniArtesanalRustico, MiniBoutiquePremium, MiniFestejoEventos, PreviewGrande }

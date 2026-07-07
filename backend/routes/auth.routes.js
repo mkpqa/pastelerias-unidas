@@ -6,6 +6,7 @@ const {
   registroComprador,
   registroVendedor,
   login,
+  loginConGoogle,
   obtenerPerfil,
   actualizarPassword,
   actualizarEmail,
@@ -21,6 +22,7 @@ router.post('/registro/vendedor', registroVendedor);
 
 // Login
 router.post('/login', login);
+router.post('/google', loginConGoogle);
 
 // Perfil (protegida con JWT)
 router.get('/perfil', protegerRuta, obtenerPerfil);
