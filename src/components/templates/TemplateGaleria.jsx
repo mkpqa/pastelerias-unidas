@@ -48,8 +48,16 @@ export default function TemplateGaleria({ tienda, color, recomendados, promocion
       <div style={{ position: 'relative', background: `linear-gradient(135deg, #0d0d18 60%, ${color}20)`, padding: '60px 24px 48px', borderBottom: `1px solid ${color}30` }}>
         <button onClick={onVolver} style={{ position: 'absolute', top: '20px', left: '20px', background: `${color}20`, border: `1px solid ${color}40`, color, borderRadius: '8px', padding: '8px 14px', cursor: 'pointer', fontSize: '13px' }}>← Marketplace</button>
         <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center', color: '#e0e0f0' }}>
-            <IconoCategoria categoria={tienda.especialidad} size={48} />
+          <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
+            {tienda.personalizacion?.logo ? (
+              <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: `2px solid ${color}60`, padding: '4px', overflow: 'hidden' }}>
+                <img src={tienda.personalizacion.logo} alt={tienda.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '50%' }} />
+              </div>
+            ) : (
+              <div style={{ color: '#e0e0f0' }}>
+                <IconoCategoria categoria={tienda.especialidad} size={48} />
+              </div>
+            )}
           </div>
           <h1 style={{ fontSize: '38px', fontWeight: '800', background: `linear-gradient(135deg, #fff, ${color})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: '0 0 12px', letterSpacing: '-1px' }}>
             {tienda.nombre}

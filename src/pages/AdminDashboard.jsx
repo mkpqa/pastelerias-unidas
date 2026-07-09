@@ -5,11 +5,63 @@ import useAuthStore from '../context/useAuthStore'
 import { adminAPI } from '../services/api'
 import CambiarPasswordModal from '../components/CambiarPasswordModal'
 import CambiarEmailModal from '../components/CambiarEmailModal'
-import { 
-  Lock, Mail, Store, CheckCircle, Package, Users, Flag, 
-  Star, Settings, Shield, XCircle, Trash2, ArrowUp, ArrowDown, 
-  ArrowRight, ArrowLeft, User, ChefHat 
+import {
+  Lock, Mail, Store, CheckCircle, Package, Users, Flag,
+  Star, Settings, Shield, XCircle, Trash2, ArrowUp, ArrowDown,
+  ArrowRight, ArrowLeft, User, ChefHat
 } from 'lucide-react'
+
+const ZONA_CONFIG = {
+  carrusel_home: { label: 'Carrusel Home', color: '#ffd700', text: '#6d4c00', bg: '#fffbf0' },
+  izquierda:    { label: 'Col. Izquierda', color: '#3b82f6', text: '#1e3a8a', bg: '#eff6ff' },
+  derecha:      { label: 'Col. Derecha',   color: '#8b5cf6', text: '#4c1d95', bg: '#f5f3ff' },
+}
+
+// Tarjeta reutilizable para cada banner/flyer — con toggle independiente por zona
+function BannerCard({ banner: b, onToggle, onToggleZona, onEliminar, btnSm }) {
+  const zonas = b.zonas || []
+  return (
+    <div style={{ display: 'flex', gap: '10px', padding: '10px', border: '1px solid #e0e0e0', borderRadius: '10px', marginBottom: '8px', opacity: b.activo ? 1 : 0.65 }}>
+      <img src={b.imagen} alt={b.titulo} style={{ width: '72px', height: '72px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: '12px', fontWeight: '600', color: '#1a1a2e', marginBottom: '1px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.titulo}</div>
+        <div style={{ fontSize: '10px', color: '#888', marginBottom: '6px' }}>Tienda: {b.tienda?.nombre || 'General'}</div>
+
+        {/* Zonas activas como chips */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
+          {zonas.length === 0
+            ? <span style={{ fontSize: '10px', color: '#bbb' }}>Sin zona asignada</span>
+            : zonas.map(z => {
+                const cfg = ZONA_CONFIG[z]
+                return cfg ? (
+                  <span key={z} style={{ fontSize: '10px', background: cfg.bg, color: cfg.text, border: `1px solid ${cfg.color}`, borderRadius: '4px', padding: '2px 6px', fontWeight: '600' }}>
+                    {cfg.label}
+                  </span>
+                ) : null
+              })
+          }
+        </div>
+
+        {/* Toggle por zona + controles */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+          {Object.entries(ZONA_CONFIG).map(([zona, cfg]) => {
+            const activa = zonas.includes(zona)
+            return (
+              <button key={zona} onClick={() => onToggleZona(zona, activa ? 'quitar' : 'agregar')}
+                style={{ ...btnSm(activa ? cfg.bg : '#f5f5f5', activa ? cfg.text : '#999'), border: `1px solid ${activa ? cfg.color : '#ddd'}`, display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11px', fontWeight: activa ? '700' : '400' }}>
+                {activa ? <CheckCircle size={11} /> : <XCircle size={11} />} {cfg.label}
+              </button>
+            )
+          })}
+          <button onClick={onToggle} style={{ ...btnSm(b.activo ? '#e8f5e9' : '#fde8e8', b.activo ? '#2d5a27' : '#8b2f2f'), display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11px' }}>
+            {b.activo ? <><CheckCircle size={11} /> Visible</> : <><XCircle size={11} /> Oculto</>}
+          </button>
+          <button onClick={onEliminar} style={{ ...btnSm('#fde8e8', '#c00'), display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={12} /></button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const coloresFondo = ['#fde8e8', '#fff3e0', '#e8f5e9', '#f3e8ff', '#e0f2f1', '#fce4ec', '#fff8e1', '#e8eaf6']
 const coloresTexto = ['#3a1a1a', '#4a2800', '#1b5e20', '#4a148c', '#004d40', '#880e4f', '#6d4c00', '#1a237e']
@@ -280,61 +332,32 @@ export default function AdminDashboard() {
       {/* ============================================ */}
       {tab === 'banners' && (
         <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e0e0e0', padding: '20px' }}>
-          <p style={{ fontSize: '12px', color: '#888', marginBottom: '14px' }}>
-            Revisa los flyers subidos por las pastelerías. Puedes activarlos, desactivarlos, eliminarlos o cambiar su posición en el marketplace.
-          </p>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-            {/* Columna Izquierda */}
-            <div>
-              <h4 style={{ fontSize: '14px', color: '#1a1a2e', marginBottom: '12px', borderBottom: '1px solid #eee', paddingBottom: '8px' }}>← Columna Izquierda</h4>
-              {banners.filter(b => b.posicion === 'izquierda').map(b => (
-                <div key={b._id} style={{ display: 'flex', gap: '12px', padding: '12px', border: '1px solid #e0e0e0', borderRadius: '10px', marginBottom: '10px', opacity: b.activo ? 1 : 0.6 }}>
-                  <img src={b.imagen} alt={b.titulo} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px' }} />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '13px', fontWeight: '600', color: '#1a1a2e' }}>{b.titulo}</div>
-                    <div style={{ fontSize: '11px', color: '#666' }}>Tienda: {b.tienda?.nombre || 'Desconocida'}</div>
-                    <div style={{ fontSize: '10px', color: '#888', marginBottom: '6px' }}>Link: {b.linkCTA}</div>
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                      <button onClick={async () => { await adminAPI.toggleBanner(b._id); cargarDatos(); flash('Estado actualizado'); }} style={{ ...btnSm(b.activo ? '#e8f5e9' : '#fde8e8', b.activo ? '#2d5a27' : '#8b2f2f'), display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        {b.activo ? <><CheckCircle size={12} /> Activo</> : <><XCircle size={12} /> Inactivo</>}
-                      </button>
-                      <button onClick={async () => { await adminAPI.cambiarPosicionBanner(b._id, { posicion: 'derecha' }); cargarDatos(); flash('Movido a la derecha'); }} style={{ ...btnSm('#eef', '#334'), display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        Mover <ArrowRight size={12} />
-                      </button>
-                      <button onClick={() => eliminarBanner(b._id)} style={{ ...btnSm('#fde8e8', '#c00'), display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={14} /></button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {banners.filter(b => b.posicion === 'izquierda').length === 0 && <p style={{ fontSize: '12px', color: '#bbb' }}>Sin flyers</p>}
-            </div>
-
-            {/* Columna Derecha */}
-            <div>
-              <h4 style={{ fontSize: '14px', color: '#1a1a2e', marginBottom: '12px', borderBottom: '1px solid #eee', paddingBottom: '8px' }}>Columna Derecha →</h4>
-              {banners.filter(b => b.posicion === 'derecha').map(b => (
-                <div key={b._id} style={{ display: 'flex', gap: '12px', padding: '12px', border: '1px solid #e0e0e0', borderRadius: '10px', marginBottom: '10px', opacity: b.activo ? 1 : 0.6 }}>
-                  <img src={b.imagen} alt={b.titulo} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '6px' }} />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '13px', fontWeight: '600', color: '#1a1a2e' }}>{b.titulo}</div>
-                    <div style={{ fontSize: '11px', color: '#666' }}>Tienda: {b.tienda?.nombre || 'Desconocida'}</div>
-                    <div style={{ fontSize: '10px', color: '#888', marginBottom: '6px' }}>Link: {b.linkCTA}</div>
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                      <button onClick={async () => { await adminAPI.toggleBanner(b._id); cargarDatos(); flash('Estado actualizado'); }} style={{ ...btnSm(b.activo ? '#e8f5e9' : '#fde8e8', b.activo ? '#2d5a27' : '#8b2f2f'), display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        {b.activo ? <><CheckCircle size={12} /> Activo</> : <><XCircle size={12} /> Inactivo</>}
-                      </button>
-                      <button onClick={async () => { await adminAPI.cambiarPosicionBanner(b._id, { posicion: 'izquierda' }); cargarDatos(); flash('Movido a la izquierda'); }} style={{ ...btnSm('#eef', '#334'), display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <ArrowLeft size={12} /> Mover
-                      </button>
-                      <button onClick={() => eliminarBanner(b._id)} style={{ ...btnSm('#fde8e8', '#c00'), display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={14} /></button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {banners.filter(b => b.posicion === 'derecha').length === 0 && <p style={{ fontSize: '12px', color: '#bbb' }}>Sin flyers</p>}
-            </div>
+          {/* Explicación */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', marginBottom: '16px', padding: '10px 14px', background: '#f0f4ff', borderRadius: '10px', border: '1px solid #c7d2fe', fontSize: '12px', color: '#3730a3' }}>
+            <Flag size={14} style={{ flexShrink: 0, marginTop: '1px' }} />
+            <span>
+              Cada flyer puede aparecer en <strong>varias zonas a la vez</strong>. Activa o desactiva cada zona directamente en la tarjeta.
+              Un flyer puede estar en el <strong>Carrusel Home</strong>, la <strong>Columna Izquierda</strong> y la <strong>Columna Derecha</strong> simultáneamente.
+            </span>
           </div>
+
+          {/* Lista de todos los flyers */}
+          {banners.length === 0 ? (
+            <p style={{ textAlign: 'center', color: '#bbb', padding: '2rem' }}>No hay flyers subidos aún</p>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: '8px' }}>
+              {banners.map(b => (
+                <BannerCard key={b._id} banner={b}
+                  onToggle={async () => { await adminAPI.toggleBanner(b._id); cargarDatos(); flash('Visibilidad actualizada'); }}
+                  onToggleZona={async (zona, accion) => {
+                    await adminAPI.toggleZonaBanner(b._id, zona, accion)
+                    cargarDatos()
+                    flash(accion === 'agregar' ? `✓ Añadido a ${ZONA_CONFIG[zona]?.label}` : `Quitado de ${ZONA_CONFIG[zona]?.label}`)
+                  }}
+                  onEliminar={() => eliminarBanner(b._id)} btnSm={btnSm} />
+              ))}
+            </div>
+          )}
         </div>
       )}
 

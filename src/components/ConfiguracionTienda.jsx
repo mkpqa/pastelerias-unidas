@@ -1,11 +1,15 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { tiendasAPI } from '../services/api'
-import { Palette, Edit2, Store, Camera, MessageCircle, Sparkles, XCircle, CheckCircle, Save, X } from 'lucide-react'
+import { Palette, Edit2, Store, Camera, MessageCircle, Sparkles, XCircle, CheckCircle, Save, X, Eye } from 'lucide-react'
+import { PreviewGrande } from './TemplatePreview'
 
 const plantillasDisponibles = [
-  { id: 'minimalista', nombre: 'Minimalista (Clásica)' },
-  { id: 'moderno_grid', nombre: 'Moderno Grid (Niveles)' },
-  { id: 'galeria', nombre: 'Galería Visual' },
+  { id: 'minimalista',       nombre: 'Minimalista (Clásica)' },
+  { id: 'moderno_grid',      nombre: 'Moderno Grid (Niveles)' },
+  { id: 'galeria',           nombre: 'Galería Visual' },
+  { id: 'artesanal_rustico', nombre: 'Artesanal Rústico' },
+  { id: 'boutique_premium',  nombre: 'Boutique Premium' },
+  { id: 'festejo_eventos',   nombre: 'Festejo & Eventos' },
 ]
 
 export default function ConfiguracionTienda({ tienda, onUpdate }) {
@@ -17,8 +21,13 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
   // Estado del formulario
   const [colorPrimario, setColorPrimario] = useState(tienda.personalizacion?.colorPrimario || '#d4687a')
   const [plantilla, setPlantilla] = useState(tienda.personalizacion?.plantilla || 'minimalista')
-  const [logoPreview, setLogoPreview] = useState(tienda.personalizacion?.logo ? tienda.personalizacion.logo : null)
+  const [logoPreview, setLogoPreview] = useState(tienda.personalizacion?.logo || null)
   const [logoFile, setLogoFile] = useState(null)
+
+  // Sincronizar logoPreview cuando el padre recarga la tienda (ej: tras guardar)
+  useEffect(() => {
+    if (!logoFile) setLogoPreview(tienda.personalizacion?.logo || null)
+  }, [tienda.personalizacion?.logo])
   
   // WhatsApp y Servicios
   const [whatsapp, setWhatsapp] = useState(tienda.redesSociales?.whatsapp || '')
@@ -76,32 +85,29 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
 
   const handleGuardar = async () => {
     setCargando(true)
-    setMensaje('')
+    setMensaje({ text: '', type: '' })
     try {
-      // 1. Guardar configuraciones
+      // 1. Guardar color, plantilla, whatsapp, servicios (NO el logo — tiene su propia ruta)
       await tiendasAPI.actualizarMiTienda({
-        personalizacion: {
-          ...tienda.personalizacion,
-          colorPrimario,
-          plantilla
-        },
-        redesSociales: {
-          ...tienda.redesSociales,
-          whatsapp
-        },
-        tarjetasServicios
+        personalizacion: { colorPrimario, plantilla },
+        redesSociales: { ...tienda.redesSociales, whatsapp },
+        tarjetasServicios,
       })
 
       // 2. Subir logo si hay uno nuevo
+      let tiendaActualizada = null
       if (logoFile) {
         const formData = new FormData()
         formData.append('logo', logoFile)
-        await tiendasAPI.subirLogoTienda(formData)
+        const logoRes = await tiendasAPI.subirLogoTienda(formData)
+        setLogoFile(null)
+        // Usar la tienda devuelta por el upload directamente (evita re-fetch)
+        if (logoRes?.tienda) tiendaActualizada = logoRes.tienda
       }
 
       flash('Configuración guardada correctamente.')
       setEditando(false)
-      if (onUpdate) onUpdate()
+      if (onUpdate) onUpdate(tiendaActualizada)
     } catch (err) {
       flash('Error al guardar: ' + err.message, 'error')
     } finally {
@@ -196,6 +202,18 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
           </select>
         </div>
       </div>
+      {/* Vista previa en tiempo real */}
+      <div style={{ marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+          <Eye size={13} color="#8b2f5f" />
+          <span style={{ fontSize: '12px', color: '#3a1a1a', fontWeight: '700' }}>Vista previa en tiempo real</span>
+          <span style={{ fontSize: '10px', color: '#bbb', marginLeft: 'auto' }}>Datos de ejemplo</span>
+        </div>
+        <div style={{ borderRadius: '10px', overflow: 'hidden', border: '1px solid #e8d5cc' }}>
+          <PreviewGrande plantilla={plantilla} color={colorPrimario} nombre={tienda.nombre} />
+        </div>
+      </div>
+
       {/* WhatsApp */}
       <div style={{ marginBottom: '16px' }}>
         <label style={{ fontSize: '12px', color: '#6b4c4c', display: 'block', marginBottom: '8px', fontWeight: '600' }}>WhatsApp (para redirección de servicios)</label>
