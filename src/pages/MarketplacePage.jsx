@@ -91,20 +91,23 @@ export default function MarketplacePage() {
   }, [])
 
   const cargarDatos = async () => {
+    setCargando(true)
+    // Cargar tiendas
     try {
-      setCargando(true)
-      const [tData, bData] = await Promise.all([
-        tiendasAPI.obtenerTodas(),
-        adminAPI.obtenerBannersPublicos(),
-      ])
-      setTiendas(tData.tiendas)
-      setBannersIzq(bData.banners.filter(b => b.zonas?.includes('izquierda') || b.posicion === 'izquierda'))
-      setBannersDer(bData.banners.filter(b => b.zonas?.includes('derecha') || b.posicion === 'derecha'))
+      const tData = await tiendasAPI.obtenerTodas()
+      setTiendas(tData.tiendas || [])
     } catch (err) {
-      console.error('Error cargando marketplace:', err)
-    } finally {
-      setCargando(false)
+      console.error('Error cargando tiendas:', err)
     }
+    // Cargar banners independientemente
+    try {
+      const bData = await adminAPI.obtenerBannersPublicos()
+      setBannersIzq((bData.banners || []).filter(b => b.zonas?.includes('izquierda') || b.posicion === 'izquierda'))
+      setBannersDer((bData.banners || []).filter(b => b.zonas?.includes('derecha') || b.posicion === 'derecha'))
+    } catch (err) {
+      console.error('Error cargando banners:', err)
+    }
+    setCargando(false)
   }
 
   const EspecialidadIcon = {

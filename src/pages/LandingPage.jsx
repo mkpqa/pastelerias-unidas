@@ -108,18 +108,21 @@ const Home = () => {
   }, []);
 
   const cargarDatos = async () => {
+    // Cargar banners independientemente (no depende de home-data)
     try {
-      const [homeData, bannersData] = await Promise.all([
-        tiendasAPI.obtenerHomeData(),
-        adminAPI.obtenerBannersPublicos(),
-      ]);
-      setTiendasNuevas(homeData.nuevas || []);
-      setTiendasPopulares(homeData.populares || []);
-
+      const bannersData = await adminAPI.obtenerBannersPublicos();
       const carruselBanners = (bannersData.banners || []).filter(b => b.zonas?.includes('carrusel_home'));
       setBanners(carruselBanners.length > 0 ? carruselBanners : BANNER_FALLBACK);
     } catch {
       setBanners(BANNER_FALLBACK);
+    }
+
+    // Cargar tiendas por separado (puede fallar sin afectar banners)
+    try {
+      const homeData = await tiendasAPI.obtenerHomeData();
+      setTiendasNuevas(homeData.nuevas || []);
+      setTiendasPopulares(homeData.populares || []);
+    } catch {
       setTiendasNuevas([]);
       setTiendasPopulares([]);
     }
