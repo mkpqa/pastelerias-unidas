@@ -123,8 +123,16 @@ const Home = () => {
       setTiendasNuevas(homeData.nuevas || []);
       setTiendasPopulares(homeData.populares || []);
     } catch {
-      setTiendasNuevas([]);
-      setTiendasPopulares([]);
+      // Fallback: si home-data no existe en el backend, usar obtenerTodas
+      try {
+        const fallback = await tiendasAPI.obtenerTodas();
+        const todas = fallback.tiendas || [];
+        setTiendasNuevas(todas.slice(0, 4));
+        setTiendasPopulares(todas.slice(0, 4));
+      } catch {
+        setTiendasNuevas([]);
+        setTiendasPopulares([]);
+      }
     }
   };
 
