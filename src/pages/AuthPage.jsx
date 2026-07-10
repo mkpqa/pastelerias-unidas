@@ -118,6 +118,7 @@ export default function AuthPage() {
                 <Lock size={20} className="input-icon" />
                 <input
                   type="password"
+                  autoComplete="current-password"
                   placeholder="Contraseña"
                   className="form-input"
                   value={password}

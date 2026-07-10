@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { tiendasAPI, productosAPI, pedidosAPI } from '../services/api'
+import MockCheckoutForm from '../components/MockCheckoutForm'
 import useCarritoStore from '../context/useCarritoStore'
 import TemplateMinimalista from '../components/templates/TemplateMinimalista'
 import TemplateModernoGrid from '../components/templates/TemplateModernoGrid'
@@ -8,7 +9,7 @@ import TemplateGaleria from '../components/templates/TemplateGaleria'
 import TemplateArtesanalRustico from '../components/templates/TemplateArtesanalRustico'
 import TemplateBoutiquePremium from '../components/templates/TemplateBoutiquePremium'
 import TemplateFestejoEventos from '../components/templates/TemplateFestejoEventos'
-import { ShoppingCart, CheckCircle, Store, XCircle } from 'lucide-react'
+import { ShoppingCart, CheckCircle, Store, XCircle, Lock } from 'lucide-react'
 
 const categoriaEmoji = {
   Tortas:'🎂',Cupcakes:'🧁',Galletas:'🍪',Postres:'🍰',
@@ -58,8 +59,18 @@ export default function TiendaDetalle() {
     agregarItem({ ...producto, tienda: tienda._id })
   }
 
-  const handlePagar = async () => {
-    setHaciendoPedido(true)
+  // Paso 1: Activar el panel de Mock
+  const iniciarPagoMock = () => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      alert('Debes iniciar sesión para pagar')
+      return
+    }
+    setHaciendoPedido(true) // Esto oculta el carrito y muestra el MockCheckoutForm
+  }
+
+  // Paso 2: Finalizar pedido después del pago
+  const handlePagar = async (mockTransactionId) => {
     try {
       const res = await pedidosAPI.crearPedido({
         tiendaId: carritoTiendaId,
@@ -72,11 +83,15 @@ export default function TiendaDetalle() {
           variacionesSeleccionadas: i.variaciones || [],
         })),
         subtotal: totalCarrito, costoEnvio: 0, total: totalCarrito,
-        pago: { metodo: 'efectivo' }, entrega: { tipo: 'recojo' },
+        pago: { metodo: 'tarjeta', idPagos: mockTransactionId }, entrega: { tipo: 'recojo' },
       })
-      setPedidoExitoso(res.pedido); vaciarCarrito()
-    } catch { alert('Asegúrate de estar logueado como cliente.') }
-    finally { setHaciendoPedido(false) }
+      setPedidoExitoso(res.pedido)
+      setHaciendoPedido(false)
+      vaciarCarrito()
+    } catch { 
+      alert('Hubo un error registrando tu pedido tras el pago.') 
+      setHaciendoPedido(false)
+    }
   }
 
   if (cargando) return (
@@ -140,7 +155,16 @@ export default function TiendaDetalle() {
                 <div style={{color:'#22c55e',marginBottom:'16px'}}><CheckCircle size={64} /></div>
                 <h3 style={{color:'#1a1a2e',marginBottom:'8px'}}>¡Pedido realizado!</h3>
                 <p style={{color:'#555',fontSize:'14px',marginBottom:'24px'}}>Tu pedido <strong>{pedidoExitoso.codigo}</strong> fue enviado a la pastelería.</p>
-                <button onClick={() => { setPedidoExitoso(null); setShowCheckout(false) }} style={{background:color,color:'#fff',border:'none',borderRadius:'8px',padding:'12px 24px',cursor:'pointer',fontWeight:'600'}}>Seguir comprando</button>
+                <button onClick={() => { setPedidoExitoso(null); setShowCheckout(false); setHaciendoPedido(false) }} style={{background:color,color:'#fff',border:'none',borderRadius:'8px',padding:'12px 24px',cursor:'pointer',fontWeight:'600'}}>Seguir comprando</button>
+              </div>
+            ) : haciendoPedido ? (
+              <div style={{flex:1, overflowY:'auto', padding:'24px'}}>
+                <MockCheckoutForm 
+                  total={totalCarrito} 
+                  color={color}
+                  onPagoExitoso={handlePagar} 
+                  onCancelar={() => setHaciendoPedido(false)} 
+                />
               </div>
             ) : (
               <>
@@ -159,8 +183,8 @@ export default function TiendaDetalle() {
                   <div style={{display:'flex',justifyContent:'space-between',marginBottom:'16px',fontSize:'18px',fontWeight:'700',color:'#1a1a2e'}}>
                     <span>Total</span><span style={{color}}>S/. {totalCarrito.toFixed(2)}</span>
                   </div>
-                  <button onClick={handlePagar} disabled={haciendoPedido} style={{width:'100%',background:haciendoPedido?'#aaa':'#22c55e',color:'#fff',border:'none',padding:'14px',borderRadius:'10px',fontSize:'15px',fontWeight:'700',cursor:haciendoPedido?'not-allowed':'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:'8px'}}>
-                    {haciendoPedido ? 'Procesando...' : <><CheckCircle size={18} /> Confirmar Pedido</>}
+                  <button onClick={iniciarPagoMock} style={{width:'100%',background:'#22c55e',color:'#fff',border:'none',padding:'14px',borderRadius:'10px',fontSize:'15px',fontWeight:'700',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:'8px'}}>
+                    <Lock size={18} /> Pagar con Tarjeta
                   </button>
                   <button onClick={vaciarCarrito} style={{width:'100%',marginTop:'10px',background:'none',border:'1px solid #eee',padding:'10px',borderRadius:'8px',fontSize:'13px',cursor:'pointer',color:'#888'}}>Vaciar carrito</button>
                 </div>

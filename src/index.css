@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -12,4 +14,100 @@ body {
 
 button {
   cursor: pointer;
+}
+
+/* --- Neumorphism variables and classes for Payment Gateway --- */
+:root {
+  --color-surface-dim: #0f0f1a;
+  --color-background: #0a0a12;
+  --color-primary: #b088f9;
+  --color-secondary: #d8b4fe;
+  --color-tertiary: #ffe04a;
+  --color-surface: #0f0f1a;
+  --color-surface-container: #141422;
+  --color-outline: #5a5068;
+  --color-on-surface: #ffffff;
+  --color-on-surface-variant: #f1f5f9;
+  --color-surface-container-highest: #28283e;
+  --color-error: #ff4444;
+}
+
+.neo-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 10, 18, 0.85); /* Dark background with opacity */
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.neo-modal {
+  background: linear-gradient(145deg, #151524, #12121f);
+  box-shadow: 10px 10px 20px #08080f,
+              -10px -10px 20px #1c1c30;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--color-on-surface);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 450px;
+  padding: 30px;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+
+.neo-input {
+  background: #141422;
+  box-shadow: inset 5px 5px 10px #0b0b13,
+              inset -5px -5px 10px #1d1d31;
+  border: none;
+  color: var(--color-on-surface);
+  outline: none;
+}
+
+.neo-input:focus {
+  box-shadow: inset 5px 5px 10px #0b0b13,
+              inset -5px -5px 10px #1d1d31;
+  border-bottom: 2px solid var(--color-secondary);
+}
+
+.neo-tab {
+  background: #141422;
+  box-shadow: 3px 3px 6px #0b0b13,
+             -3px -3px 6px #1d1d31;
+  transition: all 0.3s ease;
+  color: var(--color-on-surface-variant);
+  border: none;
+}
+
+.neo-tab[aria-selected="true"] {
+  box-shadow: inset 3px 3px 6px #0b0b13,
+              inset -3px -3px 6px #1d1d31;
+  color: var(--color-secondary);
+}
+
+.btn-glow {
+  background: #141422;
+  border: 1px solid rgba(176, 136, 249, 0.4);
+  box-shadow: 3px 3px 6px #0b0b13, -3px -3px 6px #1d1d31;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-glow:hover:not(:disabled) {
+  box-shadow: 0 0 10px rgba(176, 136, 249, 0.3);
+}
+
+.btn-glow:active:not(:disabled) {
+  box-shadow: inset 5px 5px 10px #0b0b13, inset -5px -5px 10px #1d1d31;
+}
+
+.btn-glow:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: inset 5px 5px 10px #0b0b13, inset -5px -5px 10px #1d1d31;
+  border-color: rgba(100, 100, 100, 0.3);
+  color: #888;
 }

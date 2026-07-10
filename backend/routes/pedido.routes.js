@@ -5,7 +5,7 @@ const {
   crearPedido,
   obtenerMisCompras,
   obtenerPedidosVendedor,
-  actualizarEstadoPedido
+  actualizarEstadoPedido,
 } = require('../controllers/pedido.controller');
 
 // Todas las rutas de pedidos requieren estar logueado
