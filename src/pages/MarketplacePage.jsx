@@ -98,8 +98,8 @@ export default function MarketplacePage() {
         adminAPI.obtenerBannersPublicos(),
       ])
       setTiendas(tData.tiendas)
-      setBannersIzq(bData.banners.filter(b => b.zonas?.includes('izquierda')))
-      setBannersDer(bData.banners.filter(b => b.zonas?.includes('derecha')))
+      setBannersIzq(bData.banners.filter(b => b.zonas?.includes('izquierda') || b.posicion === 'izquierda'))
+      setBannersDer(bData.banners.filter(b => b.zonas?.includes('derecha') || b.posicion === 'derecha'))
     } catch (err) {
       console.error('Error cargando marketplace:', err)
     } finally {
