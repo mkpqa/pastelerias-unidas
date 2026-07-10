@@ -111,7 +111,7 @@ const Home = () => {
     // Cargar banners independientemente (no depende de home-data)
     try {
       const bannersData = await adminAPI.obtenerBannersPublicos();
-      const carruselBanners = (bannersData.banners || []).filter(b => b.zonas?.includes('carrusel_home'));
+      const carruselBanners = (bannersData.banners || []).filter(b => b.zonas?.includes('carrusel_home') || b.posicion?.includes('carrusel_home'));
       setBanners(carruselBanners.length > 0 ? carruselBanners : BANNER_FALLBACK);
     } catch {
       setBanners(BANNER_FALLBACK);

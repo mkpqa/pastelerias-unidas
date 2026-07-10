@@ -102,8 +102,8 @@ export default function MarketplacePage() {
     // Cargar banners independientemente
     try {
       const bData = await adminAPI.obtenerBannersPublicos()
-      setBannersIzq((bData.banners || []).filter(b => b.zonas?.includes('izquierda') || b.posicion === 'izquierda'))
-      setBannersDer((bData.banners || []).filter(b => b.zonas?.includes('derecha') || b.posicion === 'derecha'))
+      setBannersIzq((bData.banners || []).filter(b => b.zonas?.includes('izquierda') || b.posicion?.includes('izquierda')))
+      setBannersDer((bData.banners || []).filter(b => b.zonas?.includes('derecha') || b.posicion?.includes('derecha')))
     } catch (err) {
       console.error('Error cargando banners:', err)
     }
