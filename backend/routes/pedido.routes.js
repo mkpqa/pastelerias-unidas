@@ -17,9 +17,9 @@ router.get('/seguimiento/:tiendaSlug/:codigo', obtenerSeguimientoPedido);
 // Todas las demás rutas de pedidos requieren estar logueado
 router.use(protegerRuta);
 
-// Rutas para COMPRADORES
-router.post('/', autorizarRoles('cliente'), crearPedido);
-router.get('/mis-compras', autorizarRoles('cliente'), obtenerMisCompras);
+// Rutas para COMPRADORES (y vendedores que también compran)
+router.post('/', autorizarRoles('cliente', 'comprador', 'vendedor'), crearPedido);
+router.get('/mis-compras', autorizarRoles('cliente', 'comprador', 'vendedor'), obtenerMisCompras);
 
 // Rutas para VENDEDORES
 router.get('/vendedor', autorizarRoles('vendedor'), obtenerPedidosVendedor);
