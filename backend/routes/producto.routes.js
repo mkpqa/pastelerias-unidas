@@ -11,11 +11,15 @@ const {
   obtenerProductosTienda,
   obtenerProductoPublico,
   subirImagenProducto,
+  buscarProductosGlobal,
+  obtenerTendencias,
 } = require('../controllers/producto.controller');
 
 // ============================================
 // Rutas Públicas (Marketplace)
 // ============================================
+router.get('/buscar', buscarProductosGlobal);        // Búsqueda global: /api/productos/buscar?q=...
+router.get('/tendencias', obtenerTendencias);        // Tendencias: /api/productos/tendencias
 router.get('/tienda/:tiendaId', obtenerProductosTienda);
 router.get('/:id/publico', obtenerProductoPublico);  // Detalle público de producto
 

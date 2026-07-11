@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { pedidosAPI } from '../services/api'
 import useAuthStore from '../context/useAuthStore'
 import {
   ShoppingBag, ChevronDown, ChevronUp, Store,
-  Clock, CheckCircle, XCircle, Package, Truck, Star
+  Clock, CheckCircle, XCircle, Package, Truck, Star, CalendarCheck, Search
 } from 'lucide-react'
 
 const ESTADO_CONFIG = {
@@ -42,6 +42,12 @@ function TarjetaPedido({ pedido }) {
     day: '2-digit', month: 'long', year: 'numeric',
   })
 
+  const fechaRecogida = pedido.fecha_recogida
+    ? new Date(pedido.fecha_recogida + 'T12:00:00').toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long' })
+    : null
+
+  const FRANJA_LABEL = { 'mañana': 'Mañana (9–13h)', 'tarde': 'Tarde (14–18h)' }
+
   return (
     <div style={{
       background: '#fff', borderRadius: '14px',
@@ -72,6 +78,12 @@ function TarjetaPedido({ pedido }) {
         {/* Info central */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            {/* Código de pedido */}
+            {pedido.codigo && (
+              <span style={{ fontSize: '12px', fontWeight: '800', color: '#55261C', fontFamily: 'monospace', background: '#fdf8f5', padding: '2px 8px', borderRadius: '6px', border: '1px solid #e8d5cc', letterSpacing: '1px' }}>
+                {pedido.codigo}
+              </span>
+            )}
             <span style={{ fontWeight: '700', color: '#3a1a1a', fontSize: '15px' }}>
               {tienda.nombre || 'Pastelería'}
             </span>
@@ -80,6 +92,15 @@ function TarjetaPedido({ pedido }) {
           <div style={{ fontSize: '12px', color: '#9a7a7a', marginTop: '3px' }}>
             {fecha} · {detalles.length} {detalles.length === 1 ? 'producto' : 'productos'}
           </div>
+          {/* Fecha de recogida */}
+          {fechaRecogida && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '4px' }}>
+              <CalendarCheck size={11} color="#22c55e" />
+              <span style={{ fontSize: '11px', color: '#166534', fontWeight: '600' }}>
+                Recogida: {fechaRecogida}{pedido.franja_horaria ? ` — ${FRANJA_LABEL[pedido.franja_horaria] || pedido.franja_horaria}` : ''}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Total + chevron */}
@@ -142,10 +163,24 @@ function TarjetaPedido({ pedido }) {
             <span style={{ fontSize: '13px', color: '#9a7a7a' }}>
               Total del pedido
             </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
               <span style={{ fontWeight: '700', color: '#55261C', fontSize: '15px' }}>
                 S/. {parseFloat(pedido.total || 0).toFixed(2)}
               </span>
+              {/* Link de seguimiento */}
+              {pedido.codigo && tienda.slug && (
+                <Link
+                  to={`/seguimiento?tienda=${tienda.slug}&codigo=${pedido.codigo}`}
+                  style={{
+                    background: '#f0fdf4', color: '#166534', border: '1px solid #86efac',
+                    borderRadius: '8px', padding: '5px 12px',
+                    fontSize: '11px', fontWeight: '600', textDecoration: 'none',
+                    display: 'flex', alignItems: 'center', gap: '4px',
+                  }}
+                >
+                  <Search size={11} /> Seguir pedido
+                </Link>
+              )}
               {tienda.slug && (
                 <button
                   onClick={() => navigate(`/tienda/${tienda.slug}`)}

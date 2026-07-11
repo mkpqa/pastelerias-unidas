@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pastelerías Unidas - El sabor que une generaciones</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Epilogue:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#524340",
+                        "tertiary-fixed-dim": "#ffabed",
+                        "surface-variant": "#e5e2e1",
+                        "secondary": "#7e5446",
+                        "tertiary-container": "#62005c",
+                        "surface-container-low": "#f7f3f2",
+                        "surface-tint": "#884f43",
+                        "chocolate-deep": "#55261C",
+                        "berry-accent": "#BD28B1",
+                        "secondary-fixed-dim": "#f1baa9",
+                        "background": "#fcf8f7",
+                        "on-primary-fixed": "#360e07",
+                        "on-secondary-fixed": "#301309",
+                        "on-surface": "#1c1b1b",
+                        "on-secondary-container": "#7b5144",
+                        "glaze-white": "#FFFFFF",
+                        "on-error": "#ffffff",
+                        "pastry-blush": "#E2AD9C",
+                        "surface": "#fcf8f7",
+                        "on-tertiary-fixed-variant": "#83007b",
+                        "on-background": "#1c1b1b",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#ffdad3",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#ebe7e6",
+                        "on-tertiary-container": "#f65fe4",
+                        "surface-bright": "#fcf8f7",
+                        "on-tertiary-fixed": "#390035",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#ffdbd0",
+                        "tertiary-fixed": "#ffd7f3",
+                        "tertiary": "#3e003a",
+                        "outline": "#85736f",
+                        "surface-dim": "#ddd9d8",
+                        "primary-container": "#55261c",
+                        "inverse-surface": "#313030",
+                        "on-secondary-fixed-variant": "#633d30",
+                        "inverse-primary": "#ffb4a5",
+                        "surface-container": "#f1edec",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "secondary-container": "#ffc8b7",
+                        "on-primary-container": "#cf8b7d",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-primary-fixed-variant": "#6c382d",
+                        "primary": "#3a1209",
+                        "inverse-on-surface": "#f4f0ef",
+                        "outline-variant": "#d7c2bd",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "margin-desktop": "40px",
+                        "unit": "8px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Epilogue"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-md": ["Epilogue"],
+                        "headline-lg-mobile": ["Epilogue"],
+                        "display-lg": ["Epilogue"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Epilogue', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Subtle scrollbar for horizontal lists */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-pastry-blush selection:text-chocolate-deep">
+<!-- TopNavBar -->
+<header class="bg-glaze-white sticky top-0 z-50 shadow-[0px_4px_12px_rgba(85,38,28,0.04)]">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto h-20">
+<!-- Brand Logo -->
+<div class="flex items-center gap-3">
+<img alt="Pastelerías Unidas Logo" class="h-12 w-12 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLvKTgH9IvQSXhMXX4H_p8443gkXXfb6ufnVK3mMNkuOE1KBo7Fc3E1C8dY481gseV183JY5a4aQr_5smFj2HfvX1EDMigUEic1rgR339NEf4P76nIMgjg1UyVTUYCtrupghnWNgHU7uIRbr3qooOomN3qwQG0xF_8UgIoo28k62xsp9Pho-1Yfayft7R4gL3Ak8OGYa2To17ZkGsgCnh4E_tYl__yeCt4lJEllFrPzLtDecNoKmUXtY3xsd"/>
+<span class="text-headline-md font-headline-md font-bold text-chocolate-deep hidden sm:block">Pastelerías Unidas</span>
+</div>
+<!-- Desktop Navigation -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-chocolate-deep border-b-2 border-chocolate-deep font-bold pb-1 text-label-md font-label-md" href="#">Bakeries</a>
+<a class="text-on-surface-variant hover:text-chocolate-deep transition-colors text-label-md font-label-md" href="#">Pastries</a>
+<a class="text-on-surface-variant hover:text-chocolate-deep transition-colors text-label-md font-label-md" href="#">Offers</a>
+<a class="text-on-surface-variant hover:text-chocolate-deep transition-colors text-label-md font-label-md" href="#">How it Works</a>
+</nav>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-4 text-chocolate-deep">
+<button aria-label="Cart" class="hover:text-berry-accent transition-all p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[24px]">shopping_cart</span>
+</button>
+<button aria-label="Account" class="hover:text-berry-accent transition-all p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[24px]">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main>
+<!-- Hero Section -->
+<section class="relative w-full h-[600px] flex items-center justify-center bg-surface-container-low overflow-hidden px-margin-mobile md:px-margin-desktop">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center opacity-40 mix-blend-multiply" data-alt="A warm, inviting overhead shot of a rustic bakery table covered in flour, fresh artisanal bread, delicate pastries, and a steaming cup of coffee. The lighting is soft and golden, creating a cozy, premium aesthetic. Deep chocolate and warm blush tones dominate the palette." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCriu_NhDauZKABWFz-4BVBV8ppVYnsYzh8nM1_nv8Lm7Z7WFF2VKb-nvUGC5H0xsjPLWakmjXoDH6khSckpTypLp3ZTCAtOrNlWUaOJVV_hEfYRFiALKbRg6WKWKogFXPuu86TN2B8rrUdXXqeCrQWaR_gA5xhHxztsGtvarbYm69nqbvDgEbY8oMvtF4QjDWluvbHaqauZMfGfFR0o1Vy-SNhrAEnI5rUcFrx_c4xnST2CSlW0I1fMQ')"></div>
+</div>
+<div class="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto gap-6 bg-glaze-white/80 backdrop-blur-md p-8 md:p-12 rounded-xl shadow-[0px_8px_24px_rgba(85,38,28,0.08)] border border-outline-variant/30">
+<h1 class="text-headline-lg-mobile md:text-display-lg font-headline-lg-mobile md:font-display-lg text-chocolate-deep">
+                    El Sabor que une Generaciones
+                </h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-xl">
+                    Descubre las mejores pastelerías artesanales cerca de ti. Calidad premium entregada en tu puerta.
+                </p>
+<!-- Search Bar -->
+<div class="w-full mt-4 flex items-center bg-glaze-white rounded-full p-2 pl-6 shadow-sm border border-outline-variant/50 focus-within:border-chocolate-deep focus-within:ring-1 focus-within:ring-chocolate-deep transition-all">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface placeholder:text-outline ml-3" placeholder="¿Qué se te antoja hoy?" type="text"/>
+<button class="bg-chocolate-deep text-glaze-white px-6 py-3 rounded-full text-label-md font-label-md hover:bg-primary transition-colors flex-shrink-0">
+                        Buscar
+                    </button>
+</div>
+</div>
+</section>
+<!-- Featured Bakeries -->
+<section class="py-16 md:py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="text-headline-md font-headline-md text-chocolate-deep mb-2">Pastelerías Destacadas</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">Nuestros socios artesanales de confianza.</p>
+</div>
+<a class="text-label-md font-label-md text-chocolate-deep hover:text-berry-accent flex items-center gap-1 transition-colors" href="#">
+                    Ver todas <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Bakery Card 1 -->
+<div class="group bg-glaze-white rounded-xl overflow-hidden shadow-[0px_4px_12px_rgba(85,38,28,0.04)] border border-surface-variant hover:shadow-[0px_8px_24px_rgba(85,38,28,0.08)] transition-all duration-300">
+<div class="h-48 overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Interior of a modern, warm artisanal bakery with fresh loaves on display and soft ambient lighting. Elegant and premium feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABtag2oecgU-8_Mw7z9cUWyymxhFyh9lPqapYOeJXfq73PDeE2Bx98OMmn8AoNhpaFaSFZE21t9ku5-3E8CQI_sEitLRYmRNJpNvRzX5tcbh4Wi15v_5cKpNYQolIJmAbbJ7zot3kv_nP4GC_HRJAB8szHQUiJgSpfMcayH3757wksi6gwRF_Z9AU5AVcHV5LAzmKROFSQ3C6l7_pMn-WEEsF8rttN84XBdqHMJvO4mAl0UKvw0xwETw"/>
+<div class="absolute top-4 right-4 bg-glaze-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined filled text-berry-accent text-[16px]">star</span>
+<span class="text-label-sm font-label-sm text-chocolate-deep">4.9</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-4 mb-3">
+<div class="w-12 h-12 rounded-full bg-surface-container-low border border-outline-variant/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+<span class="material-symbols-outlined text-outline text-[24px]">storefront</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[20px] font-semibold leading-tight">La Tradición</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Centro Histórico</p>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2">Especialistas en pan de masa madre y tartas rústicas de temporada con ingredientes orgánicos.</p>
+<div class="mt-4 flex gap-2">
+<span class="px-3 py-1 bg-pastry-blush/20 text-chocolate-deep text-label-sm font-label-sm rounded-full">Orgánico</span>
+<span class="px-3 py-1 bg-pastry-blush/20 text-chocolate-deep text-label-sm font-label-sm rounded-full">Masa Madre</span>
+</div>
+</div>
+</div>
+<!-- Bakery Card 2 -->
+<div class="group bg-glaze-white rounded-xl overflow-hidden shadow-[0px_4px_12px_rgba(85,38,28,0.04)] border border-surface-variant hover:shadow-[0px_8px_24px_rgba(85,38,28,0.08)] transition-all duration-300">
+<div class="h-48 overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A brightly lit, minimalist pastry shop display case filled with colorful, precise French macarons and eclairs. Clean, modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyruKfQSuzQCAcjrxN6DBIYTISxG608OHYFbtoZuVmEKM79v0V0JdI1VF0XFjb0j0R9fUIeywDwJfYXxP_D-eAWf7Etz15yGItcKdmJ9rlC12SexTiLbAnwtCkwu0-osMBmudktU-g7418UB_F_Wy1uO3WOR-91GqkzLpCLp-93QcwdzSsnLQOQjP-G56ti3bZkbZZZHkJ01JcqYVT6HPd6_jcDomYBzbUfOGoemtINAj8U6KC35PbVw"/>
+<div class="absolute top-4 right-4 bg-glaze-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined filled text-berry-accent text-[16px]">star</span>
+<span class="text-label-sm font-label-sm text-chocolate-deep">4.8</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-4 mb-3">
+<div class="w-12 h-12 rounded-full bg-surface-container-low border border-outline-variant/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+<span class="material-symbols-outlined text-outline text-[24px]">cake</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[20px] font-semibold leading-tight">Dulce Dupla</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Colonia Roma</p>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2">Repostería fina francesa, macaronería y pasteles de autor con diseños vanguardistas.</p>
+<div class="mt-4 flex gap-2">
+<span class="px-3 py-1 bg-pastry-blush/20 text-chocolate-deep text-label-sm font-label-sm rounded-full">Francesa</span>
+<span class="px-3 py-1 bg-pastry-blush/20 text-chocolate-deep text-label-sm font-label-sm rounded-full">Gourmet</span>
+</div>
+</div>
+</div>
+<!-- Bakery Card 3 -->
+<div class="group bg-glaze-white rounded-xl overflow-hidden shadow-[0px_4px_12px_rgba(85,38,28,0.04)] border border-surface-variant hover:shadow-[0px_8px_24px_rgba(85,38,28,0.08)] transition-all duration-300 hidden lg:block">
+<div class="h-48 overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close up of a baker's hands skillfully decorating a rich chocolate cake in a warm, rustic kitchen setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyhlJgf-PilLh6A5IavCkWx-wVwXSJdgzaP9NeyRsffBW5LnMC1V7RxKED-8h3ChCWa_RJZBOqoDHONHFQrKf4ov2U6lWA_2TJ8QixzN_Yk4iQ2Y7S_ShiKoScdiUwaa2a6Qqbjwf6f06JH-P-WPSl9vr4BQO5-pVI7qYBCc4Mve7mV_xXvWpsTJm_L1B-ByQcnE7HqLRrw9mTiFElRwrGZVRDKjHsPIfgks8ah1jGLE6pSca9V1UNhw"/>
+<div class="absolute top-4 right-4 bg-glaze-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined filled text-berry-accent text-[16px]">star</span>
+<span class="text-label-sm font-label-sm text-chocolate-deep">4.7</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-4 mb-3">
+<div class="w-12 h-12 rounded-full bg-surface-container-low border border-outline-variant/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+<span class="material-symbols-outlined text-outline text-[24px]">cookie</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[20px] font-semibold leading-tight">El Globo</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Polanco</p>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2">Tradición panadera desde 1884. Pasteles clásicos y pan dulce elaborado con recetas de antaño.</p>
+<div class="mt-4 flex gap-2">
+<span class="px-3 py-1 bg-pastry-blush/20 text-chocolate-deep text-label-sm font-label-sm rounded-full">Tradicional</span>
+<span class="px-3 py-1 bg-pastry-blush/20 text-chocolate-deep text-label-sm font-label-sm rounded-full">Clásico</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Promotional Banner -->
+<section class="py-12 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="bg-chocolate-deep rounded-2xl overflow-hidden shadow-[0px_8px_24px_rgba(85,38,28,0.15)] flex flex-col md:flex-row relative">
+<!-- Decorative elements -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-pastry-blush/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
+<div class="absolute bottom-0 left-0 w-48 h-48 bg-berry-accent/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/4"></div>
+<div class="p-8 md:p-12 flex flex-col justify-center w-full md:w-1/2 relative z-10">
+<div class="inline-flex items-center gap-2 bg-berry-accent text-glaze-white px-3 py-1 rounded-full text-label-sm font-label-sm w-fit mb-4">
+<span class="material-symbols-outlined text-[16px]">celebration</span>
+                        Especial Cumpleañeros
+                    </div>
+<h2 class="text-headline-lg md:text-display-lg font-headline-lg md:font-display-lg text-glaze-white mb-4 leading-tight">
+                        20% de descuento <br/>en tu mes
+                    </h2>
+<p class="text-body-lg font-body-lg text-primary-fixed-dim mb-8">
+                        Celebra con un pastel de El Globo. Aplica durante todo el mes de tu cumpleaños.
+                    </p>
+<button class="bg-pastry-blush text-chocolate-deep px-8 py-4 rounded-full text-label-md font-label-md font-bold hover:bg-secondary-fixed transition-colors w-fit shadow-md">
+                        Reclamar Oferta
+                    </button>
+<p class="text-label-sm font-label-sm text-outline-variant mt-4 opacity-70">
+                        *No aplica para pastel pedido. Sujeto a disponibilidad.
+                    </p>
+</div>
+<div class="w-full md:w-1/2 min-h-[300px] md:min-h-full relative">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A luscious chocolate cake from El Globo with decorative chocolate curls on top, presented on a wooden table with a soft, warm, celebratory background blur." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaYbjqZJqPoGymWbnHVIiass_o3eZXB5_iRV8es7xLNE8NQNE3wCaShITIABsR_D1LMCiweKXYbbuRp3m8ghKBo0DF13hLQRrT-m1TWqZbJ3NuMmJ6KOxMR5cfpAZQoese1LdHnQ6XKSGphAxnjKz4E1tFOSGYEqMlYk8INttc2c9Ea_n0326oJOxzmETD2zaYDBXY8Jsm2utDM5PBQbRZ0dCk3PlgQdJFfZfQxapFb4qaq-egd4opcA"/>
+<!-- Gradient overlay for smooth transition on mobile -->
+<div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-transparent to-chocolate-deep md:w-1/4 w-full h-1/4 md:h-full"></div>
+</div>
+</div>
+</section>
+<!-- Trending Pastries (Horizontal Scroll) -->
+<section class="py-16 md:py-24 pl-margin-mobile md:pl-margin-desktop overflow-hidden bg-surface-container-low">
+<div class="max-w-container-max mx-auto">
+<div class="flex justify-between items-end mb-10 pr-margin-mobile md:pr-margin-desktop">
+<div>
+<h2 class="text-headline-md font-headline-md text-chocolate-deep mb-2">Tendencias Dulces</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">Lo más antojado de la semana.</p>
+</div>
+</div>
+<!-- Scrollable Container -->
+<div class="flex gap-6 overflow-x-auto hide-scrollbar pb-8 pr-margin-mobile md:pr-margin-desktop snap-x">
+<!-- Pastry Item 1 -->
+<div class="snap-start flex-shrink-0 w-[280px] bg-glaze-white rounded-xl shadow-[0px_4px_12px_rgba(85,38,28,0.04)] border border-surface-variant overflow-hidden group">
+<div class="h-[200px] relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A slice of classic strawberry shortcake with layers of light sponge cake, fresh cream, and bright red strawberries, styled beautifully on a white plate with a warm background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzhWDlrFyY9VIMU1beEMdpZfGIGkC2s2_gDb2jMBIJBmd5fwPqXqvBTczYqgQlVGD5dOKGf3zIhSM6Ux4PZcIRsIBWi9wkA5Gem2i9NMtWzFEOhb3R0Srzy6QhnZZV6TEeMqvi1QFgCVSAAxz4u6bvuwvyS433NodysOAzvs_pKoy-njXCUcJxoqIm-DnxGgjgFzPq0N6GqW1hX0IPGrU6if2Asp4GmDqOHifDpaTzxb1bYQcXx4bdOw"/>
+<div class="absolute top-3 left-3 bg-pastry-blush text-chocolate-deep text-label-sm font-label-sm px-2 py-1 rounded-md font-bold shadow-sm">
+                                2x1 Hoy
+                            </div>
+</div>
+<div class="p-5 flex flex-col h-[180px] justify-between">
+<div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-1">Dulce Dupla</p>
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[18px] font-semibold leading-tight mb-2">Tarta de Fresa Clásica</h3>
+<p class="text-label-md font-label-md text-chocolate-deep font-bold">$120 MXN</p>
+</div>
+<button class="w-full py-2 border border-chocolate-deep text-chocolate-deep rounded-full text-label-md font-label-md hover:bg-chocolate-deep hover:text-glaze-white transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                                Agregar
+                            </button>
+</div>
+</div>
+<!-- Pastry Item 2 -->
+<div class="snap-start flex-shrink-0 w-[280px] bg-glaze-white rounded-xl shadow-[0px_4px_12px_rgba(85,38,28,0.04)] border border-surface-variant overflow-hidden group">
+<div class="h-[200px] relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A rich, glossy chocolate tart with a slice missing, revealing a dense fudgy interior. Set on a warm, neutral surface with artisanal bakery vibes." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyhu5lMIxUkqcuPHOjzIe2-Dv_fo4UNB6jzAC5jGPrRZ0KFPwzbEEtl2z7KCAh4BuV3oWGGonk8CAV7PbmTW4bQuJKSnfK_fFggs4gF6UL_1gvZ3unK9_PGGbscs15BDbocvounna01OuCkmULVtmrN7Fvk7Gox7VscNNTtZptivhUfZbVaML7_dNoa0zAia6m2msbn4Yz4j1eCjzFNOxtd2G-MMvKKwy3GHHRxOA-Yjqt5eis6zKfmw"/>
+</div>
+<div class="p-5 flex flex-col h-[180px] justify-between">
+<div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-1">La Tradición</p>
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[18px] font-semibold leading-tight mb-2">Tartaleta de Chocolate Amargo</h3>
+<p class="text-label-md font-label-md text-chocolate-deep font-bold">$95 MXN</p>
+</div>
+<button class="w-full py-2 border border-chocolate-deep text-chocolate-deep rounded-full text-label-md font-label-md hover:bg-chocolate-deep hover:text-glaze-white transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                                Agregar
+                            </button>
+</div>
+</div>
+<!-- Pastry Item 3 -->
+<div class="snap-start flex-shrink-0 w-[280px] bg-glaze-white rounded-xl shadow-[0px_4px_12px_rgba(85,38,28,0.04)] border border-surface-variant overflow-hidden group">
+<div class="h-[200px] relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A cluster of freshly baked assorted muffins (blueberry, chocolate chip) in paper liners, looking moist and delicious in soft bakery lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfQK1yY3FHn364GzrCrSREecmKsP-LS8SdBq5HssHcVLfeRr6tQECZ5xG0nxgeN1Aon591YANi2T2pcvf4yHycNMWNcP215uvgy2ydU9IFv4hyf7JLrfxio5xgKBU8-ZV28O_ZTXFKnyPk9s8D4J3NpDlAxltj3JTIzgM2j6iH8S2VxHofEncrcCV-GYfvRQlH2A7WgEBYBuBH8K9O9XmlmenWonefCDe-2uZRix7GCQcNTtVhk4XwOQ"/>
+<div class="absolute top-3 left-3 bg-berry-accent text-glaze-white text-label-sm font-label-sm px-2 py-1 rounded-md font-bold shadow-sm">
+                                Más Vendido
+                            </div>
+</div>
+<div class="p-5 flex flex-col h-[180px] justify-between">
+<div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-1">El Globo</p>
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[18px] font-semibold leading-tight mb-2">Caja de 6 Muffins Surtidos</h3>
+<p class="text-label-md font-label-md text-chocolate-deep font-bold">$180 MXN</p>
+</div>
+<button class="w-full py-2 border border-chocolate-deep text-chocolate-deep rounded-full text-label-md font-label-md hover:bg-chocolate-deep hover:text-glaze-white transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                                Agregar
+                            </button>
+</div>
+</div>
+<!-- Pastry Item 4 -->
+<div class="snap-start flex-shrink-0 w-[280px] bg-glaze-white rounded-xl shadow-[0px_4px_12px_rgba(85,38,28,0.04)] border border-surface-variant overflow-hidden group">
+<div class="h-[200px] relative overflow-hidden bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[48px] text-outline-variant">bakery_dining</span>
+</div>
+<div class="p-5 flex flex-col h-[180px] justify-center items-center text-center">
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[18px] font-semibold mb-2">Ver todo el menú</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-4">Descubre más de 50 opciones.</p>
+<button class="w-12 h-12 rounded-full bg-surface-container-low text-chocolate-deep flex items-center justify-center hover:bg-pastry-blush transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="py-16 md:py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto text-center">
+<h2 class="text-headline-md font-headline-md text-chocolate-deep mb-12">¿Cómo funciona Pastelerías Unidas?</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+<!-- Connecting Line (Desktop) -->
+<div class="hidden md:block absolute top-12 left-[16%] right-[16%] h-[2px] bg-outline-variant/30 z-0"></div>
+<!-- Step 1 -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-24 h-24 rounded-full bg-pastry-blush/30 border-4 border-glaze-white flex items-center justify-center mb-6 shadow-sm">
+<span class="material-symbols-outlined text-[40px] text-chocolate-deep">location_on</span>
+</div>
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[20px] font-semibold mb-2">1. Encuentra</h3>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-[250px]">Busca pastelerías artesanales y tus postres favoritos cerca de tu ubicación.</p>
+</div>
+<!-- Step 2 -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-24 h-24 rounded-full bg-pastry-blush/30 border-4 border-glaze-white flex items-center justify-center mb-6 shadow-sm">
+<span class="material-symbols-outlined text-[40px] text-chocolate-deep">touch_app</span>
+</div>
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[20px] font-semibold mb-2">2. Ordena</h3>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-[250px]">Selecciona tus productos, personaliza si es necesario y paga de forma segura.</p>
+</div>
+<!-- Step 3 -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-24 h-24 rounded-full bg-pastry-blush/30 border-4 border-glaze-white flex items-center justify-center mb-6 shadow-sm">
+<span class="material-symbols-outlined text-[40px] text-chocolate-deep">sentiment_satisfied</span>
+</div>
+<h3 class="text-headline-sm font-headline-lg text-chocolate-deep text-[20px] font-semibold mb-2">3. Disfruta</h3>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-[250px]">Recibe tu pedido fresco en la puerta de tu casa o recógelo en tienda.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="flex flex-col md:flex-row justify-between items-center py-12 px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto gap-gutter">
+<div class="flex flex-col items-center md:items-start gap-4">
+<span class="text-headline-md font-headline-md font-bold text-chocolate-deep">Pastelerías Unidas</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Pastelerías Unidas. Artisanal quality delivered to your door.</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-6 mt-6 md:mt-0">
+<a class="text-on-surface-variant hover:text-berry-accent transition-colors text-label-sm font-label-sm" href="#">About Us</a>
+<a class="text-on-surface-variant hover:text-berry-accent transition-colors text-label-sm font-label-sm" href="#">Join as a Bakery</a>
+<a class="text-on-surface-variant hover:text-berry-accent transition-colors text-label-sm font-label-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-berry-accent transition-colors text-label-sm font-label-sm" href="#">Contact Support</a>
+</nav>
+</div>
+</footer>
+</body></html>

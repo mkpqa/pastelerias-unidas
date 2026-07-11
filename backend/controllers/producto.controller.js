@@ -250,6 +250,125 @@ const subirImagenProducto = async (req, res) => {
 };
 
 // ============================================
+// @desc    Búsqueda global de productos (público)
+// @route   GET /api/productos/buscar?q=texto
+// @access  Público
+// ============================================
+const buscarProductosGlobal = async (req, res) => {
+  try {
+    const q = (req.query.q || '').trim();
+    if (!q || q.length < 2) {
+      return res.json({ exito: true, cantidad: 0, productos: [] });
+    }
+
+    const terminoBusqueda = `%${q}%`;
+
+    // Buscar en nombre, descripcion y categoria de productos disponibles
+    const { data: productos, error } = await supabase
+      .from('productos')
+      .select('*, tiendas(id, nombre, slug, especialidad, ubicacion, activa, tienda_diseno(logo_url, color_primario))')
+      .eq('disponible', true)
+      .eq('tiendas.activa', true)
+      .or(`nombre.ilike.${terminoBusqueda},descripcion.ilike.${terminoBusqueda},categoria.ilike.${terminoBusqueda}`)
+      .order('nombre', { ascending: true })
+      .limit(40);
+
+    if (error) throw error;
+
+    // Filtrar productos cuya tienda esté activa
+    const productosFiltrados = (productos || []).filter(p => p.tiendas?.activa !== false);
+
+    res.json({
+      exito: true,
+      cantidad: productosFiltrados.length,
+      productos: productosFiltrados.map(p => ({
+        ...formatearProducto(p),
+        tiendaNombre: p.tiendas?.nombre || '',
+        tiendaSlug: p.tiendas?.slug || '',
+        tiendaEspecialidad: p.tiendas?.especialidad || '',
+        tiendaUbicacion: p.tiendas?.ubicacion || '',
+        tiendaLogo: p.tiendas?.tienda_diseno?.[0]?.logo_url || p.tiendas?.tienda_diseno?.logo_url || null,
+        tiendaColor: p.tiendas?.tienda_diseno?.[0]?.color_primario || p.tiendas?.tienda_diseno?.color_primario || '#8b2f5f',
+      })),
+    });
+  } catch (error) {
+    console.error('Error buscarProductosGlobal:', error);
+    res.status(500).json({ exito: false, mensaje: 'Error en la búsqueda de productos.', detalle: error.message });
+  }
+};
+
+// ============================================
+// @desc    Tendencias: mezcla de más pedidos + recomendados por vendedor (público)
+// @route   GET /api/productos/tendencias
+// @access  Público
+// ============================================
+const obtenerTendencias = async (req, res) => {
+  try {
+    // 1. Productos marcados como recomendado=true por los vendedores
+    const { data: recomendados } = await supabase
+      .from('productos')
+      .select('*, tiendas(id, nombre, slug, activa, tienda_diseno(logo_url, color_primario))')
+      .eq('disponible', true)
+      .eq('recomendado', true)
+      .order('fecha_creacion', { ascending: false })
+      .limit(10);
+
+    // 2. Productos más pedidos: contar apariciones en detalles_pedido
+    const { data: masPedidos } = await supabase
+      .from('detalles_pedido')
+      .select('producto_id, cantidad')
+      .limit(500);
+
+    // Sumar cantidades por producto
+    const conteo = {};
+    (masPedidos || []).forEach(d => {
+      conteo[d.producto_id] = (conteo[d.producto_id] || 0) + d.cantidad;
+    });
+
+    // Ordenar por cantidad total pedida y tomar los top 10 IDs
+    const topIds = Object.entries(conteo)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([id]) => id);
+
+    let productosMasPedidos = [];
+    if (topIds.length > 0) {
+      const { data: topProductos } = await supabase
+        .from('productos')
+        .select('*, tiendas(id, nombre, slug, activa, tienda_diseno(logo_url, color_primario))')
+        .in('id', topIds)
+        .eq('disponible', true);
+      productosMasPedidos = topProductos || [];
+      // Ordenar según el ranking de pedidos
+      productosMasPedidos.sort((a, b) => (conteo[b.id] || 0) - (conteo[a.id] || 0));
+    }
+
+    // 3. Mezclar: primero los más pedidos, luego los recomendados (sin duplicados)
+    const idsYaIncluidos = new Set(productosMasPedidos.map(p => p.id));
+    const recomendadosUnicos = (recomendados || []).filter(p => !idsYaIncluidos.has(p.id) && p.tiendas?.activa !== false);
+    const combinados = [...productosMasPedidos, ...recomendadosUnicos].slice(0, 12);
+
+    const formatear = (p) => ({
+      ...formatearProducto(p),
+      vecesOrdenado: conteo[p.id] || 0,
+      tiendaNombre: p.tiendas?.nombre || '',
+      tiendaSlug: p.tiendas?.slug || '',
+      tiendaLogo: p.tiendas?.tienda_diseno?.[0]?.logo_url || p.tiendas?.tienda_diseno?.logo_url || null,
+      tiendaColor: p.tiendas?.tienda_diseno?.[0]?.color_primario || p.tiendas?.tienda_diseno?.color_primario || '#8b2f5f',
+    });
+
+    res.json({
+      exito: true,
+      cantidad: combinados.length,
+      productos: combinados.filter(p => p.tiendas?.activa !== false).map(formatear),
+    });
+  } catch (error) {
+    console.error('Error obtenerTendencias:', error);
+    res.status(500).json({ exito: false, mensaje: 'Error al obtener tendencias.', detalle: error.message });
+  }
+};
+
+// ============================================
 // Helper: Normalizar campos para el frontend
 // ============================================
 const formatearProducto = (p) => {
@@ -271,4 +390,6 @@ module.exports = {
   obtenerProductosTienda,
   obtenerProductoPublico,
   subirImagenProducto,
+  buscarProductosGlobal,
+  obtenerTendencias,
 };

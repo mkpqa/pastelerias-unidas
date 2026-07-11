@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { tiendasAPI, productosAPI, pedidosAPI } from '../services/api'
 import MockCheckoutForm from '../components/MockCheckoutForm'
+import PopupConfirmacionPedido from '../components/PopupConfirmacionPedido'
 import useCarritoStore from '../context/useCarritoStore'
 import TemplateMinimalista from '../components/templates/TemplateMinimalista'
 import TemplateModernoGrid from '../components/templates/TemplateModernoGrid'
@@ -9,7 +10,7 @@ import TemplateGaleria from '../components/templates/TemplateGaleria'
 import TemplateArtesanalRustico from '../components/templates/TemplateArtesanalRustico'
 import TemplateBoutiquePremium from '../components/templates/TemplateBoutiquePremium'
 import TemplateFestejoEventos from '../components/templates/TemplateFestejoEventos'
-import { ShoppingCart, CheckCircle, Store, XCircle, Lock } from 'lucide-react'
+import { ShoppingCart, CheckCircle, Store, XCircle, Lock, CalendarCheck } from 'lucide-react'
 
 const categoriaEmoji = {
   Tortas:'🎂',Cupcakes:'🧁',Galletas:'🍪',Postres:'🍰',
@@ -32,9 +33,12 @@ export default function TiendaDetalle() {
   const [productos, setProductos] = useState([])
   const [cargando, setCargando]   = useState(true)
   const [error, setError]         = useState(null)
-  const [showCheckout, setShowCheckout]     = useState(false)
-  const [haciendoPedido, setHaciendoPedido] = useState(false)
-  const [pedidoExitoso, setPedidoExitoso]   = useState(null)
+  const [showCheckout, setShowCheckout]         = useState(false)
+  const [showPopupConfirmacion, setShowPopupConfirmacion] = useState(false)
+  const [haciendoPedido, setHaciendoPedido]     = useState(false)
+  const [pedidoExitoso, setPedidoExitoso]       = useState(null)
+  const [fechaRecogida, setFechaRecogida]       = useState(null)
+  const [franjaRecogida, setFranjaRecogida]     = useState(null)
 
   useEffect(() => {
     setCargando(true); setError(null); setTienda(null); setProductos([])
@@ -59,27 +63,39 @@ export default function TiendaDetalle() {
     agregarItem({ ...producto, tienda: tienda._id })
   }
 
-  // Paso 1: Activar el panel de Mock
+  // Paso 1: Abrir popup de confirmación (fecha de recogida)
   const iniciarPagoMock = () => {
     const token = localStorage.getItem('token')
     if (!token) {
       alert('Debes iniciar sesión para pagar')
       return
     }
-    setHaciendoPedido(true) // Esto oculta el carrito y muestra el MockCheckoutForm
+    setShowCheckout(false)           // Ocultar carrito lateral
+    setShowPopupConfirmacion(true)   // Mostrar popup de confirmación
   }
 
-  // Paso 2: Finalizar pedido después del pago
+  // Paso 1b: Usuario confirmó fecha → abrir pasarela de pago
+  const handleConfirmarFecha = (fecha, franja) => {
+    setFechaRecogida(fecha)
+    setFranjaRecogida(franja)
+    setShowPopupConfirmacion(false)
+    setShowCheckout(true)
+    setHaciendoPedido(true)
+  }
+
+  // Paso 2: Finalizar pedido después del pago mock
   const handlePagar = async (mockTransactionId) => {
     try {
       const res = await pedidosAPI.crearPedido({
-        tiendaId: carritoTiendaId,
+        tiendaId:        tienda._id,
+        fecha_recogida:  fechaRecogida,
+        franja_horaria:  franjaRecogida,
         items: items.map(i => ({
-          producto: i.producto._id,
-          nombreProducto: i.producto.nombre,
-          precioUnitario: i.precioUnitario,
-          cantidad: i.cantidad,
-          subtotal: i.subtotal,
+          producto:        i.producto._id,
+          nombreProducto:  i.producto.nombre,
+          precioUnitario:  i.precioUnitario,
+          cantidad:        i.cantidad,
+          subtotal:        i.subtotal,
           variacionesSeleccionadas: i.variaciones || [],
         })),
         subtotal: totalCarrito, costoEnvio: 0, total: totalCarrito,
@@ -88,8 +104,8 @@ export default function TiendaDetalle() {
       setPedidoExitoso(res.pedido)
       setHaciendoPedido(false)
       vaciarCarrito()
-    } catch { 
-      alert('Hubo un error registrando tu pedido tras el pago.') 
+    } catch {
+      alert('Hubo un error registrando tu pedido tras el pago.')
       setHaciendoPedido(false)
     }
   }
@@ -151,11 +167,40 @@ export default function TiendaDetalle() {
               <button onClick={() => setShowCheckout(false)} style={{background:'#f5f5f5',border:'none',borderRadius:'50%',width:'32px',height:'32px',cursor:'pointer',fontSize:'18px',display:'flex',alignItems:'center',justifyContent:'center'}}><XCircle size={16} color="#666"/></button>
             </div>
             {pedidoExitoso ? (
-              <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'24px',textAlign:'center'}}>
-                <div style={{color:'#22c55e',marginBottom:'16px'}}><CheckCircle size={64} /></div>
-                <h3 style={{color:'#1a1a2e',marginBottom:'8px'}}>¡Pedido realizado!</h3>
-                <p style={{color:'#555',fontSize:'14px',marginBottom:'24px'}}>Tu pedido <strong>{pedidoExitoso.codigo}</strong> fue enviado a la pastelería.</p>
-                <button onClick={() => { setPedidoExitoso(null); setShowCheckout(false); setHaciendoPedido(false) }} style={{background:color,color:'#fff',border:'none',borderRadius:'8px',padding:'12px 24px',cursor:'pointer',fontWeight:'600'}}>Seguir comprando</button>
+              <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'24px',textAlign:'center',gap:'12px'}}>
+                <div style={{color:'#22c55e'}}><CheckCircle size={64} /></div>
+                <h3 style={{color:'#1a1a2e',margin:'0'}}>¡Pedido realizado!</h3>
+
+                {/* Código de pedido destacado */}
+                <div style={{background:'#f0fdf4',border:'1px solid #86efac',borderRadius:'12px',padding:'14px 24px',display:'inline-block'}}>
+                  <div style={{fontSize:'11px',color:'#9a7a7a',marginBottom:'2px',textTransform:'uppercase',letterSpacing:'1px'}}>Número de pedido</div>
+                  <div style={{fontSize:'28px',fontWeight:'800',color:'#166534',letterSpacing:'2px'}}>{pedidoExitoso.codigo}</div>
+                </div>
+
+                {/* Fecha de recogida */}
+                {fechaRecogida && (
+                  <div style={{display:'flex',alignItems:'center',gap:'6px',fontSize:'13px',color:'#555'}}>
+                    <CalendarCheck size={15} color={color} />
+                    Recogida: {new Date(fechaRecogida + 'T12:00:00').toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'})} — {franjaRecogida === 'mañana' ? 'Mañana (9am–1pm)' : 'Tarde (2pm–6pm)'}
+                  </div>
+                )}
+
+                <p style={{color:'#555',fontSize:'13px',margin:'4px 0 8px'}}>Guarda tu número de pedido para hacer seguimiento.</p>
+
+                <div style={{display:'flex',gap:'8px',flexWrap:'wrap',justifyContent:'center'}}>
+                  <Link
+                    to={`/mis-compras`}
+                    style={{background:color,color:'#fff',borderRadius:'8px',padding:'10px 20px',cursor:'pointer',fontWeight:'600',fontSize:'13px',textDecoration:'none'}}
+                  >
+                    Ver mis compras
+                  </Link>
+                  <button
+                    onClick={() => { setPedidoExitoso(null); setShowCheckout(false); setHaciendoPedido(false); setFechaRecogida(null); setFranjaRecogida(null) }}
+                    style={{background:'#f5f5f5',color:'#333',border:'none',borderRadius:'8px',padding:'10px 20px',cursor:'pointer',fontWeight:'600',fontSize:'13px'}}
+                  >
+                    Seguir comprando
+                  </button>
+                </div>
               </div>
             ) : haciendoPedido ? (
               <div style={{flex:1, overflowY:'auto', padding:'24px'}}>
@@ -192,6 +237,17 @@ export default function TiendaDetalle() {
             )}
           </div>
         </div>
+      )}
+
+      {/* ── POPUP DE CONFIRMACIÓN DE PEDIDO (pre-pago) ─── */}
+      {showPopupConfirmacion && (
+        <PopupConfirmacionPedido
+          items={items}
+          total={totalCarrito}
+          color={color}
+          onConfirmar={handleConfirmarFecha}
+          onCancelar={() => { setShowPopupConfirmacion(false); setShowCheckout(true) }}
+        />
       )}
     </div>
   )

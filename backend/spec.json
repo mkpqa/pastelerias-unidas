@@ -1,0 +1,2522 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "",
+    "title": "standard public schema",
+    "version": "14.5"
+  },
+  "host": "srthylcveyyilqqyrbnw.supabase.co:443",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json",
+    "application/vnd.pgrst.object+json;nulls=stripped",
+    "application/vnd.pgrst.object+json",
+    "text/csv"
+  ],
+  "produces": [
+    "application/json",
+    "application/vnd.pgrst.object+json;nulls=stripped",
+    "application/vnd.pgrst.object+json",
+    "text/csv"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "produces": [
+          "application/openapi+json",
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "summary": "OpenAPI description (this document)",
+        "tags": [
+          "Introspection"
+        ]
+      }
+    },
+    "/banners": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.banners.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.imagen"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.titulo"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.link_cta"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.posicion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.activo"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.orden"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.fecha_creacion"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/banners"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": [
+          "banners"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.banners"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "banners"
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.banners.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.imagen"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.titulo"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.link_cta"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.posicion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.activo"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.orden"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.fecha_creacion"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "banners"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.banners.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.imagen"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.titulo"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.link_cta"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.posicion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.activo"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.orden"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.banners.fecha_creacion"
+          },
+          {
+            "$ref": "#/parameters/body.banners"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "banners"
+        ]
+      }
+    },
+    "/productos": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.productos.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.nombre"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.descripcion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.precio"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.imagen_url"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.disponible"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.fecha_creacion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.contiene_alergenos"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.categoria"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.recomendado"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.en_promocion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.precio_anterior"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.orden"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/productos"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": [
+          "productos"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.productos"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "productos"
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.productos.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.nombre"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.descripcion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.precio"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.imagen_url"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.disponible"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.fecha_creacion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.contiene_alergenos"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.categoria"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.recomendado"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.en_promocion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.precio_anterior"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.orden"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "productos"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.productos.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.nombre"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.descripcion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.precio"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.imagen_url"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.disponible"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.fecha_creacion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.contiene_alergenos"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.categoria"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.recomendado"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.en_promocion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.precio_anterior"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.productos.orden"
+          },
+          {
+            "$ref": "#/parameters/body.productos"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "productos"
+        ]
+      }
+    },
+    "/pedidos": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.cliente_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.estado"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.total"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.fecha_pedido"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.codigo"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.fecha_recogida"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.franja_horaria"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.numero_pedido"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/pedidos"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": [
+          "pedidos"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.pedidos"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "pedidos"
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.cliente_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.estado"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.total"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.fecha_pedido"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.codigo"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.fecha_recogida"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.franja_horaria"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.numero_pedido"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "pedidos"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.cliente_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.estado"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.total"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.fecha_pedido"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.codigo"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.fecha_recogida"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.franja_horaria"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedidos.numero_pedido"
+          },
+          {
+            "$ref": "#/parameters/body.pedidos"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "pedidos"
+        ]
+      }
+    },
+    "/detalles_pedido": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.pedido_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.producto_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.cantidad"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.precio_unitario"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/detalles_pedido"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": [
+          "detalles_pedido"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.detalles_pedido"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "detalles_pedido"
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.pedido_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.producto_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.cantidad"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.precio_unitario"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "detalles_pedido"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.pedido_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.producto_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.cantidad"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.detalles_pedido.precio_unitario"
+          },
+          {
+            "$ref": "#/parameters/body.detalles_pedido"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "detalles_pedido"
+        ]
+      }
+    },
+    "/tienda_diseno": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.plantilla"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.color_primario"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.color_secundario"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.fuente_titulos"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.fuente_parrafos"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.logo_url"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/tienda_diseno"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": [
+          "tienda_diseno"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.tienda_diseno"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "tienda_diseno"
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.plantilla"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.color_primario"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.color_secundario"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.fuente_titulos"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.fuente_parrafos"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.logo_url"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "tienda_diseno"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.tienda_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.plantilla"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.color_primario"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.color_secundario"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.fuente_titulos"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.fuente_parrafos"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tienda_diseno.logo_url"
+          },
+          {
+            "$ref": "#/parameters/body.tienda_diseno"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "tienda_diseno"
+        ]
+      }
+    },
+    "/usuarios": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.nombre"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.email"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.password_hash"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.rol"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.preferencia_sabor"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.alergias"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.fecha_registro"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/usuarios"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.usuarios"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.nombre"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.email"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.password_hash"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.rol"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.preferencia_sabor"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.alergias"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.fecha_registro"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.nombre"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.email"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.password_hash"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.rol"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.preferencia_sabor"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.alergias"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.usuarios.fecha_registro"
+          },
+          {
+            "$ref": "#/parameters/body.usuarios"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ]
+      }
+    },
+    "/tiendas": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.usuario_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.slug"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.nombre"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.ubicacion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.telefono"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.especialidad"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.alergias_manejadas"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.metodos_pago"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.fecha_creacion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.activa"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.destacada"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.orden_marketplace"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.descripcion"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/tiendas"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": [
+          "tiendas"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.tiendas"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "tiendas"
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.usuario_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.slug"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.nombre"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.ubicacion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.telefono"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.especialidad"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.alergias_manejadas"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.metodos_pago"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.fecha_creacion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.activa"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.destacada"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.orden_marketplace"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.descripcion"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "tiendas"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.usuario_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.slug"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.nombre"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.ubicacion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.telefono"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.especialidad"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.alergias_manejadas"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.metodos_pago"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.fecha_creacion"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.activa"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.destacada"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.orden_marketplace"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.tiendas.descripcion"
+          },
+          {
+            "$ref": "#/parameters/body.tiendas"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "tiendas"
+        ]
+      }
+    },
+    "/pedido_historial_estado": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.pedido_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.estado"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.nota"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.created_at"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/order"
+          },
+          {
+            "$ref": "#/parameters/range"
+          },
+          {
+            "$ref": "#/parameters/rangeUnit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/preferCount"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/pedido_historial_estado"
+              },
+              "type": "array"
+            }
+          },
+          "206": {
+            "description": "Partial Content"
+          }
+        },
+        "tags": [
+          "pedido_historial_estado"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/body.pedido_historial_estado"
+          },
+          {
+            "$ref": "#/parameters/select"
+          },
+          {
+            "$ref": "#/parameters/preferPost"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        },
+        "tags": [
+          "pedido_historial_estado"
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.pedido_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.estado"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.nota"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.created_at"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "pedido_historial_estado"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.pedido_id"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.estado"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.nota"
+          },
+          {
+            "$ref": "#/parameters/rowFilter.pedido_historial_estado.created_at"
+          },
+          {
+            "$ref": "#/parameters/body.pedido_historial_estado"
+          },
+          {
+            "$ref": "#/parameters/preferReturn"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "pedido_historial_estado"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "banners": {
+      "required": [
+        "id",
+        "imagen"
+      ],
+      "properties": {
+        "id": {
+          "default": "extensions.uuid_generate_v4()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "tienda_id": {
+          "description": "Note:\nThis is a Foreign Key to `tiendas.id`.<fk table='tiendas' column='id'/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "imagen": {
+          "format": "character varying",
+          "type": "string"
+        },
+        "titulo": {
+          "default": "Flyer Promocional",
+          "format": "character varying",
+          "type": "string"
+        },
+        "link_cta": {
+          "default": "/marketplace",
+          "format": "character varying",
+          "type": "string"
+        },
+        "posicion": {
+          "default": "izquierda",
+          "format": "character varying",
+          "type": "string"
+        },
+        "activo": {
+          "default": true,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "orden": {
+          "default": 0,
+          "format": "integer",
+          "type": "integer"
+        },
+        "fecha_creacion": {
+          "default": "CURRENT_TIMESTAMP",
+          "format": "timestamp without time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "productos": {
+      "required": [
+        "id",
+        "tienda_id",
+        "nombre",
+        "precio"
+      ],
+      "properties": {
+        "id": {
+          "default": "extensions.uuid_generate_v4()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "tienda_id": {
+          "description": "Note:\nThis is a Foreign Key to `tiendas.id`.<fk table='tiendas' column='id'/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "nombre": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "descripcion": {
+          "format": "text",
+          "type": "string"
+        },
+        "precio": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "imagen_url": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "disponible": {
+          "default": true,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "fecha_creacion": {
+          "default": "CURRENT_TIMESTAMP",
+          "format": "timestamp without time zone",
+          "type": "string"
+        },
+        "contiene_alergenos": {
+          "format": "text[]",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "categoria": {
+          "default": "General",
+          "format": "character varying",
+          "type": "string"
+        },
+        "recomendado": {
+          "default": false,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "en_promocion": {
+          "default": false,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "precio_anterior": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "orden": {
+          "default": 999,
+          "format": "integer",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "pedidos": {
+      "required": [
+        "id",
+        "cliente_id",
+        "tienda_id",
+        "total"
+      ],
+      "properties": {
+        "id": {
+          "default": "extensions.uuid_generate_v4()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "cliente_id": {
+          "description": "Note:\nThis is a Foreign Key to `usuarios.id`.<fk table='usuarios' column='id'/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "tienda_id": {
+          "description": "Note:\nThis is a Foreign Key to `tiendas.id`.<fk table='tiendas' column='id'/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "estado": {
+          "default": "pendiente",
+          "enum": [
+            "pendiente",
+            "confirmado",
+            "en_camino",
+            "entregado",
+            "cancelado"
+          ],
+          "format": "public.estado_pedido",
+          "type": "string"
+        },
+        "total": {
+          "format": "numeric",
+          "type": "number"
+        },
+        "fecha_pedido": {
+          "default": "CURRENT_TIMESTAMP",
+          "format": "timestamp without time zone",
+          "type": "string"
+        },
+        "codigo": {
+          "format": "text",
+          "type": "string"
+        },
+        "fecha_recogida": {
+          "format": "date",
+          "type": "string"
+        },
+        "franja_horaria": {
+          "default": "mañana",
+          "format": "text",
+          "type": "string"
+        },
+        "numero_pedido": {
+          "format": "text",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "detalles_pedido": {
+      "required": [
+        "pedido_id",
+        "producto_id",
+        "cantidad",
+        "precio_unitario"
+      ],
+      "properties": {
+        "pedido_id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `pedidos.id`.<fk table='pedidos' column='id'/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "producto_id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `productos.id`.<fk table='productos' column='id'/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "cantidad": {
+          "format": "integer",
+          "type": "integer"
+        },
+        "precio_unitario": {
+          "format": "numeric",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "tienda_diseno": {
+      "required": [
+        "tienda_id"
+      ],
+      "properties": {
+        "tienda_id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `tiendas.id`.<fk table='tiendas' column='id'/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "plantilla": {
+          "default": "moderno_grid",
+          "format": "character varying",
+          "maxLength": 50,
+          "type": "string"
+        },
+        "color_primario": {
+          "default": "#8F5E4F",
+          "format": "character varying",
+          "maxLength": 7,
+          "type": "string"
+        },
+        "color_secundario": {
+          "default": "#F8EFE6",
+          "format": "character varying",
+          "maxLength": 7,
+          "type": "string"
+        },
+        "fuente_titulos": {
+          "default": "Belleza",
+          "format": "character varying",
+          "maxLength": 50,
+          "type": "string"
+        },
+        "fuente_parrafos": {
+          "default": "Bellota",
+          "format": "character varying",
+          "maxLength": 50,
+          "type": "string"
+        },
+        "logo_url": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "usuarios": {
+      "required": [
+        "id",
+        "nombre",
+        "email",
+        "password_hash"
+      ],
+      "properties": {
+        "id": {
+          "default": "extensions.uuid_generate_v4()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "nombre": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "email": {
+          "format": "character varying",
+          "maxLength": 150,
+          "type": "string"
+        },
+        "password_hash": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "rol": {
+          "default": "cliente",
+          "enum": [
+            "cliente",
+            "vendedor",
+            "admin"
+          ],
+          "format": "public.rol_usuario",
+          "type": "string"
+        },
+        "preferencia_sabor": {
+          "format": "character varying",
+          "maxLength": 50,
+          "type": "string"
+        },
+        "alergias": {
+          "format": "text[]",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "fecha_registro": {
+          "default": "CURRENT_TIMESTAMP",
+          "format": "timestamp without time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "tiendas": {
+      "required": [
+        "id",
+        "usuario_id",
+        "slug",
+        "nombre",
+        "ubicacion"
+      ],
+      "properties": {
+        "id": {
+          "default": "extensions.uuid_generate_v4()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "usuario_id": {
+          "description": "Note:\nThis is a Foreign Key to `usuarios.id`.<fk table='usuarios' column='id'/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "slug": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "nombre": {
+          "format": "character varying",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "ubicacion": {
+          "format": "character varying",
+          "maxLength": 255,
+          "type": "string"
+        },
+        "telefono": {
+          "format": "character varying",
+          "maxLength": 20,
+          "type": "string"
+        },
+        "especialidad": {
+          "format": "character varying",
+          "maxLength": 50,
+          "type": "string"
+        },
+        "alergias_manejadas": {
+          "format": "text[]",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "metodos_pago": {
+          "format": "text[]",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "fecha_creacion": {
+          "default": "CURRENT_TIMESTAMP",
+          "format": "timestamp without time zone",
+          "type": "string"
+        },
+        "activa": {
+          "default": true,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "destacada": {
+          "default": false,
+          "format": "boolean",
+          "type": "boolean"
+        },
+        "orden_marketplace": {
+          "default": 999,
+          "format": "integer",
+          "type": "integer"
+        },
+        "descripcion": {
+          "format": "text",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "pedido_historial_estado": {
+      "required": [
+        "id",
+        "pedido_id",
+        "estado",
+        "created_at"
+      ],
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "bigint",
+          "type": "integer"
+        },
+        "pedido_id": {
+          "description": "Note:\nThis is a Foreign Key to `pedidos.id`.<fk table='pedidos' column='id'/>",
+          "format": "uuid",
+          "type": "string"
+        },
+        "estado": {
+          "format": "text",
+          "type": "string"
+        },
+        "nota": {
+          "format": "text",
+          "type": "string"
+        },
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "parameters": {
+    "preferParams": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "in": "header",
+      "type": "string"
+    },
+    "preferReturn": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": [
+        "return=representation",
+        "return=minimal",
+        "return=none"
+      ],
+      "in": "header",
+      "type": "string"
+    },
+    "preferCount": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": [
+        "count=none"
+      ],
+      "in": "header",
+      "type": "string"
+    },
+    "preferPost": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": [
+        "return=representation",
+        "return=minimal",
+        "return=none",
+        "resolution=ignore-duplicates",
+        "resolution=merge-duplicates"
+      ],
+      "in": "header",
+      "type": "string"
+    },
+    "select": {
+      "name": "select",
+      "description": "Filtering Columns",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "on_conflict": {
+      "name": "on_conflict",
+      "description": "On Conflict",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "order": {
+      "name": "order",
+      "description": "Ordering",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "range": {
+      "name": "Range",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "in": "header",
+      "type": "string"
+    },
+    "rangeUnit": {
+      "name": "Range-Unit",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "default": "items",
+      "in": "header",
+      "type": "string"
+    },
+    "offset": {
+      "name": "offset",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "limit": {
+      "name": "limit",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.banners": {
+      "name": "banners",
+      "description": "banners",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/banners"
+      }
+    },
+    "rowFilter.banners.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.banners.tienda_id": {
+      "name": "tienda_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.banners.imagen": {
+      "name": "imagen",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.banners.titulo": {
+      "name": "titulo",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.banners.link_cta": {
+      "name": "link_cta",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.banners.posicion": {
+      "name": "posicion",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.banners.activo": {
+      "name": "activo",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.banners.orden": {
+      "name": "orden",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.banners.fecha_creacion": {
+      "name": "fecha_creacion",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.productos": {
+      "name": "productos",
+      "description": "productos",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/productos"
+      }
+    },
+    "rowFilter.productos.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.tienda_id": {
+      "name": "tienda_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.nombre": {
+      "name": "nombre",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.descripcion": {
+      "name": "descripcion",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.precio": {
+      "name": "precio",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.imagen_url": {
+      "name": "imagen_url",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.disponible": {
+      "name": "disponible",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.fecha_creacion": {
+      "name": "fecha_creacion",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.contiene_alergenos": {
+      "name": "contiene_alergenos",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.categoria": {
+      "name": "categoria",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.recomendado": {
+      "name": "recomendado",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.en_promocion": {
+      "name": "en_promocion",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.precio_anterior": {
+      "name": "precio_anterior",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.productos.orden": {
+      "name": "orden",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.pedidos": {
+      "name": "pedidos",
+      "description": "pedidos",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/pedidos"
+      }
+    },
+    "rowFilter.pedidos.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedidos.cliente_id": {
+      "name": "cliente_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedidos.tienda_id": {
+      "name": "tienda_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedidos.estado": {
+      "name": "estado",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedidos.total": {
+      "name": "total",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedidos.fecha_pedido": {
+      "name": "fecha_pedido",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedidos.codigo": {
+      "name": "codigo",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedidos.fecha_recogida": {
+      "name": "fecha_recogida",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedidos.franja_horaria": {
+      "name": "franja_horaria",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedidos.numero_pedido": {
+      "name": "numero_pedido",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.detalles_pedido": {
+      "name": "detalles_pedido",
+      "description": "detalles_pedido",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/detalles_pedido"
+      }
+    },
+    "rowFilter.detalles_pedido.pedido_id": {
+      "name": "pedido_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.detalles_pedido.producto_id": {
+      "name": "producto_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.detalles_pedido.cantidad": {
+      "name": "cantidad",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.detalles_pedido.precio_unitario": {
+      "name": "precio_unitario",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.tienda_diseno": {
+      "name": "tienda_diseno",
+      "description": "tienda_diseno",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/tienda_diseno"
+      }
+    },
+    "rowFilter.tienda_diseno.tienda_id": {
+      "name": "tienda_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tienda_diseno.plantilla": {
+      "name": "plantilla",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tienda_diseno.color_primario": {
+      "name": "color_primario",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tienda_diseno.color_secundario": {
+      "name": "color_secundario",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tienda_diseno.fuente_titulos": {
+      "name": "fuente_titulos",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tienda_diseno.fuente_parrafos": {
+      "name": "fuente_parrafos",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tienda_diseno.logo_url": {
+      "name": "logo_url",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.usuarios": {
+      "name": "usuarios",
+      "description": "usuarios",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/usuarios"
+      }
+    },
+    "rowFilter.usuarios.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.usuarios.nombre": {
+      "name": "nombre",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.usuarios.email": {
+      "name": "email",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.usuarios.password_hash": {
+      "name": "password_hash",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.usuarios.rol": {
+      "name": "rol",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.usuarios.preferencia_sabor": {
+      "name": "preferencia_sabor",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.usuarios.alergias": {
+      "name": "alergias",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.usuarios.fecha_registro": {
+      "name": "fecha_registro",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.tiendas": {
+      "name": "tiendas",
+      "description": "tiendas",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/tiendas"
+      }
+    },
+    "rowFilter.tiendas.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.usuario_id": {
+      "name": "usuario_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.slug": {
+      "name": "slug",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.nombre": {
+      "name": "nombre",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.ubicacion": {
+      "name": "ubicacion",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.telefono": {
+      "name": "telefono",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.especialidad": {
+      "name": "especialidad",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.alergias_manejadas": {
+      "name": "alergias_manejadas",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.metodos_pago": {
+      "name": "metodos_pago",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.fecha_creacion": {
+      "name": "fecha_creacion",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.activa": {
+      "name": "activa",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.destacada": {
+      "name": "destacada",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.orden_marketplace": {
+      "name": "orden_marketplace",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.tiendas.descripcion": {
+      "name": "descripcion",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.pedido_historial_estado": {
+      "name": "pedido_historial_estado",
+      "description": "pedido_historial_estado",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "$ref": "#/definitions/pedido_historial_estado"
+      }
+    },
+    "rowFilter.pedido_historial_estado.id": {
+      "name": "id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedido_historial_estado.pedido_id": {
+      "name": "pedido_id",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedido_historial_estado.estado": {
+      "name": "estado",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedido_historial_estado.nota": {
+      "name": "nota",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pedido_historial_estado.created_at": {
+      "name": "created_at",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    }
+  },
+  "externalDocs": {
+    "description": "PostgREST Documentation",
+    "url": "https://postgrest.org/en/v14/references/api.html"
+  }
+}

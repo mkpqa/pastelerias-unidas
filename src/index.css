@@ -18,24 +18,17 @@ button {
 
 /* --- Neumorphism variables and classes for Payment Gateway --- */
 :root {
-  --color-surface-dim: #0f0f1a;
-  --color-background: #0a0a12;
-  --color-primary: #b088f9;
-  --color-secondary: #d8b4fe;
-  --color-tertiary: #ffe04a;
-  --color-surface: #0f0f1a;
-  --color-surface-container: #141422;
-  --color-outline: #5a5068;
-  --color-on-surface: #ffffff;
-  --color-on-surface-variant: #f1f5f9;
-  --color-surface-container-highest: #28283e;
-  --color-error: #ff4444;
+  --color-primary: #ca8a04; /* Yellow-600 for borders/accents */
+  --color-secondary: #166534; /* Dark green for focus and highlights */
+  --color-outline: #a16207;
+  --color-on-surface: #1c1917; /* Very dark grey/black for text */
+  --color-on-surface-variant: #44403c; /* Dark grey for secondary text */
 }
 
 .neo-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(10, 10, 18, 0.85); /* Dark background with opacity */
+  background-color: rgba(2, 6, 23, 0.7); /* Keep dark overlay so modal pops out */
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -44,10 +37,10 @@ button {
 }
 
 .neo-modal {
-  background: linear-gradient(145deg, #151524, #12121f);
-  box-shadow: 10px 10px 20px #08080f,
-              -10px -10px 20px #1c1c30;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #fde047; /* Yellow background */
+  box-shadow: 10px 10px 20px #d7be3c,
+              -10px -10px 20px #ffff52;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   color: var(--color-on-surface);
   border-radius: 12px;
   width: 100%;
@@ -58,56 +51,85 @@ button {
 }
 
 .neo-input {
-  background: #141422;
-  box-shadow: inset 5px 5px 10px #0b0b13,
-              inset -5px -5px 10px #1d1d31;
-  border: none;
+  background: #ffffff;
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.05),
+              inset -3px -3px 6px rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   color: var(--color-on-surface);
   outline: none;
 }
 
+.neo-input::placeholder {
+  color: #854d0e;
+  opacity: 0.7;
+}
+
 .neo-input:focus {
-  box-shadow: inset 5px 5px 10px #0b0b13,
-              inset -5px -5px 10px #1d1d31;
+  box-shadow: inset 5px 5px 10px #d7be3c,
+              inset -5px -5px 10px #ffff52;
   border-bottom: 2px solid var(--color-secondary);
 }
 
 .neo-tab {
-  background: #141422;
-  box-shadow: 3px 3px 6px #0b0b13,
-             -3px -3px 6px #1d1d31;
+  background: #fde047;
+  box-shadow: 3px 3px 6px #d7be3c,
+             -3px -3px 6px #ffff52;
   transition: all 0.3s ease;
   color: var(--color-on-surface-variant);
   border: none;
 }
 
 .neo-tab[aria-selected="true"] {
-  box-shadow: inset 3px 3px 6px #0b0b13,
-              inset -3px -3px 6px #1d1d31;
-  color: var(--color-secondary);
+  box-shadow: inset 3px 3px 6px #d7be3c,
+              inset -3px -3px 6px #ffff52;
+  color: var(--color-on-surface);
 }
 
 .btn-glow {
-  background: #141422;
-  border: 1px solid rgba(176, 136, 249, 0.4);
-  box-shadow: 3px 3px 6px #0b0b13, -3px -3px 6px #1d1d31;
-  color: #ffffff;
+  background: #fde047;
+  border: 1px solid rgba(202, 138, 4, 0.4);
+  box-shadow: 3px 3px 6px #d7be3c, -3px -3px 6px #ffff52;
+  color: var(--color-on-surface);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .btn-glow:hover:not(:disabled) {
-  box-shadow: 0 0 10px rgba(176, 136, 249, 0.3);
+  box-shadow: 0 0 10px rgba(202, 138, 4, 0.3);
 }
 
 .btn-glow:active:not(:disabled) {
-  box-shadow: inset 5px 5px 10px #0b0b13, inset -5px -5px 10px #1d1d31;
+  box-shadow: inset 5px 5px 10px #d7be3c, inset -5px -5px 10px #ffff52;
 }
 
 .btn-glow:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  box-shadow: inset 5px 5px 10px #0b0b13, inset -5px -5px 10px #1d1d31;
+  box-shadow: inset 5px 5px 10px #d7be3c, inset -5px -5px 10px #ffff52;
   border-color: rgba(100, 100, 100, 0.3);
   color: #888;
+}
+
+.btn-green {
+  background: linear-gradient(145deg, #15803d, #166534);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  box-shadow: 3px 3px 6px #05080f, -3px -3px 6px #15203b;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-green:hover:not(:disabled) {
+  background: linear-gradient(145deg, #16a34a, #15803d);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+}
+
+.btn-green:active:not(:disabled) {
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.3), inset -3px -3px 6px rgba(255, 255, 255, 0.1);
+}
+
+.btn-green:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
 }

@@ -6,9 +6,15 @@ const {
   obtenerMisCompras,
   obtenerPedidosVendedor,
   actualizarEstadoPedido,
+  obtenerSeguimientoPedido,
 } = require('../controllers/pedido.controller');
 
-// Todas las rutas de pedidos requieren estar logueado
+// ─────────────────────────────────────────────
+// Ruta PÚBLICA: seguimiento de pedido (sin login)
+// ─────────────────────────────────────────────
+router.get('/seguimiento/:tiendaSlug/:codigo', obtenerSeguimientoPedido);
+
+// Todas las demás rutas de pedidos requieren estar logueado
 router.use(protegerRuta);
 
 // Rutas para COMPRADORES

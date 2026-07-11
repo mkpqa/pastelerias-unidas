@@ -1,0 +1,43 @@
+{
+  "body": {
+    "tiendaId": "ff3c4eb9-3c2e-425b-9710-d276f8736565",
+    "fecha_recogida": "2026-07-11",
+    "franja_horaria": "tarde",
+    "items": [
+      {
+        "producto": "2945f960-207c-46ae-811e-c88c47ffcc4b",
+        "nombreProducto": "Porcion de Torta Helada",
+        "precioUnitario": 8,
+        "cantidad": 1,
+        "subtotal": 8,
+        "variacionesSeleccionadas": []
+      },
+      {
+        "producto": "c0f7b4f7-36c8-4cec-bb7a-e4091689286c",
+        "nombreProducto": "Torta Tres Leches",
+        "precioUnitario": 70,
+        "cantidad": 1,
+        "subtotal": 70,
+        "variacionesSeleccionadas": []
+      }
+    ],
+    "subtotal": 78,
+    "costoEnvio": 0,
+    "total": 78,
+    "pago": {
+      "metodo": "tarjeta",
+      "idPagos": "mock_txn_9itn5l"
+    },
+    "entrega": {
+      "tipo": "recojo"
+    }
+  },
+  "user": {
+    "id": "84cf18fd-3655-4b5d-b8ee-78f7de52ae93",
+    "nombre": "Alejandro",
+    "email": "alejandro2004@gmail.com",
+    "rol": "cliente",
+    "preferencia_sabor": null,
+    "alergias": null
+  }
+}

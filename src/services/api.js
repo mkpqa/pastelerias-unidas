@@ -136,6 +136,12 @@ export const productosAPI = {
 
   // Detalle público de un producto
   obtenerProductoPublico: (id) => fetchAPI(`/productos/${id}/publico`),
+
+  // Búsqueda global de productos entre todas las tiendas
+  buscarGlobal: (q) => fetchAPI(`/productos/buscar?q=${encodeURIComponent(q)}`),
+
+  // Tendencias: mezcla de más pedidos + recomendados por vendedor
+  obtenerTendencias: () => fetchAPI('/productos/tendencias'),
 };
 
 // ============================================
@@ -204,17 +210,22 @@ export const pedidosAPI = {
   crearPedido: (datos) =>
     fetchAPI('/pedidos', {
       method: 'POST',
+      // datos debe incluir: { tiendaId, items, total, fecha_recogida, franja_horaria, ... }
       body: JSON.stringify(datos),
     }),
   obtenerMisCompras: () => fetchAPI('/pedidos/mis-compras'),
 
   // Vendedor
   obtenerPedidosVendedor: () => fetchAPI('/pedidos/vendedor'),
-  actualizarEstado: (id, estado) =>
+  actualizarEstado: (id, estado, nota) =>
     fetchAPI(`/pedidos/${id}/estado`, {
       method: 'PUT',
-      body: JSON.stringify({ estado }),
+      body: JSON.stringify({ estado, nota }),
     }),
+
+  // Público: seguimiento de pedido sin login
+  seguimientoPedido: (tiendaSlug, codigo) =>
+    fetchAPI(`/pedidos/seguimiento/${tiendaSlug}/${codigo}`),
 };
 
 export default fetchAPI;

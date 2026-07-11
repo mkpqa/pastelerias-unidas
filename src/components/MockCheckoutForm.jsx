@@ -55,7 +55,11 @@ const MockCheckoutForm = ({ total, color, onPagoExitoso, onCancelar }) => {
             onClick={() => setActiveTab('tarjeta')}
             style={{ flex: 1, padding: '16px', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}
           >
-            <CreditCard size={28} />
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', height: '36px' }}>
+              <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
+              <img src="https://img.icons8.com/color/48/mastercard.png" alt="Mastercard" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
+              <img src="https://img.icons8.com/color/48/amex.png" alt="Amex" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
+            </div>
             <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>
               Tarjeta
             </span>
@@ -68,9 +72,9 @@ const MockCheckoutForm = ({ total, color, onPagoExitoso, onCancelar }) => {
             onClick={() => setActiveTab('qr')}
             style={{ flex: 1, padding: '16px', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}
           >
-            <QrCode size={28} />
+            <img src="/yape-logo.png" alt="Logo Yape" style={{ width: '28px', height: '28px', objectFit: 'contain', borderRadius: '6px' }} />
             <span style={{ fontFamily: '"Space Grotesk", sans-serif', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>
-              Pago con QR
+              Pago con Yape
             </span>
           </button>
         </div>
@@ -166,7 +170,7 @@ const MockCheckoutForm = ({ total, color, onPagoExitoso, onCancelar }) => {
               
               <button 
                 type="submit" 
-                className="btn-glow" 
+                className="btn-green" 
                 disabled={procesando}
                 style={{ 
                   width: '100%', height: '56px', borderRadius: '8px', fontFamily: '"Sora", sans-serif', 
