@@ -38,7 +38,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.get('/api', (req, res) => {
   res.json({
     mensaje: '🍰 API de Pastelerías Unidas funcionando correctamente',
-    version: '1.0.0',
+    version: '1.0.1',
+    estado_deploy: 'ACTUALIZADO - Render está haciendo auto-deploy',
     timestamp: new Date().toISOString(),
   });
 });
