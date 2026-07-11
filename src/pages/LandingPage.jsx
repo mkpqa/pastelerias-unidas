@@ -167,6 +167,9 @@ const Home = () => {
   const [indiceActivo, setIndiceActivo] = useState(0);
   const [tiendasDestacadas, setTiendasDestacadas] = useState(null); // null = cargando
   const [tendencias, setTendencias] = useState(null);
+  
+  // ── Estado de prueba Render ──
+  const [backendVersion, setBackendVersion] = useState('Cargando...');
 
   // ── Estado del buscador ──
   const [query, setQuery] = useState('');
@@ -178,7 +181,18 @@ const Home = () => {
   // ── Carga inicial ──
   useEffect(() => {
     cargarDatos();
+    verificarRender();
   }, []);
+
+  const verificarRender = async () => {
+    try {
+      const res = await fetch('https://api-pastelerias-unidas.onrender.com/api');
+      const data = await res.json();
+      setBackendVersion(data.version || 'Desconocida');
+    } catch (e) {
+      setBackendVersion('Error de conexión');
+    }
+  };
 
   const cargarDatos = async () => {
     // Banners/Flyers
@@ -1238,6 +1252,24 @@ const Home = () => {
             ))}
           </div>
         </section>
+
+        {/* ── MEDIDOR DE PRUEBA PARA RENDER ── */}
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          background: backendVersion === '1.0.1' ? '#4ade80' : '#f87171',
+          color: '#fff',
+          padding: '10px 16px',
+          borderRadius: '9999px',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          zIndex: 9999,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          fontFamily: 'monospace'
+        }}>
+          Versión de Render: {backendVersion}
+        </div>
 
       </div>
     </>
