@@ -13,7 +13,13 @@ const {
 const { uploadLogo, uploadServicio } = require('../middlewares/upload');
 
 // ============================================
-// Rutas Privadas (Vendedor) — DEBEN ir ANTES de /:slug
+// Rutas Públicas — Deben ir ANTES de las privadas y ANTES de /:slug
+// ============================================
+router.get('/', obtenerTiendasPublicas);              // GET /api/tiendas
+router.get('/home-data', obtenerHomeData);            // GET /api/tiendas/home-data
+
+// ============================================
+// Rutas Privadas (Vendedor) — rutas con prefijos específicos ANTES de /:slug
 // ============================================
 router.get(
   '/mi-tienda',
@@ -46,10 +52,8 @@ router.post(
 );
 
 // ============================================
-// Rutas Públicas
+// Rutas con parámetros dinámicos — al final para no capturar rutas específicas
 // ============================================
-router.get('/', obtenerTiendasPublicas);              // GET /api/tiendas
-router.get('/home-data', obtenerHomeData);            // GET /api/tiendas/home-data (ANTES de /:slug)
 router.get('/:slug', obtenerTiendaPorSlug);           // GET /api/tiendas/:slug
 
 module.exports = router;

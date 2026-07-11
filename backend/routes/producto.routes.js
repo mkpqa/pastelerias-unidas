@@ -25,20 +25,18 @@ router.get('/:id/publico', obtenerProductoPublico);  // Detalle público de prod
 
 // ============================================
 // Rutas Privadas (Vendedor) — CRUD completo
+// Aplicamos protegerRuta y autorizarRoles explícitamente en cada ruta
+// para evitar que el middleware afecte las rutas públicas declaradas arriba
 // ============================================
-router.use(protegerRuta, autorizarRoles('vendedor'));
+router.get('/', protegerRuta, autorizarRoles('vendedor'), obtenerMisProductos);
+router.post('/', protegerRuta, autorizarRoles('vendedor'), crearProducto);
 
-router.route('/')
-  .get(obtenerMisProductos)
-  .post(crearProducto);
-
-router.route('/:id')
-  .get(obtenerProductoPorId)
-  .put(actualizarProducto)
-  .delete(eliminarProducto);
+router.get('/:id', protegerRuta, autorizarRoles('vendedor'), obtenerProductoPorId);
+router.put('/:id', protegerRuta, autorizarRoles('vendedor'), actualizarProducto);
+router.delete('/:id', protegerRuta, autorizarRoles('vendedor'), eliminarProducto);
 
 // Subir imagen de producto
-router.post('/:id/imagen', uploadProducto.single('imagen'), subirImagenProducto);
+router.post('/:id/imagen', protegerRuta, autorizarRoles('vendedor'), uploadProducto.single('imagen'), subirImagenProducto);
 
 module.exports = router;
 

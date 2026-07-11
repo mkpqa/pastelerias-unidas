@@ -17,10 +17,37 @@ const app = express();
 // ============================================
 
 // Habilitar CORS para que el frontend (Vite en :5173) se comunique con el backend
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Permitir peticiones sin origin (Postman, curl, apps móviles)
+    if (!origin) return callback(null, true);
+
+    // Permitir orígenes en la lista blanca
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    // Permitir cualquier subdominio de vercel.app (previews de PR también)
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+
+    // En desarrollo, permitir todo
+    if (process.env.NODE_ENV !== 'production') return callback(null, true);
+
+    // En producción, bloquear orígenes no listados
+    callback(new Error(`CORS bloqueado para el origen: ${origin}`));
+  },
   credentials: true,
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+// Responder a preflight OPTIONS para TODAS las rutas
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 
 // Parsear JSON en el body de las peticiones
 app.use(express.json());
