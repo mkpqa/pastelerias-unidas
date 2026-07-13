@@ -185,6 +185,41 @@ export default function TemplateFestejoEventos({ tienda, color, productos, recom
             ))}
           </div>
         )}
+
+        {/* SERVICIOS ADICIONALES */}
+        {tienda.tarjetasServicios?.length > 0 && (
+          <div style={{ marginTop: '56px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
+              <Sparkles size={16} color={color} />
+              <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#f1f1ff', letterSpacing: '0.5px' }}>Servicios para tu evento</h2>
+              <div style={{ flex: 1, height: '1px', background: '#1e1e3a' }} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
+              {tienda.tarjetasServicios.map((srv, idx) => (
+                <div key={idx} style={{ background: '#16162a', borderRadius: '14px', overflow: 'hidden', border: `1px solid ${color}30` }}>
+                  <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
+                    <img src={srv.imagen} alt={srv.titulo} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#f1f1ff' }}>{srv.titulo}</div>
+                    <a
+                      href={tienda.redesSociales?.whatsapp ? `https://wa.me/${tienda.redesSociales.whatsapp}?text=Hola, me interesa el servicio: ${srv.titulo}` : '#'}
+                      target={tienda.redesSociales?.whatsapp ? '_blank' : '_self'}
+                      rel="noreferrer"
+                      onClick={e => { if (!tienda.redesSociales?.whatsapp) { e.preventDefault(); alert('Esta tienda aún no ha configurado su WhatsApp.') }}}
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: color, color: '#fff', borderRadius: '10px', padding: '9px', fontSize: '12px', fontWeight: '600', textDecoration: 'none', transition: 'opacity 0.15s' }}
+                      onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+                      onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.004 2c-5.464 0-9.896 4.432-9.896 9.896 0 1.76.452 3.484 1.312 5.004L2 22l5.244-1.376c1.472.796 3.128 1.216 4.764 1.216 5.464 0 9.896-4.432 9.896-9.896C21.9 6.432 17.468 2 12.004 2zm5.408 14.336c-.224.636-1.12.112-2.316-.484-2.884-1.444-4.708-4.38-4.892-4.624-.18-.24-1.168-1.552-1.168-2.96 0-1.408.736-2.108.992-2.384.256-.276.556-.344.74-.344s.368-.004.532 0c.164.004.384-.06.6.46.216.52.74 1.8.804 1.932.064.132.104.288.02.472-.084.184-.128.3-.256.448-.128.148-.268.32-.384.432-.128.12-.26.248-.116.496.144.248.644 1.064 1.384 1.724.952.852 1.756 1.116 2.004 1.236.248.12.392.1.54-.072.148-.172.636-.74.808-1 .172-.26.344-.216.576-.132.232.084 1.468.692 1.716.816.248.124.412.184.472.288.06.104.06.6-.164 1.236z"/></svg>
+                      Consultar por WhatsApp
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
