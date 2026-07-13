@@ -66,7 +66,7 @@ export default function RegisterWizard() {
     setLogoPreview(URL.createObjectURL(file));
   };
 
-  const [metodosPago] = useState(['yape', 'efectivo']);
+  const [metodosPago] = useState(['tarjeta', 'yape']);
 
   const handleGoogleSuccess = async ({ access_token }) => {
     try {

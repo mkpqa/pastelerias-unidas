@@ -121,7 +121,7 @@ exports.registroVendedor = async (req, res, next) => {
         ubicacion,
         telefono: telefonoTienda,
         especialidad,
-        metodos_pago: metodosPago || ['yape'] // Array de Postgres
+        metodos_pago: metodosPago || ['tarjeta', 'yape']
       }])
       .select()
       .single();
