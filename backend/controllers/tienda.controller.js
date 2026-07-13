@@ -6,12 +6,14 @@ const formatearTienda = (tienda) => {
   if (!tienda) return null;
   
   // Mapeamos los campos de la base de datos (snake_case) a lo que espera el Frontend (camelCase)
-  const t = { 
-    ...tienda, 
+  const t = {
+    ...tienda,
     _id: tienda.id,
     metodosPago: tienda.metodos_pago,
     ordenMarketplace: tienda.orden_marketplace,
-    createdAt: tienda.created_at
+    createdAt: tienda.created_at,
+    redesSociales: tienda.redes_sociales || {},
+    tarjetasServicios: tienda.tarjetas_servicios || [],
   };
   
   // Adaptar tienda_diseno a personalizacion
@@ -101,8 +103,9 @@ const actualizarMiTienda = async (req, res) => {
     if (req.body.ubicacion !== undefined) camposTienda.ubicacion = req.body.ubicacion;
     if (req.body.telefono !== undefined) camposTienda.telefono = req.body.telefono;
     if (req.body.especialidad !== undefined) camposTienda.especialidad = req.body.especialidad;
-    // Si necesitas soportar campos extra como metodos_pago
     if (req.body.metodosPago !== undefined) camposTienda.metodos_pago = req.body.metodosPago;
+    if (req.body.redesSociales !== undefined) camposTienda.redes_sociales = req.body.redesSociales;
+    if (req.body.tarjetasServicios !== undefined) camposTienda.tarjetas_servicios = req.body.tarjetasServicios;
     
     if (Object.keys(camposTienda).length > 0) {
       await supabase.from('tiendas').update(camposTienda).eq('id', tiendaActual.id);

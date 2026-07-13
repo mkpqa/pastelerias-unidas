@@ -39,6 +39,20 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
 
   const flash = (text, type = 'success') => { setMensaje({ text, type }); setTimeout(() => setMensaje({ text: '', type: '' }), 3000) }
 
+  const handleCancelar = () => {
+    setColorPrimario(tienda.personalizacion?.colorPrimario || '#d4687a')
+    setPlantilla(tienda.personalizacion?.plantilla || 'minimalista')
+    setLogoFile(null)
+    setLogoPreview(tienda.personalizacion?.logo || null)
+    setWhatsapp(tienda.redesSociales?.whatsapp || '')
+    setTarjetasServicios(tienda.tarjetasServicios || [])
+    setNuevoServicioTitulo('')
+    setNuevoServicioFile(null)
+    setNuevoServicioPreview(null)
+    setMensaje({ text: '', type: '' })
+    setEditando(false)
+  }
+
   const handleLogoChange = (e) => {
     const file = e.target.files[0]
     if (file) {
@@ -275,7 +289,7 @@ export default function ConfiguracionTienda({ tienda, onUpdate }) {
         <button onClick={handleGuardar} disabled={cargando} style={{ flex: 1, background: '#8b2f5f', color: '#fff', border: 'none', borderRadius: '8px', padding: '10px', fontSize: '13px', fontWeight: '600', cursor: cargando ? 'not-allowed' : 'pointer', opacity: cargando ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
           {cargando ? 'Guardando...' : <><Save size={16} /> Guardar Cambios</>}
         </button>
-        <button onClick={() => setEditando(false)} disabled={cargando} style={{ background: '#f5f5f5', color: '#666', border: 'none', borderRadius: '8px', padding: '10px 16px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
+        <button onClick={handleCancelar} disabled={cargando} style={{ background: '#f5f5f5', color: '#666', border: 'none', borderRadius: '8px', padding: '10px 16px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
           Cancelar
         </button>
       </div>
