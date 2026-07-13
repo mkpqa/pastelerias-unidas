@@ -159,7 +159,7 @@ const MockCheckoutForm = ({ total, color, onPagoExitoso, onCancelar }) => {
 
             {/* Total & CTA */}
             <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(90, 80, 104, 0.3)', paddingTop: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #C4A499', paddingTop: '16px' }}>
                 <span style={{ fontSize: '14px', color: 'var(--color-on-surface-variant)', fontWeight: 'bold' }}>
                   Total a pagar
                 </span>
@@ -186,7 +186,7 @@ const MockCheckoutForm = ({ total, color, onPagoExitoso, onCancelar }) => {
         ) : (
           /* QR Form */
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', padding: '20px 0' }}>
-            <div style={{ width: '200px', height: '200px', background: '#ffffff', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '2px solid var(--color-primary)' }}>
+            <div style={{ width: '200px', height: '200px', background: '#ffffff', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '2px solid #55261C' }}>
               <img src="/qr-yape.jpg" alt="Código QR Yape" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <p style={{ color: 'var(--color-on-surface-variant)', fontSize: '14px', textAlign: 'center' }}>
