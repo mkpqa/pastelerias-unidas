@@ -1,3 +1,4 @@
+// Footer.jsx
 import { Link } from 'react-router-dom'
 import { Camera, Briefcase } from 'lucide-react'
 import LogoImg from '../assets/LogoPasteleriasUnidas.png'
@@ -5,17 +6,17 @@ import LogoImg from '../assets/LogoPasteleriasUnidas.png'
 export default function Footer() {
   return (
     <footer style={{
-      backgroundColor: '#55261C', // Fondo marrón oscuro
+      backgroundColor: '#55261C', 
       color: '#fff',
-      padding: '40px 40px 20px', // Espaciado similar a la imagen
+      padding: '40px 40px 20px', 
       marginTop: 'auto',
-      fontFamily: "'Bellota Text', display", // Fuente base para textos
+      fontFamily: "'Bellota Text', display", 
     }}>
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: '1.5fr 1fr 1fr 1fr', // La primera columna (logo) ocupa más espacio
+        gridTemplateColumns: '1.5fr 1fr 1fr 1fr', 
         gap: '40px',
         alignItems: 'start'
       }}>
@@ -36,7 +37,7 @@ export default function Footer() {
           </h4>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <li>
-              <Link to="/buscador" style={{ color: '#D3B8AE', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+              <Link to="/marketplace" style={{ color: '#D3B8AE', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
                 onMouseEnter={e => e.target.style.color = '#ffffff'}
                 onMouseLeave={e => e.target.style.color = '#D3B8AE'}>
                 Buscador por filtro
@@ -50,7 +51,7 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/registro-vendedor" style={{ color: '#D3B8AE', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+              <Link to="/auth" style={{ color: '#D3B8AE', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
                 onMouseEnter={e => e.target.style.color = '#ffffff'}
                 onMouseLeave={e => e.target.style.color = '#D3B8AE'}>
                 Únete a nosotros

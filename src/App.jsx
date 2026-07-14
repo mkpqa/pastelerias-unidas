@@ -10,6 +10,7 @@ import TiendaDetalle from './pages/TiendaDetalle'
 import ProductoDetalle from './pages/ProductoDetalle'
 import MisComprasPage from './pages/MisComprasPage'
 import SeguimientoPedidoPage from './pages/SeguimientoPedidoPage'
+import Beneficios from './pages/Beneficios';
 import Contacto from './pages/Contacto';
 import Footer from './components/Footer.jsx'
 import './index.css'
@@ -32,6 +33,7 @@ function App() {
             <Route path="/mis-compras" element={<MisComprasPage />} />
             <Route path="/seguimiento" element={<SeguimientoPedidoPage />} />
             <Route path="/contacto" element={<Contacto />} />
+            <Route path="/beneficios" element={<Beneficios />} />
           </Routes>
         </main>
         <Footer />
