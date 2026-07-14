@@ -86,8 +86,11 @@ export default function () {
       email:    'test@pastelerias.com',
       password: 'PasswordInvalido',
     });
-    const res = http.post(`${BASE_URL}/api/auth/login`, payload, PARAMS);
-    // Esperamos 401 (credenciales inválidas) — lo importante es el tiempo de respuesta
+    // responseCallback evita que 401 cuente como http_req_failed
+    const res = http.post(`${BASE_URL}/api/auth/login`, payload, {
+      ...PARAMS,
+      responseCallback: http.expectedStatuses(200, 401),
+    });
     check(res, {
       'responde autenticación': (r) => [200, 401].includes(r.status),
       'respuesta < 500ms':      (r) => r.timings.duration < 500,
@@ -103,15 +106,13 @@ export function handleSummary(data) {
   const resumen = {
     escenario:    'Baseline — 10 VUs / 30s',
     timestamp:    new Date().toISOString(),
-    umbrales:     data.metrics.http_req_duration
-                    ? {
-                        p95_ms: data.metrics.http_req_duration.values['p(95)'].toFixed(2),
-                        p99_ms: data.metrics.http_req_duration.values['p(99)'].toFixed(2),
-                        med_ms: data.metrics.http_req_duration.values.med.toFixed(2),
-                      }
-                    : 'sin datos',
-    total_req:    data.metrics.http_reqs?.values.count,
-    tasa_error:   (data.metrics.http_req_failed?.values.rate * 100).toFixed(2) + '%',
+    umbrales:     {
+                    p95_ms: (data.metrics.http_req_duration?.values['p(95)'] ?? 0).toFixed(2),
+                    p99_ms: (data.metrics.http_req_duration?.values['p(99)'] ?? 0).toFixed(2),
+                    med_ms: (data.metrics.http_req_duration?.values['med']   ?? 0).toFixed(2),
+                  },
+    total_req:    data.metrics.http_reqs?.values.count ?? 0,
+    tasa_error:   ((data.metrics.http_req_failed?.values.rate ?? 0) * 100).toFixed(2) + '%',
   };
   console.log('\n═══════════════════════════════════════════════');
   console.log('  RESUMEN BASELINE — Pastelerías Unidas v2.0');
