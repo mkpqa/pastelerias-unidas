@@ -28,9 +28,11 @@ const totalRequests    = new Counter('total_requests');
 export const options = {
   vus: 10,
   duration: '30s',
+  // Fuerza a k6 a calcular p(99) para que esté disponible en handleSummary
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)'],
   thresholds: {
     // p95 < 800ms: umbral realista para Render free tier (latencia variable)
-    // Para infraestructura dedicada el objetivo es p95 < 500ms
+    // Para infraestructura dedicada el objetivo sería p95 < 500ms
     http_req_duration: ['p(95)<800', 'p(99)<1500'],
     http_req_failed:   ['rate<0.01'],
     errores:           ['rate<0.01'],  // solo errores HTTP reales (status incorrecto)
