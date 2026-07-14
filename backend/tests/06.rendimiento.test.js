@@ -27,8 +27,8 @@ async function medirTiempo(fn) {
 // ── Umbrales en ms ────────────────────────────────────────────────────────────
 const UMBRAL = {
   HEALTH_CHECK: 200,
-  PUBLICO:      500,
-  AUTH:         600,
+  PUBLICO:      800,  // ajustado a Render free tier (igual que k6)
+  AUTH:         800,
   PROTEGIDO:    800,
 };
 
