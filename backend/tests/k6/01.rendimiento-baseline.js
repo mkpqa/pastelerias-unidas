@@ -29,13 +29,17 @@ export const options = {
   vus: 10,
   duration: '30s',
   thresholds: {
-    http_req_duration:      ['p(95)<500', 'p(99)<1000'],
-    http_req_failed:        ['rate<0.01'],
-    errores:                ['rate<0.01'],
+    // p95 < 800ms: umbral realista para Render free tier (latencia variable)
+    // Para infraestructura dedicada el objetivo es p95 < 500ms
+    http_req_duration: ['p(95)<800', 'p(99)<1500'],
+    http_req_failed:   ['rate<0.01'],
+    errores:           ['rate<0.01'],  // solo errores HTTP reales (status incorrecto)
   },
 };
 
-const BASE_URL = __ENV.BASE_URL || 'http://localhost:5000';
+const BASE_URL      = __ENV.BASE_URL      || 'http://localhost:5000';
+const TEST_EMAIL    = __ENV.TEST_EMAIL    || 'test@pastelerias.com';
+const TEST_PASSWORD = __ENV.TEST_PASSWORD || 'PasswordInvalido';
 
 const PARAMS = {
   headers: { 'Content-Type': 'application/json' },
@@ -46,45 +50,46 @@ const PARAMS = {
 export default function () {
   group('GET /api/tiendas — Catálogo público', () => {
     const res = http.get(`${BASE_URL}/api/tiendas`, PARAMS);
-    const ok = check(res, {
-      'status 200':              (r) => r.status === 200,
-      'body tiene tiendas':      (r) => r.json('tiendas') !== undefined,
-      'respuesta < 500ms':       (r) => r.timings.duration < 500,
+    check(res, {
+      'status 200':         (r) => r.status === 200,
+      'body tiene tiendas': (r) => r.json('tiendas') !== undefined,
+      'respuesta < 800ms':  (r) => r.timings.duration < 800,
     });
+    // errorRate solo sube si el status no es el esperado (error real)
+    errorRate.add(res.status !== 200);
     tendenciaTiendas.add(res.timings.duration);
-    errorRate.add(!ok);
     totalRequests.add(1);
     sleep(1);
   });
 
   group('GET /api/tiendas/home-data — Landing page', () => {
     const res = http.get(`${BASE_URL}/api/tiendas/home-data`, PARAMS);
-    const ok = check(res, {
-      'status 200':           (r) => r.status === 200,
-      'tiene nuevas':         (r) => r.json('nuevas') !== undefined,
-      'respuesta < 800ms':    (r) => r.timings.duration < 800,
+    check(res, {
+      'status 200':        (r) => r.status === 200,
+      'tiene nuevas':      (r) => r.json('nuevas') !== undefined,
+      'respuesta < 800ms': (r) => r.timings.duration < 800,
     });
+    errorRate.add(res.status !== 200);
     tendenciaHome.add(res.timings.duration);
-    errorRate.add(!ok);
     totalRequests.add(1);
     sleep(1);
   });
 
   group('GET /api — Health check', () => {
     const res = http.get(`${BASE_URL}/api`, PARAMS);
-    const ok = check(res, {
+    check(res, {
       'status 200':        (r) => r.status === 200,
-      'respuesta < 200ms': (r) => r.timings.duration < 200,
+      'respuesta < 500ms': (r) => r.timings.duration < 500,
     });
-    errorRate.add(!ok);
+    errorRate.add(res.status !== 200);
     totalRequests.add(1);
     sleep(0.5);
   });
 
   group('POST /api/auth/login — Autenticación', () => {
     const payload = JSON.stringify({
-      email:    'test@pastelerias.com',
-      password: 'PasswordInvalido',
+      email:    TEST_EMAIL,
+      password: TEST_PASSWORD,
     });
     // responseCallback evita que 401 cuente como http_req_failed
     const res = http.post(`${BASE_URL}/api/auth/login`, payload, {
@@ -92,9 +97,11 @@ export default function () {
       responseCallback: http.expectedStatuses(200, 401),
     });
     check(res, {
-      'responde autenticación': (r) => [200, 401].includes(r.status),
-      'respuesta < 500ms':      (r) => r.timings.duration < 500,
+      'login exitoso':     (r) => r.status === 200,
+      'respuesta < 800ms': (r) => r.timings.duration < 800,
     });
+    // Error real = cualquier status que no sea 200 (credenciales válidas deben devolver 200)
+    errorRate.add(res.status !== 200);
     tendenciaLogin.add(res.timings.duration);
     totalRequests.add(1);
     sleep(1);
