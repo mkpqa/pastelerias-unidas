@@ -1,4 +1,3 @@
-// Footer.jsx
 import { Link } from 'react-router-dom'
 import { Camera, Briefcase } from 'lucide-react'
 import LogoImg from '../assets/LogoPasteleriasUnidas.png'
@@ -67,7 +66,7 @@ export default function Footer() {
           </h4>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <li>
-              <Link to="/escribenos" style={{ color: '#D3B8AE', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+              <Link to="/contacto" style={{ color: '#D3B8AE', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
                 onMouseEnter={e => e.target.style.color = '#ffffff'}
                 onMouseLeave={e => e.target.style.color = '#D3B8AE'}>
                 Escríbenos
