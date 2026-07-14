@@ -9,7 +9,7 @@ import ConfiguracionTienda from '../components/ConfiguracionTienda'
 import InfoTienda from '../components/InfoTienda'
 import CambiarPasswordModal from '../components/CambiarPasswordModal'
 import CambiarEmailModal from '../components/CambiarEmailModal'
-import { Lock, Mail, Store, XCircle, ChefHat, CheckCircle, Package, ShoppingCart, Hash } from 'lucide-react'
+import { Lock, Mail, Store, XCircle, ChefHat, CheckCircle, Package, ShoppingCart, Hash, Sparkles, MessageCircle } from 'lucide-react'
 
 export default function DashboardVendedor() {
   const navigate = useNavigate()
@@ -136,6 +136,49 @@ export default function DashboardVendedor() {
 
         {/* Card: Personalización (Editable) */}
         <ConfiguracionTienda tienda={tienda} onUpdate={cargarTienda} />
+      </div>
+
+      {/* Servicios Adicionales acumulados */}
+      <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e8d5cc', padding: '20px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+          <h3 style={{ fontSize: '14px', color: '#3a1a1a', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Sparkles size={16} color={color} /> Servicios Adicionales
+          </h3>
+          <span style={{ fontSize: '11px', color: '#9a7a7a' }}>
+            {tienda.tarjetasServicios?.length
+              ? `${tienda.tarjetasServicios.length} servicio${tienda.tarjetasServicios.length !== 1 ? 's' : ''} publicado${tienda.tarjetasServicios.length !== 1 ? 's' : ''}`
+              : 'Sin servicios aún'}
+          </span>
+        </div>
+
+        {tienda.tarjetasServicios?.length > 0 ? (
+          <>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '12px' }}>
+              {tienda.tarjetasServicios.map((srv, idx) => (
+                <div key={idx} style={{ borderRadius: '10px', overflow: 'hidden', border: '1px solid #e8d5cc', background: '#fdf8f5' }}>
+                  <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
+                    <img src={srv.imagen} alt={srv.titulo} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <div style={{ padding: '8px 10px', fontSize: '12px', fontWeight: '600', color: '#3a1a1a', textAlign: 'center' }}>
+                    {srv.titulo}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#9a7a7a' }}>
+              <MessageCircle size={12} color={tienda.redesSociales?.whatsapp ? '#25D366' : '#ccc'} />
+              {tienda.redesSociales?.whatsapp
+                ? `WhatsApp configurado: ${tienda.redesSociales.whatsapp}`
+                : 'Sin WhatsApp configurado — los clientes no podrán contactarte desde los servicios.'}
+            </div>
+          </>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '24px 0', color: '#c4a499', fontSize: '13px' }}>
+            <Sparkles size={28} style={{ marginBottom: '8px', opacity: 0.4 }} />
+            <p style={{ margin: 0 }}>No tenés servicios adicionales aún.</p>
+            <p style={{ margin: '4px 0 0', fontSize: '11px' }}>Agregalos desde <strong>Personalización Visual → Editar</strong></p>
+          </div>
+        )}
       </div>
 
       {/* Estadísticas rápidas */}
