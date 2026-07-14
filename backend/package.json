@@ -9,7 +9,16 @@
     "build": "echo 'No build step required for Node.js backend'",
     "test": "jest",
     "test:verbose": "jest --verbose",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:rendimiento": "jest --testPathPattern=06.rendimiento --verbose --forceExit",
+    "test:mantenimiento": "jest --testPathPattern=05.mantenimiento --verbose --forceExit",
+    "test:informe": "jest --testPathPattern=\"(05|06)\\.(mantenimiento|rendimiento)\" --verbose --forceExit",
+    "reportes": "powershell -ExecutionPolicy Bypass -File scripts/generar-reportes.ps1",
+    "k6:baseline": "k6 run tests/k6/01.rendimiento-baseline.js",
+    "k6:carga": "k6 run tests/k6/02.carga-progresiva.js",
+    "k6:estres": "k6 run tests/k6/03.estres.js",
+    "k6:disponibilidad": "k6 run tests/k6/04.disponibilidad.js",
+    "k6:completo": "powershell -ExecutionPolicy Bypass -File scripts/run-k6-completo.ps1"
   },
   "keywords": [
     "pastelerias",
